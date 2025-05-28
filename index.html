@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+    <h1 class="imagem">GUILHERME</h1>
+
+<form id="form">
+    <label for="day">Qual é o dia da semana?</label>
+    <input type="text" id="day" name="day">
+    <button type="submit">Enviar</button>
+    </form>
+    <form id="numberForm">
+        <label for="number">Digite um número:</label>
+        <input type="number" id="number" name="number">
+        <button type="submit">Enviar</button>
+        </form>
+        <div class="container">
+            <h2>Jogo de Adivinhação</h2>
+            <p>Tente adivinhar o número entre 1 a 100</p>
+            <input type="number" id="palpite" min="1" max="100" />
+            <button onclick="adivinhar()">Adivinhar</button>
+            <button onclick="reiniciar()">Reiniciar</button>
+            <p id="mensagem"></p>
+          </div>
+    <form id="balanceForm">
+        <label for="balance">Digite seu saldo:</label>
+        <input type="number" id="balance" name="balance">
+        <button type="submit">Enviar</button>
+        </form>
+    <form id="nameForm">
+        <label for="name">Digite seu nome:</label>
+        <input type="text" id="name" name="name">
+        <button type="submit">Enviar</button>
+        </form>
+        
+    <script src="script.js"></script>
+</body>
+</html>
