@@ -67,6 +67,20 @@
    form button:hover {
    background: #6a11cb;
    }
+
+.container {
+    background: rgba(255, 255, 255, 0.25); /* Fundo translúcido */
+    backdrop-filter: blur(10px);            /* Desfoca o fundo */
+    -webkit-backdrop-filter: blur(10px);    /* Suporte para Safari */
+    border-radius: 18px;
+    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.12);
+    padding: 28px 32px 20px 32px;
+    margin: 22px 0;
+    max-width: 95vw;
+    min-width: 330px;
+    /* ...outros estilos que quiser manter */
+}
+
    
    /* Container do jogo */
    .container {
