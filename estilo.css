@@ -7,109 +7,143 @@
 }
 
 body {
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  background-size: 300% 300%;
-  animation: backgroundMove 12s ease infinite;
+  background: radial-gradient(circle at center, #0f2027 0%, #203a43 50%, #09141a 100%);
+  background-size: 400% 400%;
+  animation: backgroundMove 18s ease infinite;
   color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 40px 20px;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
-/* ======= TÍTULO COM ANIMAÇÃO ======= */
+/* ======= TÍTULO ANIMADO ======= */
 h1.imagem {
-  font-size: 3.5rem;
+  font-size: 4rem;
   text-transform: uppercase;
-  font-weight: 800;
-  letter-spacing: 4px;
-  margin-bottom: 40px;
-  background: linear-gradient(90deg, #ff4b2b, #ff416c, #4facfe, #00f2fe);
+  font-weight: 900;
+  letter-spacing: 6px;
+  margin-bottom: 50px;
+  text-align: center;
+  background: linear-gradient(90deg, #00f2fe, #4facfe, #ff416c, #ff4b2b);
   background-size: 400% 400%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: gradientMove 5s ease infinite;
-  text-align: center;
+  animation: glowText 5s ease infinite, gradientMove 6s linear infinite;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
 }
 
-/* ======= CONTAINERS E FORMULÁRIOS ======= */
+/* ======= FORMULÁRIOS E CONTAINERS ======= */
 form, .container {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-  padding: 25px;
-  margin: 15px 0;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 30px;
+  margin: 20px 0;
   width: 100%;
-  max-width: 400px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  max-width: 420px;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.15);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+form::before, .container::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 0deg,
+    rgba(0, 255, 255, 0.3),
+    transparent,
+    rgba(255, 0, 255, 0.3),
+    transparent
+  );
+  animation: rotateBorder 6s linear infinite;
+  z-index: 0;
 }
 
 form:hover, .container:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 25px rgba(0,0,0,0.4);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.25);
 }
 
+form * , .container * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ======= LABELS ======= */
 label {
   display: block;
   font-weight: 600;
   margin-bottom: 8px;
-  color: #e0e0e0;
+  color: #b0f0ff;
+  letter-spacing: 1px;
 }
 
+/* ======= INPUTS ======= */
 input[type="text"],
 input[type="number"] {
   width: 100%;
-  padding: 10px 12px;
-  border: none;
-  border-radius: 8px;
+  padding: 12px 14px;
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  border-radius: 10px;
   outline: none;
   font-size: 1rem;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
   color: #fff;
   margin-bottom: 15px;
-  transition: background 0.3s ease;
+  transition: 0.3s;
 }
 
 input:focus {
-  background: rgba(255, 255, 255, 0.25);
+  border-color: #00f2fe;
+  background: rgba(0, 255, 255, 0.15);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
 }
 
 /* ======= BOTÕES ======= */
 button {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   border: none;
-  border-radius: 8px;
-  background: linear-gradient(90deg, #ff416c, #ff4b2b);
+  border-radius: 10px;
+  background: linear-gradient(90deg, #00f2fe, #4facfe);
   color: white;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  margin-top: 10px; /* separação entre botões */
-  transition: background 0.3s ease, opacity 0.3s ease;
+  margin-top: 10px;
+  letter-spacing: 1px;
+  box-shadow: 0 0 10px rgba(79, 172, 254, 0.5);
+  transition: 0.3s;
 }
 
-/* Hover: leve destaque sem zoom */
 button:hover {
-  opacity: 0.9;
-  background: linear-gradient(90deg, #ff4b2b, #ff416c);
+  background: linear-gradient(90deg, #4facfe, #00f2fe);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
+  transform: scale(1.03);
 }
 
-/* Clique: comportamento normal */
 button:active {
-  transform: none;
-  opacity: 1;
+  transform: scale(0.98);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
 
 /* ======= JOGO DE ADIVINHAÇÃO ======= */
 .container h2 {
   text-align: center;
-  font-size: 1.6rem;
-  margin-bottom: 10px;
+  font-size: 1.7rem;
+  margin-bottom: 15px;
   color: #00f2fe;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
 }
 
 .container p {
@@ -123,6 +157,8 @@ button:active {
   text-align: center;
   font-weight: bold;
   margin-top: 10px;
+  color: #ffb6c1;
+  text-shadow: 0 0 10px rgba(255, 182, 193, 0.4);
 }
 
 /* ======= ANIMAÇÕES ======= */
@@ -132,4 +168,18 @@ button:active {
   100% { background-position: 0% 50%; }
 }
 
-@keyframes background
+@keyframes backgroundMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes rotateBorder {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes glowText {
+  0%, 100% { text-shadow: 0 0 20px #00f2fe, 0 0 30px #4facfe; }
+  50% { text-shadow: 0 0 25px #ff4b2b, 0 0 35px #ff416c; }
+}
