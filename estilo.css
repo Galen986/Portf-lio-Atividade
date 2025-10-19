@@ -88,12 +88,20 @@ button {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  margin-top: 10px; /* separação entre botões */
+  transition: background 0.3s ease, opacity 0.3s ease;
 }
 
+/* Hover: leve destaque sem zoom */
 button:hover {
-  transform: scale(1.05);
   opacity: 0.9;
+  background: linear-gradient(90deg, #ff4b2b, #ff416c);
+}
+
+/* Clique: comportamento normal */
+button:active {
+  transform: none;
+  opacity: 1;
 }
 
 /* ======= JOGO DE ADIVINHAÇÃO ======= */
@@ -124,24 +132,4 @@ button:hover {
   100% { background-position: 0% 50%; }
 }
 
-@keyframes backgroundMove {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* ======= RESPONSIVIDADE ======= */
-@media (max-width: 600px) {
-  h1.imagem {
-    font-size: 2.4rem;
-  }
-
-  form, .container {
-    max-width: 100%;
-    padding: 20px;
-  }
-
-  button {
-    font-size: 0.95rem;
-  }
-}
+@keyframes background
