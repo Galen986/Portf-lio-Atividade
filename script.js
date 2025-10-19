@@ -35,42 +35,55 @@
 
     // 3. Jogo de Adivinhação
     let numeroSecreto = Math.floor(Math.random() * 100) + 1;
-    let tentativas = 0;
+let tentativas = 0;
+let jogoEncerrado = false;
 
-    function adivinhar() {
-      let palpiteInput = document.getElementById('palpite');
-      let palpite = palpiteInput.value.trim();
+function adivinhar() {
+  if (jogoEncerrado) {
+    document.getElementById('mensagem').textContent = "Clique em Reiniciar para jogar novamente.";
+    return;
+  }
 
-      if (palpite === "") {
-        document.getElementById('mensagem').textContent = "Por favor, digite um número.";
-        return;
-      }
+  let palpiteInput = document.getElementById('palpite');
+  let palpite = palpiteInput.value.trim();
 
-      palpite = Number(palpite);
-      tentativas++;
+  if (palpite === "") {
+    document.getElementById('mensagem').textContent = "Por favor, digite um número.";
+    return;
+  }
 
-      if (isNaN(palpite) || palpite < 1 || palpite > 100) {
-        document.getElementById('mensagem').textContent = "Digite um número válido entre 1 e 100.";
-      } else if (palpite < numeroSecreto) {
-        document.getElementById('mensagem').textContent = `Você digitou: ${palpite}. Tente um número maior.`;
-      } else if (palpite > numeroSecreto) {
-        document.getElementById('mensagem').textContent = `Você digitou: ${palpite}. Tente um número menor.`;
-      } else {
-        document.getElementById('mensagem').textContent = 
-          `🎉 Parabéns! Você acertou o número ${numeroSecreto} em ${tentativas} tentativa(s)!`;
-      }
+  palpite = Number(palpite);
+  tentativas++;
 
-      palpiteInput.value = "";
-      palpiteInput.focus();
-    }
+  if (isNaN(palpite) || palpite < 1 || palpite > 100) {
+    document.getElementById('mensagem').textContent = "Digite um número válido entre 1 e 100.";
+  } else if (palpite < numeroSecreto) {
+    document.getElementById('mensagem').textContent = `Você digitou: ${palpite}. Tente um número maior.`;
+  } else if (palpite > numeroSecreto) {
+    document.getElementById('mensagem').textContent = `Você digitou: ${palpite}. Tente um número menor.`;
+  } else {
+    document.getElementById('mensagem').textContent = 
+      `🎉 Parabéns! Você acertou o número ${numeroSecreto} em ${tentativas} tentativa(s)!`;
+    jogoEncerrado = true;
+    document.getElementById('palpite').disabled = true;
+    document.getElementById('btnAdivinhar').disabled = true;
+  }
 
-    function reiniciar() {
-      numeroSecreto = Math.floor(Math.random() * 100) + 1;
-      tentativas = 0;
-      document.getElementById('mensagem').textContent = "";
-      document.getElementById('palpite').value = "";
-      document.getElementById('palpite').focus();
-    }
+  palpiteInput.value = "";
+  palpiteInput.focus();
+}
+
+function reiniciar() {
+  numeroSecreto = Math.floor(Math.random() * 100) + 1;
+  tentativas = 0;
+  jogoEncerrado = false;
+
+  document.getElementById('mensagem').textContent = "";
+  document.getElementById('palpite').value = "";
+  document.getElementById('palpite').disabled = false;
+  document.getElementById('btnAdivinhar').disabled = false;
+  document.getElementById('palpite').focus();
+}
 
     // 4. Saldo
     document.getElementById("balanceForm").addEventListener("submit", function(e){
