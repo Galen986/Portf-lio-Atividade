@@ -67,11 +67,15 @@ function reiniciar() {
 document.getElementById("balanceForm").addEventListener("submit", function(e){
     e.preventDefault();
     let saldo = Number(document.getElementById("balance").value);
+
     if (isNaN(saldo)) {
         alert("Digite um saldo válido.");
     } else {
-        alert(`Seu saldo atual é: R$ ${saldo.toFixed(2)}`);
+        // Formata o número no padrão brasileiro
+        let saldoFormatado = saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        alert(`Seu saldo atual é: ${saldoFormatado}`);
     }
+
     this.reset();
 });
 
