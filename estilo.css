@@ -1,185 +1,246 @@
-/* ======= RESET E CONFIGURAÇÕES ======= */
+/*
+=========================================================
+1. Variáveis de Cor (Tema Claro e Escuro)
+=========================================================
+*/
+
+/* Variáveis para o Tema Claro (Padrão) */
+:root {
+    --color-primary: #007bff; /* Azul vibrante para ações principais */
+    --color-primary-hover: #0056b3;
+    --color-text: #333333; /* Texto escuro */
+    --color-text-secondary: #6c757d; /* Texto secundário/Placeholder */
+    --color-background: #f8f9fa; /* Fundo muito claro */
+    --color-surface: #ffffff; /* Fundo dos cards/componentes */
+    --color-border: #dee2e6; /* Borda leve */
+    --color-shadow: rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+/* Variáveis para o Tema Escuro */
+.dark-theme {
+    --color-primary: #6cace4; /* Azul mais claro para contraste */
+    --color-primary-hover: #4a80b8;
+    --color-text: #e2e6e9; /* Texto claro */
+    --color-text-secondary: #adb5bd;
+    --color-background: #1a1a1a; /* Fundo muito escuro */
+    --color-surface: #2c2c2c; /* Fundo dos cards/componentes */
+    --color-border: #495057;
+    --color-shadow: rgba(0, 0, 0, 0.5); /* Sombra mais escura */
+}
+
+
+/*
+=========================================================
+2. Reset e Tipografia Base
+=========================================================
+*/
+
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Garante que padding e border não afetem o tamanho final */
 }
 
 body {
-  background: radial-gradient(circle at center, #0f2027 0%, #203a43 50%, #09141a 100%);
-  background-size: 400% 400%;
-  animation: backgroundMove 18s ease infinite;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 40px 20px;
-  min-height: 100vh;
-  overflow-x: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    line-height: 1.6;
+    transition: background-color 0.3s, color 0.3s; /* Transição suave do tema */
 }
 
-/* ======= TÍTULO ANIMADO ======= */
-h1.imagem {
-  font-size: 4rem;
-  text-transform: uppercase;
-  font-weight: 900;
-  letter-spacing: 6px;
-  margin-bottom: 50px;
-  text-align: center;
-  background: linear-gradient(90deg, #00f2fe, #4facfe, #ff416c, #ff4b2b);
-  background-size: 400% 400%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: glowText 5s ease infinite, gradientMove 6s linear infinite;
-  text-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+
+/*
+=========================================================
+3. Header e Tema
+=========================================================
+*/
+
+.header-container {
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    padding: 20px 40px;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px var(--color-shadow);
+    position: sticky; /* Sticky header para melhor UX */
+    top: 0;
+    z-index: 1000;
 }
 
-/* ======= FORMULÁRIOS E CONTAINERS ======= */
-form, .container {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(0, 255, 255, 0.2);
-  border-radius: 20px;
-  padding: 30px;
-  margin: 20px 0;
-  width: 100%;
-  max-width: 420px;
-  backdrop-filter: blur(15px);
-  box-shadow: 0 0 25px rgba(0, 255, 255, 0.15);
-  transition: all 0.4s ease;
-  position: relative;
-  overflow: hidden;
+.imagem { /* Seu <h1> */
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin: 0;
+    text-transform: uppercase;
 }
 
-form::before, .container::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: conic-gradient(
-    from 0deg,
-    rgba(0, 255, 255, 0.3),
-    transparent,
-    rgba(255, 0, 255, 0.3),
-    transparent
-  );
-  animation: rotateBorder 6s linear infinite;
-  z-index: 0;
+.theme-toggle-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 8px;
+    transition: background-color 0.2s, transform 0.1s;
 }
 
-form:hover, .container:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 0 30px rgba(0, 255, 255, 0.25);
+.theme-toggle-btn:hover {
+    background-color: var(--color-border);
 }
 
-form * , .container * {
-  position: relative;
-  z-index: 1;
+.theme-toggle-btn:active {
+    transform: scale(0.95);
 }
 
-/* ======= LABELS ======= */
+
+/*
+=========================================================
+4. Layout Principal
+=========================================================
+*/
+
+.main-content {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    display: grid;
+    /* Layout responsivo com 1 coluna em telas pequenas, 2 em médias e 3 em grandes */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+
+/*
+=========================================================
+5. Cards de Aplicações
+=========================================================
+*/
+
+.card {
+    background-color: var(--color-surface);
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 4px 12px var(--color-shadow);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px var(--color-shadow);
+}
+
+.card h3 {
+    color: var(--color-primary);
+    margin-bottom: 15px;
+    font-size: 1.25rem;
+    border-bottom: 2px solid var(--color-border);
+    padding-bottom: 8px;
+}
+
+/*
+=========================================================
+6. Elementos de Formulário (Inputs, Labels, Buttons)
+=========================================================
+*/
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
 label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #b0f0ff;
-  letter-spacing: 1px;
+    font-weight: 500;
+    color: var(--color-text);
 }
 
-/* ======= INPUTS ======= */
 input[type="text"],
 input[type="number"] {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid rgba(0, 255, 255, 0.3);
-  border-radius: 10px;
-  outline: none;
-  font-size: 1rem;
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-  margin-bottom: 15px;
-  transition: 0.3s;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    font-size: 1rem;
+    color: var(--color-text);
+    background-color: var(--color-background); /* Fundo sutilmente diferente */
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-input:focus {
-  border-color: #00f2fe;
-  background: rgba(0, 255, 255, 0.15);
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+input[type="text"]:focus,
+input[type="number"]:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }
 
-/* ======= BOTÕES ======= */
-button {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 10px;
-  background: linear-gradient(90deg, #00f2fe, #4facfe);
-  color: white;
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: 10px;
-  letter-spacing: 1px;
-  box-shadow: 0 0 10px rgba(79, 172, 254, 0.5);
-  transition: 0.3s;
+/* Placeholder */
+input::placeholder {
+    color: var(--color-text-secondary);
+    opacity: 0.7;
 }
 
-button:hover {
-  background: linear-gradient(90deg, #4facfe, #00f2fe);
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
-  transform: scale(1.03);
+button[type="submit"],
+.game-buttons button {
+    background-color: var(--color-primary);
+    color: #ffffff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: background-color 0.2s, transform 0.1s;
 }
 
-button:active {
-  transform: scale(0.98);
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+button[type="submit"]:hover,
+.game-buttons button:hover {
+    background-color: var(--color-primary-hover);
 }
 
-/* ======= JOGO DE ADIVINHAÇÃO ======= */
-.container h2 {
-  text-align: center;
-  font-size: 1.7rem;
-  margin-bottom: 15px;
-  color: #00f2fe;
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+button[type="submit"]:active,
+.game-buttons button:active {
+    transform: translateY(1px);
 }
 
-.container p {
-  text-align: center;
-  font-size: 1rem;
-  color: #cfcfcf;
-  margin-bottom: 15px;
+button:disabled {
+    background-color: var(--color-text-secondary);
+    cursor: not-allowed;
 }
 
-#mensagem {
-  text-align: center;
-  font-weight: bold;
-  margin-top: 10px;
-  color: #ffb6c1;
-  text-shadow: 0 0 10px rgba(255, 182, 193, 0.4);
+/*
+=========================================================
+7. Estilos Específicos do Jogo de Adivinhação
+=========================================================
+*/
+
+.game-card p {
+    margin-bottom: 15px;
 }
 
-/* ======= ANIMAÇÕES ======= */
-@keyframes gradientMove {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.game-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
 }
 
-@keyframes backgroundMove {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+#palpite {
+    margin-bottom: 15px;
 }
 
-@keyframes rotateBorder {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes glowText {
-  0%, 100% { text-shadow: 0 0 20px #00f2fe, 0 0 30px #4facfe; }
-  50% { text-shadow: 0 0 25px #ff4b2b, 0 0 35px #ff416c; }
+.message-area {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 6px;
+    background-color: var(--color-background);
+    border: 1px dashed var(--color-border);
+    font-style: italic;
+    min-height: 45px; /* Garante que a área não encolha */
+    display: flex;
+    align-items: center;
 }
