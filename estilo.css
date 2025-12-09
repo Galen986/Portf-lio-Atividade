@@ -1,6 +1,7 @@
  /* Importações de Fontes */
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap'); /* <--- NOVA FONTE ADICIONADA */
 
 /*
 =========================================================
@@ -24,6 +25,7 @@
     --font-body: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     --font-heading: 'Bebas Neue', sans-serif;
     --font-logo: 'Lobster', cursive;
+    --font-marker: 'Permanent Marker', cursive; /* <--- NOVA VARIÁVEL DE FONTE */
 }
 
 /* Variáveis para o Tema Escuro */
