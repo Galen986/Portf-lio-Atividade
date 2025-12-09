@@ -3,22 +3,22 @@
 // =======================================================================
 
 const body = document.getElementById('body-principal');
-const themeToggleBtn = document.getElementById('theme-toggle');
-const themeColorMeta = document.getElementById('theme-color-meta');
+const themeToggleBtn = document.getElementById('theme-toggle'); // Verifique se o seu botão no HTML usa id="theme-toggle"
+const themeColorMeta = document.getElementById('theme-color-meta'); // Verifique se o seu HTML tem <meta id="theme-color-meta" name="theme-color" content="...">
 const DARK_THEME_CLASS = 'dark-theme';
-const LIGHT_THEME_COLOR = '#ffffff'; // Cor para a barra do navegador no tema claro
-const DARK_THEME_COLOR = '#1a1a1a'; // Cor para a barra do navegador no tema escuro
+const LIGHT_THEME_COLOR = '#ffffff'; 
+const DARK_THEME_COLOR = '#1a1a1a'; 
 
-// Função para aplicar o tema
+// Função para aplicar o tema (ÍCONES AJUSTADOS)
 function applyTheme(isDark) {
     if (isDark) {
         body.classList.add(DARK_THEME_CLASS);
-        themeToggleBtn.textContent = '🌙'; // Ícone de lua para indicar que o tema escuro está ativo
+        themeToggleBtn.textContent = '☀️'; // Tema Escuro Ativo: Mostrar Sol (para mudar para Claro) ✅
         themeToggleBtn.setAttribute('aria-pressed', 'true');
         themeColorMeta.setAttribute('content', DARK_THEME_COLOR);
     } else {
         body.classList.remove(DARK_THEME_CLASS);
-        themeToggleBtn.textContent = '☀️'; // Ícone de sol para indicar que o tema claro está ativo
+        themeToggleBtn.textContent = '🌙'; // Tema Claro Ativo: Mostrar Lua (para mudar para Escuro) ✅
         themeToggleBtn.setAttribute('aria-pressed', 'false');
         themeColorMeta.setAttribute('content', LIGHT_THEME_COLOR);
     }
@@ -30,7 +30,7 @@ function applyTheme(isDark) {
 document.addEventListener('DOMContentLoaded', () => {
     // Tenta carregar a preferência salva
     const savedTheme = localStorage.getItem('theme');
-    
+
     // Verifica a preferência salva OU a preferência do sistema do usuário
     const prefersDark = savedTheme 
         ? savedTheme === 'dark' 
@@ -40,14 +40,16 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Event Listener para o botão de alternância
-themeToggleBtn.addEventListener('click', () => {
-    const isDark = body.classList.contains(DARK_THEME_CLASS);
-    applyTheme(!isDark);
-});
+if (themeToggleBtn) { // Boa prática: verifica se o elemento existe
+    themeToggleBtn.addEventListener('click', () => {
+        const isDark = body.classList.contains(DARK_THEME_CLASS);
+        applyTheme(!isDark);
+    });
+}
 
 
 // =======================================================================
-// Lógica dos Formulários e Jogos (Melhorias e Correções)
+// Lógica dos Formulários e Jogos
 // =======================================================================
 
 // 1. Dia da semana
@@ -90,8 +92,7 @@ let numeroSecreto = Math.floor(Math.random() * 100) + 1;
 let tentativas = 0;
 let jogoEncerrado = false;
 
-// CORREÇÃO: As funções 'adivinhar' e 'reiniciar' precisam ser globais (ou anexadas à janela) 
-// pois são chamadas diretamente no HTML via 'onclick'.
+// CORREÇÃO: As funções 'adivinhar' e 'reiniciar' precisam ser globais
 window.adivinhar = function() {
   if (jogoEncerrado) {
     document.getElementById('mensagem').textContent = "Clique em Reiniciar para jogar novamente.";
@@ -116,12 +117,13 @@ window.adivinhar = function() {
   } else if (palpite > numeroSecreto) {
     document.getElementById('mensagem').textContent = `Você digitou: ${palpite}. Tente um número menor. ⬇️`;
   } else {
+    // Mensagem de sucesso (com alert opcional para destaque)
     document.getElementById('mensagem').textContent = 
       `🎉 Parabéns! Você acertou o número ${numeroSecreto} em ${tentativas} tentativa(s)!`;
     jogoEncerrado = true;
-    // Habilita/Desabilita corretamente
     document.getElementById('palpite').disabled = true;
-    document.getElementById('btnAdivinhar').disabled = true;
+    document.getElementById('btnAdivinhar').disabled = true; // Confirme este ID no seu HTML
+    alert(`VITÓRIA! Você acertou o número secreto!`);
   }
 
   palpiteInput.value = "";
@@ -136,7 +138,7 @@ window.reiniciar = function() {
   document.getElementById('mensagem').textContent = "";
   document.getElementById('palpite').value = "";
   document.getElementById('palpite').disabled = false;
-  document.getElementById('btnAdivinhar').disabled = false; // Corrigido o ID do botão
+  document.getElementById('btnAdivinhar').disabled = false;
   document.getElementById('palpite').focus();
 }
 
@@ -150,7 +152,6 @@ document.getElementById("balanceForm").addEventListener("submit", function(e){
     alert("Por favor, digite o valor do saldo.");
   } else {
     let saldo = Number(valorDigitado);
-    // Uso de Intl.NumberFormat para formatação mais robusta e nativa
     let formatter = new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
@@ -172,6 +173,3 @@ document.getElementById("nameForm").addEventListener("submit", function(e){
   }
   this.reset();
 });
-
-// As funções setTheme e setAnimation do seu código original foram removidas 
-// e substituídas pela lógica de tema centralizada acima.
