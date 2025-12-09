@@ -70,17 +70,20 @@
             <form id="imcForm">
                 <label for="peso">Peso (kg):</label>
                 <input type="number" id="peso" required step="0.1" placeholder="Ex: 70.5">
-                
+
                 <label for="altura">Altura (m):</label>
                 <input type="number" id="altura" required step="0.01" placeholder="Ex: 1.75">
-                
-                <button type="submit">Calcular IMC</button>
-            </form>
-            
-            <div id="imcResultado" class="message-area" style="margin-top: 15px;">
+
+                <div class="game-buttons" style="margin-top: 5px;">
+                    <button type="submit">Calcular IMC</button>
+                    <button type="button" onclick="limparImc()">Limpar</button> 
                 </div>
+            </form>
+
+            <div id="imcResultado" class="message-area" style="margin-top: 15px;">
+            </div>
         </div>
-        
+
     </main>
 
     <script src="script.js"></script>
