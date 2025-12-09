@@ -1,4 +1,4 @@
-/* Importações de Fontes */
+ /* Importações de Fontes */
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
@@ -277,6 +277,7 @@ button:disabled {
     margin-bottom: 15px;
 }
 
+/* ESTILO REVISADO: Padrão para permitir múltiplas linhas (como no IMC) */
 .message-area {
     margin-top: 20px;
     padding: 10px;
@@ -285,6 +286,11 @@ button:disabled {
     border: 1px dashed var(--color-border);
     font-style: italic;
     min-height: 45px;
+    display: block; /* Garante que o <br> seja respeitado e o conteúdo empilhado */
+}
+
+/* ESTILO ESPECÍFICO: Para o Jogo de Adivinhação (ID 'mensagem') */
+#mensagem { 
     display: flex;
-    align-items: center;
+    align-items: center; /* Centraliza a linha única do jogo verticalmente */
 }
