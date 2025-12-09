@@ -259,7 +259,7 @@ button:disabled {
 
 /*
 =========================================================
-7. Estilos Específicos do Jogo de Adivinhação / IMC
+7. Estilos Específicos do Jogo de Adivinhação / IMC / Tarefas
 =========================================================
 */
 
@@ -277,7 +277,7 @@ button:disabled {
     margin-bottom: 15px;
 }
 
-/* ESTILO REVISADO: Padrão para permitir múltiplas linhas (como no IMC) */
+/* ESTILO REVISADO: Padrão para áreas de resultado, permitindo múltiplas linhas (como no IMC) */
 .message-area {
     margin-top: 20px;
     padding: 10px;
