@@ -270,3 +270,111 @@ window.limparImc = function() {
     // Opcional: Focar no primeiro campo para UX
     pesoInput.focus(); 
 }
+
+// =======================================================================
+// 7. Conversor de Temperatura (Celsius para Fahrenheit)
+// =======================================================================
+
+document.getElementById("tempForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    
+    const celsiusInput = document.getElementById("celsius");
+    const resultadoDiv = document.getElementById("tempResultado");
+    
+    const celsius = parseFloat(celsiusInput.value);
+
+    if (isNaN(celsius)) {
+        resultadoDiv.innerHTML = "⚠️ Por favor, insira um valor numérico válido.";
+        return;
+    }
+
+    // Fórmula: F = C * 9/5 + 32
+    const fahrenheit = (celsius * 9/5) + 32;
+    const fahrenheitFormatado = fahrenheit.toFixed(1);
+
+    resultadoDiv.innerHTML = `
+        ${celsius}°C é igual a: <strong style="color: var(--color-primary);">${fahrenheitFormatado}°F</strong> 🔥
+    `;
+    celsiusInput.focus();
+    this.reset();
+});
+
+
+// =======================================================================
+// 8. Contador de Cliques
+// =======================================================================
+
+let contador = 0;
+const contadorElement = document.getElementById("contadorCliques");
+const btnContador = document.getElementById("btnContador");
+const btnReset = document.getElementById("btnResetContador");
+
+btnContador.addEventListener('click', function() {
+    contador++;
+    contadorElement.textContent = contador;
+});
+
+btnReset.addEventListener('click', function() {
+    contador = 0;
+    contadorElement.textContent = contador;
+    alert("Contador zerado!");
+});
+
+
+// =======================================================================
+// 9. Criador de Lista de Tarefas (To-Do List)
+// =======================================================================
+
+document.getElementById("todoForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    
+    const todoInput = document.getElementById("todoInput");
+    const todoList = document.getElementById("todoList");
+    const taskText = todoInput.value.trim();
+
+    if (taskText === "") {
+        alert("Por favor, digite uma tarefa.");
+        return;
+    }
+
+    // 1. Cria o elemento da lista (li)
+    const li = document.createElement('li');
+    li.style.cssText = `
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px dashed var(--color-border);
+        font-size: 1.1rem;
+    `;
+    
+    // 2. Adiciona o texto da tarefa
+    const span = document.createElement('span');
+    span.textContent = taskText;
+    li.appendChild(span);
+
+    // 3. Cria o botão de exclusão
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = '❌';
+    deleteButton.style.cssText = `
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        padding: 5px;
+        margin-left: 10px;
+        transition: transform 0.1s;
+    `;
+
+    // 4. Lógica de exclusão
+    deleteButton.addEventListener('click', function() {
+        todoList.removeChild(li);
+    });
+
+    li.appendChild(deleteButton);
+    todoList.appendChild(li);
+
+    // 5. Limpa o input e foca
+    todoInput.value = '';
+    todoInput.focus();
+});
