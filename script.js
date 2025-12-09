@@ -3,35 +3,31 @@
 // =======================================================================
 
 const body = document.getElementById('body-principal');
-const themeToggleBtn = document.getElementById('theme-toggle'); // Verifique se o seu botão no HTML usa id="theme-toggle"
-const themeColorMeta = document.getElementById('theme-color-meta'); // Verifique se o seu HTML tem <meta id="theme-color-meta" name="theme-color" content="...">
+const themeToggleBtn = document.getElementById('theme-toggle'); 
+const themeColorMeta = document.getElementById('theme-color-meta');
 const DARK_THEME_CLASS = 'dark-theme';
 const LIGHT_THEME_COLOR = '#ffffff'; 
 const DARK_THEME_COLOR = '#1a1a1a'; 
 
-// Função para aplicar o tema (ÍCONES AJUSTADOS)
+// Função para aplicar o tema (Ícones ajustados para UX)
 function applyTheme(isDark) {
     if (isDark) {
         body.classList.add(DARK_THEME_CLASS);
-        themeToggleBtn.textContent = '☀️'; // Tema Escuro Ativo: Mostrar Sol (para mudar para Claro) ✅
+        themeToggleBtn.textContent = '☀️'; // Mostrar Sol (clique para Claro)
         themeToggleBtn.setAttribute('aria-pressed', 'true');
         themeColorMeta.setAttribute('content', DARK_THEME_COLOR);
     } else {
         body.classList.remove(DARK_THEME_CLASS);
-        themeToggleBtn.textContent = '🌙'; // Tema Claro Ativo: Mostrar Lua (para mudar para Escuro) ✅
+        themeToggleBtn.textContent = '🌙'; // Mostrar Lua (clique para Escuro)
         themeToggleBtn.setAttribute('aria-pressed', 'false');
         themeColorMeta.setAttribute('content', LIGHT_THEME_COLOR);
     }
-    // Salva a preferência do usuário
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
 }
 
 // Carrega o tema ao iniciar
 document.addEventListener('DOMContentLoaded', () => {
-    // Tenta carregar a preferência salva
     const savedTheme = localStorage.getItem('theme');
-
-    // Verifica a preferência salva OU a preferência do sistema do usuário
     const prefersDark = savedTheme 
         ? savedTheme === 'dark' 
         : window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -40,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Event Listener para o botão de alternância
-if (themeToggleBtn) { // Boa prática: verifica se o elemento existe
+if (themeToggleBtn) {
     themeToggleBtn.addEventListener('click', () => {
         const isDark = body.classList.contains(DARK_THEME_CLASS);
         applyTheme(!isDark);
@@ -92,7 +88,7 @@ let numeroSecreto = Math.floor(Math.random() * 100) + 1;
 let tentativas = 0;
 let jogoEncerrado = false;
 
-// CORREÇÃO: As funções 'adivinhar' e 'reiniciar' precisam ser globais
+// Funções globais para o onclick no HTML
 window.adivinhar = function() {
   if (jogoEncerrado) {
     document.getElementById('mensagem').textContent = "Clique em Reiniciar para jogar novamente.";
@@ -117,12 +113,11 @@ window.adivinhar = function() {
   } else if (palpite > numeroSecreto) {
     document.getElementById('mensagem').textContent = `Você digitou: ${palpite}. Tente um número menor. ⬇️`;
   } else {
-    // Mensagem de sucesso (com alert opcional para destaque)
     document.getElementById('mensagem').textContent = 
       `🎉 Parabéns! Você acertou o número ${numeroSecreto} em ${tentativas} tentativa(s)!`;
     jogoEncerrado = true;
     document.getElementById('palpite').disabled = true;
-    document.getElementById('btnAdivinhar').disabled = true; // Confirme este ID no seu HTML
+    document.getElementById('btnAdivinhar').disabled = true;
     alert(`VITÓRIA! Você acertou o número secreto!`);
   }
 
@@ -172,4 +167,66 @@ document.getElementById("nameForm").addEventListener("submit", function(e){
     alert(`Bem-vindo(a), ${nome}! 👋`);
   }
   this.reset();
+});
+
+// =======================================================================
+// 6. Cálculo de IMC (Novo)
+// =======================================================================
+
+document.getElementById("imcForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    
+    const pesoInput = document.getElementById("peso");
+    const alturaInput = document.getElementById("altura");
+    const resultadoDiv = document.getElementById("imcResultado");
+
+    const peso = parseFloat(pesoInput.value);
+    const altura = parseFloat(alturaInput.value);
+
+    // 1. Validação
+    if (isNaN(peso) || isNaN(altura) || peso <= 0 || altura <= 0) {
+        resultadoDiv.innerHTML = "⚠️ Por favor, insira valores válidos e positivos para peso e altura.";
+        return;
+    }
+
+    // 2. Cálculo
+    const imc = peso / (altura * altura);
+    const imcFormatado = imc.toFixed(2);
+
+    // 3. Classificação e Cores
+    let classificacao = '';
+    let emoji = '';
+    let cor = '';
+    
+    if (imc < 18.5) {
+        classificacao = 'Abaixo do peso';
+        emoji = '⬇️';
+        cor = 'var(--color-text-secondary)';
+    } else if (imc >= 18.5 && imc < 24.9) {
+        classificacao = 'Peso normal';
+        emoji = '✅';
+        cor = 'var(--color-primary)';
+    } else if (imc >= 25.0 && imc < 29.9) {
+        classificacao = 'Sobrepeso';
+        emoji = '🟠';
+        cor = '#ffc107'; 
+    } else if (imc >= 30.0 && imc < 34.9) {
+        classificacao = 'Obesidade Grau I';
+        emoji = '🛑';
+        cor = '#dc3545';
+    } else if (imc >= 35.0 && imc < 39.9) {
+        classificacao = 'Obesidade Grau II (Severa)';
+        emoji = '🚨';
+        cor = '#dc3545';
+    } else {
+        classificacao = 'Obesidade Grau III (Mórbida)';
+        emoji = '⚠️';
+        cor = '#dc3545';
+    }
+
+    // 4. Exibição do Resultado
+    resultadoDiv.innerHTML = `
+        Seu IMC é: <strong style="color: ${cor};">${imcFormatado}</strong><br>
+        Classificação: <strong style="color: ${cor};">${emoji} ${classificacao}</strong>
+    `;
 });
