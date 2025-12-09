@@ -1,31 +1,36 @@
 /*
 =========================================================
-1. Variáveis de Cor (Tema Claro e Escuro)
+1. Variáveis de Cor e Fonte (Tema Claro e Escuro)
 =========================================================
 */
 
 /* Variáveis para o Tema Claro (Padrão) */
 :root {
-    --color-primary: #007bff; /* Azul vibrante para ações principais */
+    --color-primary: #006ac7; /* Ajustado de #007bff para 4.5:1 de contraste (WCAG AA) */
     --color-primary-hover: #0056b3;
-    --color-text: #333333; /* Texto escuro */
-    --color-text-secondary: #6c757d; /* Texto secundário/Placeholder */
-    --color-background: #f8f9fa; /* Fundo muito claro */
-    --color-surface: #ffffff; /* Fundo dos cards/componentes */
-    --color-border: #dee2e6; /* Borda leve */
-    --color-shadow: rgba(0, 0, 0, 0.1); /* Sombra suave */
+    --color-text: #333333;
+    --color-text-secondary: #6c757d;
+    --color-background: #f8f9fa;
+    --color-surface: #ffffff;
+    --color-border: #dee2e6;
+    --color-shadow: rgba(0, 0, 0, 0.1);
+
+    /* NOVAS VARIÁVEIS DE FONTE */
+    --font-body: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-heading: 'Bebas Neue', sans-serif;
+    --font-logo: 'Lobster', cursive;
 }
 
-/* Variáveis para o Tema Escuro */
+/* Variáveis para o Tema Escuro (Sem alterações de cor, pois o contraste já era bom) */
 .dark-theme {
-    --color-primary: #6cace4; /* Azul mais claro para contraste */
+    --color-primary: #6cace4;
     --color-primary-hover: #4a80b8;
-    --color-text: #e2e6e9; /* Texto claro */
+    --color-text: #e2e6e9;
     --color-text-secondary: #adb5bd;
-    --color-background: #1a1a1a; /* Fundo muito escuro */
-    --color-surface: #2c2c2c; /* Fundo dos cards/componentes */
+    --color-background: #1a1a1a;
+    --color-surface: #2c2c2c;
     --color-border: #495057;
-    --color-shadow: rgba(0, 0, 0, 0.5); /* Sombra mais escura */
+    --color-shadow: rgba(0, 0, 0, 0.5);
 }
 
 
@@ -38,15 +43,15 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box; /* Garante que padding e border não afetem o tamanho final */
+    box-sizing: border-box;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: var(--font-body); /* Usando a nova variável */
     background-color: var(--color-background);
     color: var(--color-text);
     line-height: 1.6;
-    transition: background-color 0.3s, color 0.3s; /* Transição suave do tema */
+    transition: background-color 0.3s, color 0.3s;
 }
 
 
@@ -65,17 +70,20 @@ body {
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 2px 4px var(--color-shadow);
-    position: sticky; /* Sticky header para melhor UX */
+    position: sticky;
     top: 0;
     z-index: 1000;
 }
 
-.imagem { /* Seu <h1> */
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: 1px;
+.imagem { /* Ajustado para a fonte Lobster */
+    font-family: var(--font-logo);
+    font-size: 2.5rem;
+    font-weight: 400;
+    letter-spacing: 0;
     margin: 0;
-    text-transform: uppercase;
+    text-transform: none;
+    color: var(--color-primary);
+    line-height: 1;
 }
 
 .theme-toggle-btn {
@@ -96,6 +104,17 @@ body {
     transform: scale(0.95);
 }
 
+/* --- Responsividade do Header --- */
+@media (max-width: 600px) {
+    .header-container {
+        padding: 15px 20px; /* Padding menor em telas pequenas */
+    }
+
+    .imagem {
+        font-size: 2rem; /* Reduz o tamanho da fonte do logo em telas pequenas */
+    }
+}
+
 
 /*
 =========================================================
@@ -108,9 +127,25 @@ body {
     margin: 40px auto;
     padding: 0 20px;
     display: grid;
-    /* Layout responsivo com 1 coluna em telas pequenas, 2 em médias e 3 em grandes */
+    /* Grid com ajuste automático, min de 300px */
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
+}
+
+/* --- Responsividade do Layout --- */
+@media (max-width: 768px) {
+    .main-content {
+        /* Em telas menores, garante que o padding lateral não seja muito grande */
+        padding: 0 15px;
+        margin: 20px auto; /* Margem superior e inferior menores */
+    }
+}
+
+@media (max-width: 380px) {
+    /* Garante que em telas muito pequenas, haja apenas uma coluna */
+    .main-content {
+        grid-template-columns: 1fr;
+    }
 }
 
 
@@ -134,12 +169,15 @@ body {
     box-shadow: 0 8px 16px var(--color-shadow);
 }
 
-.card h3 {
+.card h3 { /* Ajustado para a fonte Bebas Neue */
+    font-family: var(--font-heading); 
     color: var(--color-primary);
     margin-bottom: 15px;
-    font-size: 1.25rem;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
     border-bottom: 2px solid var(--color-border);
     padding-bottom: 8px;
+    text-transform: uppercase;
 }
 
 /*
@@ -167,7 +205,7 @@ input[type="number"] {
     border-radius: 8px;
     font-size: 1rem;
     color: var(--color-text);
-    background-color: var(--color-background); /* Fundo sutilmente diferente */
+    background-color: var(--color-background);
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -175,7 +213,7 @@ input[type="text"]:focus,
 input[type="number"]:focus {
     border-color: var(--color-primary);
     outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    box-shadow: 0 0 0 3px rgba(0, 106, 199, 0.25); /* Cor primária ajustada no shadow */
 }
 
 /* Placeholder */
@@ -240,7 +278,7 @@ button:disabled {
     background-color: var(--color-background);
     border: 1px dashed var(--color-border);
     font-style: italic;
-    min-height: 45px; /* Garante que a área não encolha */
+    min-height: 45px;
     display: flex;
     align-items: center;
 }
