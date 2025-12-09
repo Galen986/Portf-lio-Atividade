@@ -1,3 +1,7 @@
+/* Importações de Fontes (Normalmente feito no HTML, mas incluído aqui para referência) */
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
 /*
 =========================================================
 1. Variáveis de Cor e Fonte (Tema Claro e Escuro)
@@ -6,7 +10,8 @@
 
 /* Variáveis para o Tema Claro (Padrão) */
 :root {
-    --color-primary: #006ac7; /* Ajustado de #007bff para 4.5:1 de contraste (WCAG AA) */
+    /* COR PRIMÁRIA AJUSTADA PARA GARANTIR ACESSIBILIDADE WCAG AA (4.5:1) */
+    --color-primary: #006ac7; 
     --color-primary-hover: #0056b3;
     --color-text: #333333;
     --color-text-secondary: #6c757d;
@@ -21,7 +26,7 @@
     --font-logo: 'Lobster', cursive;
 }
 
-/* Variáveis para o Tema Escuro (Sem alterações de cor, pois o contraste já era bom) */
+/* Variáveis para o Tema Escuro */
 .dark-theme {
     --color-primary: #6cace4;
     --color-primary-hover: #4a80b8;
@@ -47,7 +52,7 @@
 }
 
 body {
-    font-family: var(--font-body); /* Usando a nova variável */
+    font-family: var(--font-body); 
     background-color: var(--color-background);
     color: var(--color-text);
     line-height: 1.6;
@@ -77,7 +82,7 @@ body {
 
 .imagem { /* Ajustado para a fonte Lobster */
     font-family: var(--font-logo);
-    font-size: 2.5rem;
+    font-size: 2.5rem; 
     font-weight: 400;
     letter-spacing: 0;
     margin: 0;
@@ -107,11 +112,11 @@ body {
 /* --- Responsividade do Header --- */
 @media (max-width: 600px) {
     .header-container {
-        padding: 15px 20px; /* Padding menor em telas pequenas */
+        padding: 15px 20px;
     }
 
     .imagem {
-        font-size: 2rem; /* Reduz o tamanho da fonte do logo em telas pequenas */
+        font-size: 2rem;
     }
 }
 
@@ -127,7 +132,6 @@ body {
     margin: 40px auto;
     padding: 0 20px;
     display: grid;
-    /* Grid com ajuste automático, min de 300px */
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
 }
@@ -135,14 +139,12 @@ body {
 /* --- Responsividade do Layout --- */
 @media (max-width: 768px) {
     .main-content {
-        /* Em telas menores, garante que o padding lateral não seja muito grande */
-        padding: 0 15px;
-        margin: 20px auto; /* Margem superior e inferior menores */
+        padding: 0 15px; 
+        margin: 20px auto; 
     }
 }
 
 @media (max-width: 380px) {
-    /* Garante que em telas muito pequenas, haja apenas uma coluna */
     .main-content {
         grid-template-columns: 1fr;
     }
@@ -213,7 +215,7 @@ input[type="text"]:focus,
 input[type="number"]:focus {
     border-color: var(--color-primary);
     outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 106, 199, 0.25); /* Cor primária ajustada no shadow */
+    box-shadow: 0 0 0 3px rgba(0, 106, 199, 0.25); 
 }
 
 /* Placeholder */
