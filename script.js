@@ -179,7 +179,7 @@ document.getElementById("imcForm").addEventListener("submit", function(e) {
     const pesoInput = document.getElementById("peso");
     const alturaInput = document.getElementById("altura");
     const resultadoDiv = document.getElementById("imcResultado");
-    const btnCalcular = document.getElementById("btnCalcularImc"); // NOVO: Botão
+    const btnCalcular = document.getElementById("btnCalcularImc"); 
 
     const peso = parseFloat(pesoInput.value);
     const altura = parseFloat(alturaInput.value);
@@ -187,7 +187,7 @@ document.getElementById("imcForm").addEventListener("submit", function(e) {
     // 1. Validação
     if (isNaN(peso) || isNaN(altura) || peso <= 0 || altura <= 0) {
         resultadoDiv.innerHTML = "⚠️ Por favor, insira valores válidos e positivos para peso e altura.";
-        return; // Sai da função sem bloquear
+        return; 
     }
 
     // 2. Cálculo
@@ -228,7 +228,7 @@ document.getElementById("imcForm").addEventListener("submit", function(e) {
         cor = corVermelho;
     }
 
-    // 4. Exibição do Resultado
+    // 4. Exibição do Resultado (Usa <br> para quebrar linha)
     resultadoDiv.innerHTML = `
         Seu IMC é: <strong style="color: ${cor};">${imcFormatado}</strong><br>
         Classificação: <strong style="color: ${cor};">${emoji} ${classificacao}</strong>
@@ -251,7 +251,7 @@ window.limparImc = function() {
     // Referências aos elementos
     const pesoInput = document.getElementById('peso');
     const alturaInput = document.getElementById('altura');
-    const btnCalcular = document.getElementById('btnCalcularImc'); // Botão
+    const btnCalcular = document.getElementById('btnCalcularImc'); 
 
     // 1. Limpa os campos de entrada
     pesoInput.value = '';
