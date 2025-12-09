@@ -170,15 +170,16 @@ document.getElementById("nameForm").addEventListener("submit", function(e){
 });
 
 // =======================================================================
-// 6. Cálculo de IMC (Novo)
+// 6. Cálculo de IMC (COM BLOQUEIO)
 // =======================================================================
 
 document.getElementById("imcForm").addEventListener("submit", function(e) {
     e.preventDefault();
-    
+
     const pesoInput = document.getElementById("peso");
     const alturaInput = document.getElementById("altura");
     const resultadoDiv = document.getElementById("imcResultado");
+    const btnCalcular = document.getElementById("btnCalcularImc"); // NOVO: Botão
 
     const peso = parseFloat(pesoInput.value);
     const altura = parseFloat(alturaInput.value);
@@ -186,7 +187,7 @@ document.getElementById("imcForm").addEventListener("submit", function(e) {
     // 1. Validação
     if (isNaN(peso) || isNaN(altura) || peso <= 0 || altura <= 0) {
         resultadoDiv.innerHTML = "⚠️ Por favor, insira valores válidos e positivos para peso e altura.";
-        return;
+        return; // Sai da função sem bloquear
     }
 
     // 2. Cálculo
@@ -197,7 +198,10 @@ document.getElementById("imcForm").addEventListener("submit", function(e) {
     let classificacao = '';
     let emoji = '';
     let cor = '';
-    
+    let corVerde = 'var(--color-primary)';
+    let corLaranja = '#ffc107'; 
+    let corVermelho = '#dc3545';
+
     if (imc < 18.5) {
         classificacao = 'Abaixo do peso';
         emoji = '⬇️';
@@ -205,23 +209,23 @@ document.getElementById("imcForm").addEventListener("submit", function(e) {
     } else if (imc >= 18.5 && imc < 24.9) {
         classificacao = 'Peso normal';
         emoji = '✅';
-        cor = 'var(--color-primary)';
+        cor = corVerde;
     } else if (imc >= 25.0 && imc < 29.9) {
         classificacao = 'Sobrepeso';
         emoji = '🟠';
-        cor = '#ffc107'; 
+        cor = corLaranja;
     } else if (imc >= 30.0 && imc < 34.9) {
         classificacao = 'Obesidade Grau I';
         emoji = '🛑';
-        cor = '#dc3545';
+        cor = corVermelho;
     } else if (imc >= 35.0 && imc < 39.9) {
         classificacao = 'Obesidade Grau II (Severa)';
         emoji = '🚨';
-        cor = '#dc3545';
+        cor = corVermelho;
     } else {
         classificacao = 'Obesidade Grau III (Mórbida)';
         emoji = '⚠️';
-        cor = '#dc3545';
+        cor = corVermelho;
     }
 
     // 4. Exibição do Resultado
@@ -229,20 +233,40 @@ document.getElementById("imcForm").addEventListener("submit", function(e) {
         Seu IMC é: <strong style="color: ${cor};">${imcFormatado}</strong><br>
         Classificação: <strong style="color: ${cor};">${emoji} ${classificacao}</strong>
     `;
+
+    // 5. BLOQUEIO DOS CAMPOS E BOTÃO
+    pesoInput.disabled = true;
+    alturaInput.disabled = true;
+    btnCalcular.disabled = true;
+
+    // Opcional: Alerta de confirmação visual
+    alert(`Cálculo de IMC concluído: ${imcFormatado} (${classificacao})`);
 });
 
 
 /**
- * Limpa os campos de input e o resultado do Cálculo de IMC.
+ * Limpa os campos de input, o resultado do Cálculo de IMC e reabilita os elementos.
  */
-function limparImc() {
-    // 1. Limpa os campos de entrada (peso e altura)
-    document.getElementById('peso').value = '';
-    document.getElementById('altura').value = '';
+window.limparImc = function() {
+    // Referências aos elementos
+    const pesoInput = document.getElementById('peso');
+    const alturaInput = document.getElementById('altura');
+    const btnCalcular = document.getElementById('btnCalcularImc'); // Botão
+
+    // 1. Limpa os campos de entrada
+    pesoInput.value = '';
+    alturaInput.value = '';
 
     // 2. Limpa a área de resultado
     document.getElementById('imcResultado').innerHTML = '';
-}
 
-// Observação: Certifique-se de que o resto da sua lógica de IMC (o event listener 
-// para o 'imcForm' e a função de cálculo) já esteja funcionando no seu script.js.
+    // 3. DESBLOQUEIA OS CAMPOS E O BOTÃO
+    pesoInput.disabled = false;
+    alturaInput.disabled = false;
+    if (btnCalcular) {
+      btnCalcular.disabled = false;
+    }
+
+    // Opcional: Focar no primeiro campo para UX
+    pesoInput.focus(); 
+}
