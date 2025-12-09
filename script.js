@@ -230,3 +230,19 @@ document.getElementById("imcForm").addEventListener("submit", function(e) {
         Classificação: <strong style="color: ${cor};">${emoji} ${classificacao}</strong>
     `;
 });
+
+
+/**
+ * Limpa os campos de input e o resultado do Cálculo de IMC.
+ */
+function limparImc() {
+    // 1. Limpa os campos de entrada (peso e altura)
+    document.getElementById('peso').value = '';
+    document.getElementById('altura').value = '';
+
+    // 2. Limpa a área de resultado
+    document.getElementById('imcResultado').innerHTML = '';
+}
+
+// Observação: Certifique-se de que o resto da sua lógica de IMC (o event listener 
+// para o 'imcForm' e a função de cálculo) já esteja funcionando no seu script.js.
