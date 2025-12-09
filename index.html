@@ -1,44 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <meta name="theme-color" content="red">
-    <title>Document</title>
+    <meta name="theme-color" content="#1a1a1a" id="theme-color-meta">
+    <title>Desafios JS Interativos</title>
     <link rel="stylesheet" href="estilo.css">
-</head>
-<body>
-    <h1 class="imagem">GUILHERME</h1>
+    </head>
+<body id="body-principal">
+    <header class="header-container">
+        <button id="theme-toggle" aria-label="Alternar Tema Claro/Escuro" class="theme-toggle-btn">
+            ☀️
+        </button>
+        <h1 class="imagem">GUILHERME - Mini-Aplicações JS</h1>
+    </header>
 
-<form id="form">
-    <label for="day">Qual é o dia da semana?</label>
-    <input type="text" id="day" name="day">
-    <button type="submit">Enviar</button>
-    </form>
-    <form id="numberForm">
-        <label for="number">Digite um número:</label>
-        <input type="number" id="number" name="number">
-        <button type="submit">Enviar</button>
-        </form>
-        <div class="container">
-            <h2>Jogo de Adivinhação</h2>
-            <p>Tente adivinhar o número entre 1 a 100</p>
-            <input type="number" id="palpite" min="1" max="100" />
-            <button onclick="adivinhar()">Adivinhar</button>
-            <button onclick="reiniciar()">Reiniciar</button>
-            <p id="mensagem"></p>
-          </div>
-    <form id="balanceForm">
-        <label for="balance">Digite seu saldo:</label>
-        <input type="number" id="balance" name="balance">
-        <button type="submit">Enviar</button>
-        </form>
-    <form id="nameForm">
-        <label for="name">Digite seu nome:</label>
-        <input type="text" id="name" name="name">
-        <button type="submit">Enviar</button>
-        </form>
+    <main class="main-content">
+        <div class="card">
+            <h3>1. Dia da Semana</h3>
+            <form id="form">
+                <label for="day">Qual é o dia da semana?</label>
+                <input type="text" id="day" name="day" placeholder="Ex: Sábado">
+                <button type="submit">Verificar</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>2. Positivo ou Negativo</h3>
+            <form id="numberForm">
+                <label for="number">Digite um número:</label>
+                <input type="number" id="number" name="number" placeholder="Ex: -5 ou 10">
+                <button type="submit">Verificar</button>
+            </form>
+        </div>
         
+        <div class="card game-card">
+            <h3>3. Jogo de Adivinhação</h3>
+            <p>Tente adivinhar o número entre 1 a 100</p>
+            <input type="number" id="palpite" min="1" max="100" placeholder="Seu palpite" />
+            <div class="game-buttons">
+                <button onclick="adivinhar()" id="btnAdivinhar">Adivinhar</button>
+                <button onclick="reiniciar()">Reiniciar</button>
+            </div>
+            <p id="mensagem" class="message-area"></p>
+        </div>
+
+        <div class="card">
+            <h3>4. Saldo Atual</h3>
+            <form id="balanceForm">
+                <label for="balance">Digite seu saldo:</label>
+                <input type="number" id="balance" name="balance" step="0.01" placeholder="Ex: 1500.50">
+                <button type="submit">Mostrar Saldo</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>5. Boas-vindas</h3>
+            <form id="nameForm">
+                <label for="name">Digite seu nome:</label>
+                <input type="text" id="name" name="name" placeholder="Seu nome aqui">
+                <button type="submit">Saudar</button>
+            </form>
+        </div>
+    </main>
+
     <script src="script.js"></script>
 </body>
 </html>
