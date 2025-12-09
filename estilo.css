@@ -1,4 +1,4 @@
-/* Importações de Fontes (Normalmente feito no HTML, mas incluído aqui para referência) */
+/* Importações de Fontes */
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
@@ -10,7 +10,7 @@
 
 /* Variáveis para o Tema Claro (Padrão) */
 :root {
-    /* COR PRIMÁRIA AJUSTADA PARA GARANTIR ACESSIBILIDADE WCAG AA (4.5:1) */
+    /* Cores */
     --color-primary: #006ac7; 
     --color-primary-hover: #0056b3;
     --color-text: #333333;
@@ -20,7 +20,7 @@
     --color-border: #dee2e6;
     --color-shadow: rgba(0, 0, 0, 0.1);
 
-    /* NOVAS VARIÁVEIS DE FONTE */
+    /* Fontes */
     --font-body: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     --font-heading: 'Bebas Neue', sans-serif;
     --font-logo: 'Lobster', cursive;
@@ -80,7 +80,7 @@ body {
     z-index: 1000;
 }
 
-.imagem { /* Ajustado para a fonte Lobster */
+.imagem { /* Logo/Título */
     font-family: var(--font-logo);
     font-size: 2.5rem; 
     font-weight: 400;
@@ -171,7 +171,7 @@ body {
     box-shadow: 0 8px 16px var(--color-shadow);
 }
 
-.card h3 { /* Ajustado para a fonte Bebas Neue */
+.card h3 { /* Título do Card */
     font-family: var(--font-heading); 
     color: var(--color-primary);
     margin-bottom: 15px;
@@ -211,6 +211,13 @@ input[type="number"] {
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+/* Campo desabilitado */
+input:disabled {
+    opacity: 0.7;
+    background-color: var(--color-border);
+    cursor: not-allowed;
+}
+
 input[type="text"]:focus,
 input[type="number"]:focus {
     border-color: var(--color-primary);
@@ -224,8 +231,7 @@ input::placeholder {
     opacity: 0.7;
 }
 
-button[type="submit"],
-.game-buttons button {
+button {
     background-color: var(--color-primary);
     color: #ffffff;
     border: none;
@@ -238,13 +244,11 @@ button[type="submit"],
     transition: background-color 0.2s, transform 0.1s;
 }
 
-button[type="submit"]:hover,
-.game-buttons button:hover {
+button:hover {
     background-color: var(--color-primary-hover);
 }
 
-button[type="submit"]:active,
-.game-buttons button:active {
+button:active {
     transform: translateY(1px);
 }
 
@@ -255,7 +259,7 @@ button:disabled {
 
 /*
 =========================================================
-7. Estilos Específicos do Jogo de Adivinhação
+7. Estilos Específicos do Jogo de Adivinhação / IMC
 =========================================================
 */
 
