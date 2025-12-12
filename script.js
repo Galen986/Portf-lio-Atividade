@@ -55,6 +55,35 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // =======================================================================
+    // BUSCA GERAL DE CARDS (Filtro da Página)
+    // =======================================================================
+    const buscaListasInput = document.getElementById('busca-listas');
+    const cards = document.querySelectorAll('.card'); // Seleciona todos os cards de desafio
+
+    function filtrarCardsGeral() {
+        const termo = buscaListasInput.value.toLowerCase().trim();
+
+        cards.forEach(card => {
+            const tituloElement = card.querySelector('h3');
+            
+            if (tituloElement) {
+                const titulo = tituloElement.textContent.toLowerCase();
+                
+                if (titulo.includes(termo)) {
+                    card.style.display = 'block'; 
+                } else {
+                    card.style.display = 'none';
+                }
+            }
+        });
+    }
+
+    if (buscaListasInput) {
+        buscaListasInput.addEventListener('input', filtrarCardsGeral);
+    }
+
+
     // 1. Dia da semana
     document.getElementById("form").addEventListener("submit", function(e) {
       e.preventDefault();
@@ -214,7 +243,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnContador = document.getElementById("btnContador");
     const btnReset = document.getElementById("btnResetContador");
 
-    // Verifica se os elementos foram encontrados antes de adicionar o listener
     if (btnContador && contadorElement && btnReset) {
         btnContador.addEventListener('click', function() {
             contador++;
@@ -229,56 +257,102 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // 9. Criador de Lista de Tarefas (To-Do List)
-    document.getElementById("todoForm").addEventListener("submit", function(e) {
-        e.preventDefault();
+    // 9. Lista de Tarefas Filtrável
+    let tarefas = []; // Array que armazenará todas as tarefas como strings
+    const todoInput = document.getElementById("todoInput");
+    const todoList = document.getElementById("todoList");
+    const filtroTodoInput = document.getElementById("filtroTodo"); 
 
-        const todoInput = document.getElementById("todoInput");
-        const todoList = document.getElementById("todoList");
-        const taskText = todoInput.value.trim();
+    function renderizarTarefas(listaTarefas = tarefas) {
+        if (!todoList) return;
 
-        if (taskText === "") {
-            alert("Por favor, digite uma tarefa.");
-            return;
+        todoList.innerHTML = ''; // Limpa a lista na tela
+
+        if (listaTarefas.length === 0) {
+            todoList.innerHTML = '<li>Nenhuma tarefa para mostrar.</li>';
         }
 
-        const li = document.createElement('li');
-        li.style.cssText = `
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px dashed var(--color-border);
-            font-size: 1.1rem;
-        `;
+        listaTarefas.forEach((taskText) => {
+            const li = document.createElement('li');
+            li.style.cssText = `
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 0;
+                border-bottom: 1px dashed var(--color-border);
+                font-size: 1.1rem;
+            `;
 
-        const span = document.createElement('span');
-        span.textContent = taskText;
-        li.appendChild(span);
+            const span = document.createElement('span');
+            span.textContent = taskText;
+            li.appendChild(span);
 
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = '❌';
-        deleteButton.style.cssText = `
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            padding: 5px;
-            margin-left: 10px;
-            transition: transform 0.1s;
-        `;
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = '❌';
+            deleteButton.style.cssText = `
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 1rem;
+                padding: 5px;
+                margin-left: 10px;
+                transition: transform 0.1s;
+            `;
 
-        deleteButton.addEventListener('click', function() {
-            todoList.removeChild(li);
+            deleteButton.addEventListener('click', function() {
+                // Remove a tarefa do array 'tarefas'
+                const originalIndex = tarefas.indexOf(taskText); 
+                if (originalIndex > -1) {
+                    tarefas.splice(originalIndex, 1);
+                }
+                
+                aplicarFiltroTarefa();
+            });
+
+            li.appendChild(deleteButton);
+            todoList.appendChild(li);
         });
+    }
 
-        li.appendChild(deleteButton);
-        todoList.appendChild(li);
+    function aplicarFiltroTarefa() {
+        if (!filtroTodoInput) return;
+        const termo = filtroTodoInput.value.toLowerCase().trim();
 
-        todoInput.value = '';
-        todoInput.focus();
-    });
+        if (termo === '') {
+            renderizarTarefas(tarefas); 
+        } else {
+            const tarefasFiltradas = tarefas.filter(tarefa => 
+                tarefa.toLowerCase().includes(termo)
+            );
+            renderizarTarefas(tarefasFiltradas);
+        }
+    }
 
+    if (document.getElementById("todoForm")) {
+        document.getElementById("todoForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const taskText = todoInput.value.trim();
+
+            if (taskText === "") {
+                alert("Por favor, digite uma tarefa.");
+                return;
+            }
+            
+            tarefas.push(taskText);
+            
+            todoInput.value = '';
+            todoInput.focus();
+
+            aplicarFiltroTarefa();
+        });
+    }
+
+    if (filtroTodoInput) {
+        filtroTodoInput.addEventListener('input', aplicarFiltroTarefa);
+        renderizarTarefas(tarefas); 
+    }
+    
     // =======================================================================
     // NOVAS IDEIAS JS (10 a 14)
     // =======================================================================
@@ -300,7 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function iniciarTimer() {
-        if (timerInterval) return; // Já está rodando
+        if (timerInterval) return; 
 
         tempoTotalSegundos = (Number(inputMinutos.value) * 60) + Number(inputSegundos.value);
 
@@ -340,7 +414,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function resetarTimer() {
         pararTimer();
-        // Recarrega o tempo dos inputs para o reset
         const minutosValor = inputMinutos.value.padStart(2, '0');
         const segundosValor = inputSegundos.value.padStart(2, '0');
         tempoTotalSegundos = (Number(minutosValor) * 60) + Number(segundosValor);
@@ -356,7 +429,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnPararTimer) btnPararTimer.addEventListener('click', pararTimer);
     if (btnResetTimer) btnResetTimer.addEventListener('click', resetarTimer);
     
-    // Configuração inicial do display
     if (timerDisplay && inputMinutos && inputSegundos) {
          timerDisplay.textContent = `${inputMinutos.value.padStart(2, '0')}:${inputSegundos.value.padStart(2, '0')}`;
     }
@@ -377,7 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const caracteresNumeros = '0123456789';
         const caracteresSimbolos = '!@#$%^&*()_+[]{}|;:,.<>?';
 
-        let pool = caracteresMinusculos; // Minúsculas sempre incluídas
+        let pool = caracteresMinusculos; 
         if (incluirMaiusculas) pool += caracteresMaiusculos;
         if (incluirNumeros) pool += caracteresNumeros;
         if (incluirSimbolos) pool += caracteresSimbolos;
@@ -398,7 +470,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function copiarSenha() {
         if (senhaGeradaInput.value) {
-            // Usa a API do Clipboard
             navigator.clipboard.writeText(senhaGeradaInput.value)
                 .then(() => {
                     alert("Senha copiada para a área de transferência!");
@@ -419,7 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const gorjetaPorcentagemInput = document.getElementById('gorjetaPorcentagem');
     const numPessoasInput = document.getElementById('numPessoas');
 
-    window.calcularGorjeta = function() { // Tornada global para o oninput no HTML
+    window.calcularGorjeta = function() { 
         const contaValor = parseFloat(contaValorInput.value);
         const gorjetaPorcentagem = parseFloat(gorjetaPorcentagemInput.value);
         const numPessoas = parseInt(numPessoasInput.value);
@@ -440,7 +511,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    // Chamada inicial (se os campos tiverem valores) e evento do botão 'Calcular'
     if (contaValorInput) {
         calcularGorjeta();
         const btnCalcularGorjeta = document.getElementById('btnCalcularGorjeta');
@@ -471,7 +541,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const senhaError = document.getElementById('senhaError');
 
     function validarEmail(email) {
-        // Regex simples para validação de formato de e-mail
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
     }
@@ -483,11 +552,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const senha = senhaInput.value;
         let formValido = true;
 
-        // Limpar mensagens de erro
         emailError.textContent = '';
         senhaError.textContent = '';
 
-        // Validação de Email
         if (email === '') {
             emailError.textContent = 'O email é obrigatório.';
             formValido = false;
@@ -496,7 +563,6 @@ document.addEventListener('DOMContentLoaded', () => {
             formValido = false;
         }
 
-        // Validação de Senha
         if (senha === '') {
             senhaError.textContent = 'A senha é obrigatória.';
             formValido = false;
@@ -522,7 +588,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const filtroProdutoInput = document.getElementById('filtroProduto');
     const listaProdutosUL = document.getElementById('listaProdutos');
 
-    // Array de Objetos para simular um catálogo (DADOS)
     const produtos = [
         { id: 1, nome: "Notebook Gamer", categoria: "Eletrônicos" },
         { id: 2, nome: "Mouse Óptico", categoria: "Acessórios" },
@@ -535,7 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderizarProdutos(lista) {
         if (!listaProdutosUL) return;
 
-        listaProdutosUL.innerHTML = ''; // Limpa a lista atual
+        listaProdutosUL.innerHTML = ''; 
 
         if (lista.length === 0) {
             listaProdutosUL.innerHTML = '<li>Nenhum produto encontrado.</li>';
@@ -550,9 +615,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function filtrarProdutos() {
+        if (!filtroProdutoInput) return;
         const termo = filtroProdutoInput.value.toLowerCase().trim();
 
-        // Usa o método .filter() e .includes() para buscar correspondências
         const produtosFiltrados = produtos.filter(produto => 
             produto.nome.toLowerCase().includes(termo)
         );
@@ -562,24 +627,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (filtroProdutoInput) {
         filtroProdutoInput.addEventListener('input', filtrarProdutos);
-        // Renderiza a lista inicial
         renderizarProdutos(produtos);
     }
 
 
     // 16. Calculadora de Média (Adicionar e Remover)
-    let notas = []; // Array para armazenar as notas
+    let notas = []; 
     const notaForm = document.getElementById('notaForm');
     const notaInput = document.getElementById('notaInput');
     const listaNotasUL = document.getElementById('listaNotas');
     const mediaResultadoStrong = document.getElementById('mediaResultado');
 
     function calcularMedia() {
+        if (!mediaResultadoStrong) return;
         if (notas.length === 0) {
             mediaResultadoStrong.textContent = '0.0';
             return;
         }
-        // Usa .reduce() para somar todos os valores do array
         const soma = notas.reduce((acc, nota) => acc + nota, 0); 
         const media = (soma / notas.length).toFixed(1);
         mediaResultadoStrong.textContent = media;
@@ -613,10 +677,11 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             
             removeButton.addEventListener('click', () => {
-                // Remove a nota pelo seu índice
-                notas.splice(index, 1); 
-                renderizarNotas(); // Recarrega a lista
-                calcularMedia(); // Recalcula a média
+                // Remove pelo índice, mas como o array é pequeno e simples, funciona bem.
+                // É necessário recalcular o índice pois a lista é renderizada novamente.
+                notas.splice(notas.indexOf(nota), 1); 
+                renderizarNotas(); 
+                calcularMedia(); 
             });
 
             li.appendChild(removeButton);
@@ -650,14 +715,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const codigoCorP = document.getElementById('codigoCor');
 
     function gerarCorAleatoria() {
-        // Função para gerar um número aleatório entre 0 e 255 (componentes RGB)
         const r = Math.floor(Math.random() * 256);
         const g = Math.floor(Math.random() * 256);
         const b = Math.floor(Math.random() * 256);
 
         const corRGB = `rgb(${r}, ${g}, ${b})`;
 
-        // Define a cor do texto para contraste
         const luminancia = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
         const corTexto = (luminancia > 0.5) ? '#333333' : '#ffffff'; 
 
@@ -670,7 +733,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (btnGerarCor) {
         btnGerarCor.addEventListener('click', gerarCorAleatoria);
-        gerarCorAleatoria(); // Gera uma cor inicial ao carregar
+        gerarCorAleatoria(); 
     }
 
 
@@ -681,6 +744,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const conversaoResultadoDiv = document.getElementById('conversaoResultado');
 
     function converterUnidade() {
+        if (!tipoConversaoSelect || !valorOriginalInput) return;
         const tipo = tipoConversaoSelect.value;
         const valor = parseFloat(valorOriginalInput.value);
 
@@ -717,12 +781,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (btnConverterUnidade) {
-        // Adiciona o listener de clique no botão e 'change' no select/input para conversão automática
         btnConverterUnidade.addEventListener('click', converterUnidade);
         tipoConversaoSelect.addEventListener('change', converterUnidade);
         valorOriginalInput.addEventListener('input', converterUnidade);
         
-        // Converte o valor inicial ao carregar
         converterUnidade(); 
     }
 
@@ -737,10 +799,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const texto = textoInput.value;
 
-        // 1. Contador de Caracteres
         contadorCaracteresStrong.textContent = texto.length;
 
-        // 2. Contador de Palavras
         const palavras = texto.trim().split(/\s+/).filter(word => word.length > 0);
         
         if (texto.trim() === "") {
@@ -752,7 +812,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (textoInput) {
         textoInput.addEventListener('input', contarTexto);
-        contarTexto(); // Inicia a contagem em 0
+        contarTexto(); 
     }
 
 }); // Fim do DOMContentLoaded
