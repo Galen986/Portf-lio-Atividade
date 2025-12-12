@@ -8,6 +8,16 @@
     <link rel="stylesheet" href="estilo.css">
     <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    
+    <style>
+        .error-message {
+            color: #dc3545; 
+            font-size: 0.9em;
+            margin-top: -5px;
+            margin-bottom: 5px;
+            display: block; /* Garante que ocupem a linha toda */
+        }
+    </style>
 </head>
 <body id="body-principal">
     <header class="header-container">
@@ -18,7 +28,7 @@
     </header>
 
     <main class="main-content">
-        
+
         <div class="card">
             <h3>1. Dia da Semana</h3>
             <form id="form">
@@ -112,6 +122,87 @@
             </form>
             <ul id="todoList" style="list-style: none; padding: 0; margin-top: 20px;">
                 </ul>
+        </div>
+        
+        <div class="card">
+            <h3>10. Contador Regressivo</h3>
+            <label for="minutos">Minutos:</label>
+            <input type="number" id="minutos" value="1" min="0" max="60" style="width: 50px; display: inline-block;">
+            <label for="segundos" style="margin-left: 10px;">Segundos:</label>
+            <input type="number" id="segundos" value="0" min="0" max="59" style="width: 50px; display: inline-block;">
+            
+            <div class="game-buttons" style="margin-top: 10px;">
+                <button id="btnIniciarTimer">Iniciar</button>
+                <button id="btnPararTimer" disabled>Parar</button>
+                <button id="btnResetTimer" style="background-color: #dc3545;">Resetar</button>
+            </div>
+            <h4 id="timerDisplay" style="margin-top: 15px; font-size: 1.5rem; text-align: center;">01:00</h4>
+        </div>
+
+        <div class="card">
+            <h3>11. Gerador de Senhas</h3>
+            <div style="margin-bottom: 10px;">
+                <label for="tamanhoSenha">Tamanho da Senha (4-20):</label>
+                <input type="number" id="tamanhoSenha" value="12" min="4" max="20" style="width: 60px;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <input type="checkbox" id="incluirMaiusculas" checked>
+                <label for="incluirMaiusculas">Maiúsculas (A-Z)</label><br>
+                <input type="checkbox" id="incluirNumeros" checked>
+                <label for="incluirNumeros">Números (0-9)</label><br>
+                <input type="checkbox" id="incluirSimbolos">
+                <label for="incluirSimbolos">Símbolos (!@#$)</label>
+            </div>
+            <button id="btnGerarSenha">Gerar Senha</button>
+            <input type="text" id="senhaGerada" readonly placeholder="Senha aparecerá aqui" style="margin-top: 10px;">
+            <button id="btnCopiarSenha" style="background-color: var(--color-text-secondary);">Copiar</button>
+        </div>
+
+        <div class="card">
+            <h3>12. Calculadora de Gorjeta</h3>
+            <label for="contaValor">Valor da Conta (R$):</label>
+            <input type="number" id="contaValor" step="0.01" value="50.00" min="0" oninput="calcularGorjeta()">
+
+            <label for="gorjetaPorcentagem" style="margin-top: 10px;">Gorjeta (%):</label>
+            <input type="range" id="gorjetaPorcentagem" min="0" max="30" value="10" oninput="this.nextElementSibling.value=this.value+'%'; calcularGorjeta();">
+            <output style="font-weight: bold; margin-bottom: 10px;">10%</output>
+
+            <label for="numPessoas" style="margin-top: 10px;">Número de Pessoas:</label>
+            <input type="number" id="numPessoas" value="1" min="1" oninput="calcularGorjeta()">
+            
+            <button id="btnCalcularGorjeta" style="margin-top: 15px;">Calcular (Automático)</button>
+
+            <div id="gorjetaResultado" class="message-area" style="margin-top: 15px;">
+                </div>
+        </div>
+        
+        <div class="card">
+            <h3>13. Editor de Estilos</h3>
+            <label for="corTexto">Cor do Texto:</label>
+            <input type="color" id="corTexto" value="#333333" style="width: 100%;">
+
+            <label for="tamanhoFonte" style="margin-top: 10px;">Tamanho da Fonte:</label>
+            <input type="range" id="tamanhoFonte" min="12" max="48" value="18" oninput="this.nextElementSibling.value=this.value+'px'">
+            <output style="font-weight: bold; margin-bottom: 15px;">18px</output>
+
+            <p id="blocoExemplo" style="margin-top: 15px; font-size: 18px; color: #333333; padding: 10px; border: 1px dashed var(--color-border);">
+                Este é o texto de exemplo que você pode editar.
+            </p>
+        </div>
+        
+        <div class="card">
+            <h3>14. Validador de Login</h3>
+            <form id="loginForm">
+                <label for="loginEmail">Email:</label>
+                <input type="email" id="loginEmail" placeholder="seuemail@exemplo.com">
+                <span id="emailError" class="error-message"></span>
+
+                <label for="loginSenha">Senha (min. 6 caracteres):</label>
+                <input type="password" id="loginSenha" placeholder="********">
+                <span id="senhaError" class="error-message"></span>
+
+                <button type="submit" style="margin-top: 15px;">Entrar</button>
+            </form>
         </div>
 
     </main>
