@@ -1,24 +1,24 @@
 // =======================================================================
-// Lógica de Tema (Claro/Escuro)
+// Lógica de Tema (Claro/Escuro) - MANTIDA IGUAL
 // =======================================================================
 
 const body = document.getElementById('body-principal');
-const themeToggleBtn = document.getElementById('theme-toggle'); 
+const themeToggleBtn = document.getElementById('theme-toggle');
 const themeColorMeta = document.getElementById('theme-color-meta');
 const DARK_THEME_CLASS = 'dark-theme';
-const LIGHT_THEME_COLOR = '#ffffff'; 
-const DARK_THEME_COLOR = '#1a1a1a'; 
+const LIGHT_THEME_COLOR = '#ffffff';
+const DARK_THEME_COLOR = '#1a1a1a';
 
 // Função para aplicar o tema (Ícones ajustados para UX)
 function applyTheme(isDark) {
     if (isDark) {
         body.classList.add(DARK_THEME_CLASS);
-        themeToggleBtn.textContent = '☀️'; // Mostrar Sol (clique para Claro)
+        themeToggleBtn.textContent = '☀️'; 
         themeToggleBtn.setAttribute('aria-pressed', 'true');
         themeColorMeta.setAttribute('content', DARK_THEME_COLOR);
     } else {
-        body.classList.remove(DARK_THEME_CLASS);
-        themeToggleBtn.textContent = '🌙'; // Mostrar Lua (clique para Escuro)
+        body.classList.remove(DARK_THE_CLASS);
+        themeToggleBtn.textContent = '🌙'; 
         themeToggleBtn.setAttribute('aria-pressed', 'false');
         themeColorMeta.setAttribute('content', LIGHT_THEME_COLOR);
     }
@@ -35,14 +35,94 @@ const formatCurrency = (value) => {
 
 
 // =======================================================================
+// Funções Globais (Necessárias para chamadas 'onclick' no HTML)
+// =======================================================================
+
+// 3. Jogo de Adivinhação
+let numeroSecreto = Math.floor(Math.random() * 100) + 1;
+let tentativas = 0;
+let jogoEncerrado = false;
+
+window.adivinhar = function() {
+  if (jogoEncerrado) {
+    document.getElementById('mensagem').textContent = "Clique em Reiniciar para jogar novamente.";
+    return;
+  }
+
+  let palpiteInput = document.getElementById('palpite');
+  let palpite = palpiteInput.value.trim();
+
+  if (palpite === "") {
+    document.getElementById('mensagem').textContent = "Por favor, digite um número.";
+    return;
+  }
+
+  palpite = Number(palpite);
+  tentativas++;
+
+  if (isNaN(palpite) || palpite < 1 || palpite > 100) {
+    document.getElementById('mensagem').textContent = "Digite um número válido entre 1 e 100.";
+  } else if (palpite < numeroSecreto) {
+    document.getElementById('mensagem').textContent = `Você digitou: ${palpite}. Tente um número maior. ⬆️`;
+  } else if (palpite > numeroSecreto) {
+    document.getElementById('mensagem').textContent = `Você digitou: ${palpite}. Tente um número menor. ⬇️`;
+  } else {
+    document.getElementById('mensagem').textContent =
+      `🎉 Parabéns! Você acertou o número ${numeroSecreto} em ${tentativas} tentativa(s)!`;
+    jogoEncerrado = true;
+    document.getElementById('palpite').disabled = true;
+    document.getElementById('btnAdivinhar').disabled = true;
+    alert(`VITÓRIA! Você acertou o número secreto!`);
+  }
+
+  palpiteInput.value = "";
+  palpiteInput.focus();
+}
+
+window.reiniciar = function() {
+  numeroSecreto = Math.floor(Math.random() * 100) + 1;
+  tentativas = 0;
+  jogoEncerrado = false;
+
+  document.getElementById('mensagem').textContent = "";
+  document.getElementById('palpite').value = "";
+  document.getElementById('palpite').disabled = false;
+  document.getElementById('btnAdivinhar').disabled = false;
+  document.getElementById('palpite').focus();
+}
+
+/**
+ * Limpa os campos de input, o resultado do Cálculo de IMC e reabilita os elementos.
+ * Esta função precisa ser global (window.) pois é chamada via onclick no HTML.
+ */
+window.limparImc = function() {
+    const pesoInput = document.getElementById('peso');
+    const alturaInput = document.getElementById('altura');
+    const btnCalcular = document.getElementById('btnCalcularImc');
+
+    pesoInput.value = '';
+    alturaInput.value = '';
+    document.getElementById('imcResultado').innerHTML = '';
+
+    pesoInput.disabled = false;
+    alturaInput.disabled = false;
+    if (btnCalcular) {
+      btnCalcular.disabled = false;
+    }
+
+    pesoInput.focus();
+}
+
+
+// =======================================================================
 // Lógica Principal (Executada após o carregamento completo do DOM)
 // =======================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
     // Carrega o tema ao iniciar
     const savedTheme = localStorage.getItem('theme');
-    const prefersDark = savedTheme 
-        ? savedTheme === 'dark' 
+    const prefersDark = savedTheme
+        ? savedTheme === 'dark'
         : window.matchMedia('(prefers-color-scheme: dark)').matches;
 
     applyTheme(prefersDark);
@@ -59,19 +139,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // BUSCA GERAL DE CARDS (Filtro da Página)
     // =======================================================================
     const buscaListasInput = document.getElementById('busca-listas');
-    const cards = document.querySelectorAll('.card'); // Seleciona todos os cards de desafio
+    const cards = document.querySelectorAll('.card');
 
     function filtrarCardsGeral() {
         const termo = buscaListasInput.value.toLowerCase().trim();
 
         cards.forEach(card => {
             const tituloElement = card.querySelector('h3');
-            
+
             if (tituloElement) {
                 const titulo = tituloElement.textContent.toLowerCase();
-                
+
                 if (titulo.includes(termo)) {
-                    card.style.display = 'block'; 
+                    card.style.display = 'block';
                 } else {
                     card.style.display = 'none';
                 }
@@ -147,21 +227,21 @@ document.addEventListener('DOMContentLoaded', () => {
       this.reset();
     });
 
-    // 6. Cálculo de IMC (COM BLOQUEIO)
+    // 6. Cálculo de IMC
     document.getElementById("imcForm").addEventListener("submit", function(e) {
         e.preventDefault();
 
         const pesoInput = document.getElementById("peso");
         const alturaInput = document.getElementById("altura");
         const resultadoDiv = document.getElementById("imcResultado");
-        const btnCalcular = document.getElementById("btnCalcularImc"); 
+        const btnCalcular = document.getElementById("btnCalcularImc");
 
         const peso = parseFloat(pesoInput.value);
         const altura = parseFloat(alturaInput.value);
 
         if (isNaN(peso) || isNaN(altura) || peso <= 0 || altura <= 0) {
             resultadoDiv.innerHTML = "⚠️ Por favor, insira valores válidos e positivos para peso e altura.";
-            return; 
+            return;
         }
 
         const imc = peso / (altura * altura);
@@ -171,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let emoji = '';
         let cor = '';
         let corVerde = 'var(--color-primary)';
-        let corLaranja = '#ffc107'; 
+        let corLaranja = '#ffc107';
         let corVermelho = '#dc3545';
 
         if (imc < 18.5) {
@@ -257,11 +337,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // 9. Lista de Tarefas Filtrável
+    // 9. Lista de Tarefas Filtrável (REVISADO: Remoção por Índice no Render)
     let tarefas = []; // Array que armazenará todas as tarefas como strings
     const todoInput = document.getElementById("todoInput");
     const todoList = document.getElementById("todoList");
-    const filtroTodoInput = document.getElementById("filtroTodo"); 
+    const filtroTodoInput = document.getElementById("filtroTodo");
 
     function renderizarTarefas(listaTarefas = tarefas) {
         if (!todoList) return;
@@ -272,7 +352,15 @@ document.addEventListener('DOMContentLoaded', () => {
             todoList.innerHTML = '<li>Nenhuma tarefa para mostrar.</li>';
         }
 
-        listaTarefas.forEach((taskText) => {
+        // Iteramos sobre o ARRAY ORIGINAL (tarefas) para criar os listeners de exclusão
+        tarefas.forEach((taskText, index) => { // <-- USANDO 'index' DO ARRAY ORIGINAL
+            
+            // Verifica se a tarefa atual atende ao filtro antes de renderizar
+            const termo = filtroTodoInput ? filtroTodoInput.value.toLowerCase().trim() : '';
+            if (termo && !taskText.toLowerCase().includes(termo)) {
+                return; // Pula a renderização se não passar no filtro
+            }
+
             const li = document.createElement('li');
             li.style.cssText = `
                 display: flex;
@@ -300,13 +388,11 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
             deleteButton.addEventListener('click', function() {
-                // Remove a tarefa do array 'tarefas'
-                const originalIndex = tarefas.indexOf(taskText); 
-                if (originalIndex > -1) {
-                    tarefas.splice(originalIndex, 1);
-                }
+                // Remove a tarefa do array 'tarefas' pelo ÍNDICE do array original
+                tarefas.splice(index, 1); // <-- REMOÇÃO ROBUSTA POR ÍNDICE
                 
-                aplicarFiltroTarefa();
+                // Reaplica o filtro e renderiza a lista atualizada
+                aplicarFiltroTarefa(); 
             });
 
             li.appendChild(deleteButton);
@@ -315,17 +401,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function aplicarFiltroTarefa() {
-        if (!filtroTodoInput) return;
-        const termo = filtroTodoInput.value.toLowerCase().trim();
-
-        if (termo === '') {
-            renderizarTarefas(tarefas); 
-        } else {
-            const tarefasFiltradas = tarefas.filter(tarefa => 
-                tarefa.toLowerCase().includes(termo)
-            );
-            renderizarTarefas(tarefasFiltradas);
-        }
+        // Agora, 'aplicarFiltroTarefa' só chama a renderização completa, 
+        // e a lógica de filtragem é feita dentro de renderizarTarefas
+        renderizarTarefas(tarefas);
     }
 
     if (document.getElementById("todoForm")) {
@@ -338,9 +416,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert("Por favor, digite uma tarefa.");
                 return;
             }
-            
+
             tarefas.push(taskText);
-            
+
             todoInput.value = '';
             todoInput.focus();
 
@@ -350,13 +428,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (filtroTodoInput) {
         filtroTodoInput.addEventListener('input', aplicarFiltroTarefa);
-        renderizarTarefas(tarefas); 
+        renderizarTarefas(tarefas);
     }
-    
-    // =======================================================================
-    // NOVAS IDEIAS JS (10 a 14)
-    // =======================================================================
-    
+
+
     // 10. Contador Regressivo (Timer)
     let timerInterval;
     let tempoTotalSegundos = 0;
@@ -374,7 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function iniciarTimer() {
-        if (timerInterval) return; 
+        if (timerInterval) return;
 
         tempoTotalSegundos = (Number(inputMinutos.value) * 60) + Number(inputSegundos.value);
 
@@ -428,7 +503,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnIniciarTimer) btnIniciarTimer.addEventListener('click', iniciarTimer);
     if (btnPararTimer) btnPararTimer.addEventListener('click', pararTimer);
     if (btnResetTimer) btnResetTimer.addEventListener('click', resetarTimer);
-    
+
     if (timerDisplay && inputMinutos && inputSegundos) {
          timerDisplay.textContent = `${inputMinutos.value.padStart(2, '0')}:${inputSegundos.value.padStart(2, '0')}`;
     }
@@ -449,7 +524,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const caracteresNumeros = '0123456789';
         const caracteresSimbolos = '!@#$%^&*()_+[]{}|;:,.<>?';
 
-        let pool = caracteresMinusculos; 
+        let pool = caracteresMinusculos;
         if (incluirMaiusculas) pool += caracteresMaiusculos;
         if (incluirNumeros) pool += caracteresNumeros;
         if (incluirSimbolos) pool += caracteresSimbolos;
@@ -490,7 +565,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const gorjetaPorcentagemInput = document.getElementById('gorjetaPorcentagem');
     const numPessoasInput = document.getElementById('numPessoas');
 
-    window.calcularGorjeta = function() { 
+    window.calcularGorjeta = function() {
         const contaValor = parseFloat(contaValorInput.value);
         const gorjetaPorcentagem = parseFloat(gorjetaPorcentagemInput.value);
         const numPessoas = parseInt(numPessoasInput.value);
@@ -546,7 +621,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function validarFormulario(e) {
-        e.preventDefault(); 
+        e.preventDefault();
 
         const email = emailInput.value.trim();
         const senha = senhaInput.value;
@@ -580,10 +655,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginForm) loginForm.addEventListener('submit', validarFormulario);
 
 
-    // =======================================================================
-    // NOVAS IDEIAS JS (15 a 19 - Filtro e Arrays)
-    // =======================================================================
-
     // 15. Lista de Produtos Filtrável
     const filtroProdutoInput = document.getElementById('filtroProduto');
     const listaProdutosUL = document.getElementById('listaProdutos');
@@ -600,7 +671,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderizarProdutos(lista) {
         if (!listaProdutosUL) return;
 
-        listaProdutosUL.innerHTML = ''; 
+        listaProdutosUL.innerHTML = '';
 
         if (lista.length === 0) {
             listaProdutosUL.innerHTML = '<li>Nenhum produto encontrado.</li>';
@@ -618,10 +689,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!filtroProdutoInput) return;
         const termo = filtroProdutoInput.value.toLowerCase().trim();
 
-        const produtosFiltrados = produtos.filter(produto => 
+        const produtosFiltrados = produtos.filter(produto =>
             produto.nome.toLowerCase().includes(termo)
         );
-        
+
         renderizarProdutos(produtosFiltrados);
     }
 
@@ -631,8 +702,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // 16. Calculadora de Média (Adicionar e Remover)
-    let notas = []; 
+    // 16. Calculadora de Média (REVISADO: Remoção por Índice)
+    let notas = [];
     const notaForm = document.getElementById('notaForm');
     const notaInput = document.getElementById('notaInput');
     const listaNotasUL = document.getElementById('listaNotas');
@@ -644,7 +715,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mediaResultadoStrong.textContent = '0.0';
             return;
         }
-        const soma = notas.reduce((acc, nota) => acc + nota, 0); 
+        const soma = notas.reduce((acc, nota) => acc + nota, 0);
         const media = (soma / notas.length).toFixed(1);
         mediaResultadoStrong.textContent = media;
     }
@@ -653,7 +724,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!listaNotasUL) return;
 
         listaNotasUL.innerHTML = '';
-        notas.forEach((nota, index) => {
+        notas.forEach((nota, index) => { // <-- USANDO 'index'
             const li = document.createElement('li');
             li.style.cssText = `
                 display: flex;
@@ -675,13 +746,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 border-radius: 3px;
                 font-size: 0.8rem;
             `;
-            
+
+            // O listener usa o 'index' da iteração para remover o elemento exato
             removeButton.addEventListener('click', () => {
-                // Remove pelo índice, mas como o array é pequeno e simples, funciona bem.
-                // É necessário recalcular o índice pois a lista é renderizada novamente.
-                notas.splice(notas.indexOf(nota), 1); 
-                renderizarNotas(); 
-                calcularMedia(); 
+                notas.splice(index, 1); // <-- REMOÇÃO ROBUSTA POR ÍNDICE
+                renderizarNotas(); // Re-renderiza a lista (os índices serão recalculados)
             });
 
             li.appendChild(removeButton);
@@ -703,10 +772,12 @@ document.addEventListener('DOMContentLoaded', () => {
             notas.push(nota);
             notaInput.value = '';
             notaInput.focus();
-            
+
             renderizarNotas();
         });
     }
+    // Renderiza a lista inicial
+    renderizarNotas();
 
 
     // 17. Gerador de Cores Aleatórias (RGB)
@@ -721,8 +792,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const corRGB = `rgb(${r}, ${g}, ${b})`;
 
+        // Cálculo de Luminância para garantir contraste de texto
         const luminancia = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-        const corTexto = (luminancia > 0.5) ? '#333333' : '#ffffff'; 
+        const corTexto = (luminancia > 0.5) ? '#333333' : '#ffffff';
 
         if (corBox && codigoCorP) {
             corBox.style.backgroundColor = corRGB;
@@ -733,7 +805,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (btnGerarCor) {
         btnGerarCor.addEventListener('click', gerarCorAleatoria);
-        gerarCorAleatoria(); 
+        gerarCorAleatoria();
     }
 
 
@@ -784,8 +856,8 @@ document.addEventListener('DOMContentLoaded', () => {
         btnConverterUnidade.addEventListener('click', converterUnidade);
         tipoConversaoSelect.addEventListener('change', converterUnidade);
         valorOriginalInput.addEventListener('input', converterUnidade);
-        
-        converterUnidade(); 
+
+        converterUnidade();
     }
 
 
@@ -802,7 +874,7 @@ document.addEventListener('DOMContentLoaded', () => {
         contadorCaracteresStrong.textContent = texto.length;
 
         const palavras = texto.trim().split(/\s+/).filter(word => word.length > 0);
-        
+
         if (texto.trim() === "") {
             contadorPalavrasStrong.textContent = 0;
         } else {
@@ -812,82 +884,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (textoInput) {
         textoInput.addEventListener('input', contarTexto);
-        contarTexto(); 
+        contarTexto();
     }
 
 }); // Fim do DOMContentLoaded
-
-
-// 3. Jogo de Adivinhação (Funções globais)
-let numeroSecreto = Math.floor(Math.random() * 100) + 1;
-let tentativas = 0;
-let jogoEncerrado = false;
-
-window.adivinhar = function() {
-  if (jogoEncerrado) {
-    document.getElementById('mensagem').textContent = "Clique em Reiniciar para jogar novamente.";
-    return;
-  }
-
-  let palpiteInput = document.getElementById('palpite');
-  let palpite = palpiteInput.value.trim();
-
-  if (palpite === "") {
-    document.getElementById('mensagem').textContent = "Por favor, digite um número.";
-    return;
-  }
-
-  palpite = Number(palpite);
-  tentativas++;
-
-  if (isNaN(palpite) || palpite < 1 || palpite > 100) {
-    document.getElementById('mensagem').textContent = "Digite um número válido entre 1 e 100.";
-  } else if (palpite < numeroSecreto) {
-    document.getElementById('mensagem').textContent = `Você digitou: ${palpite}. Tente um número maior. ⬆️`;
-  } else if (palpite > numeroSecreto) {
-    document.getElementById('mensagem').textContent = `Você digitou: ${palpite}. Tente um número menor. ⬇️`;
-  } else {
-    document.getElementById('mensagem').textContent = 
-      `🎉 Parabéns! Você acertou o número ${numeroSecreto} em ${tentativas} tentativa(s)!`;
-    jogoEncerrado = true;
-    document.getElementById('palpite').disabled = true;
-    document.getElementById('btnAdivinhar').disabled = true;
-    alert(`VITÓRIA! Você acertou o número secreto!`);
-  }
-
-  palpiteInput.value = "";
-  palpiteInput.focus();
-}
-
-window.reiniciar = function() {
-  numeroSecreto = Math.floor(Math.random() * 100) + 1;
-  tentativas = 0;
-  jogoEncerrado = false;
-
-  document.getElementById('mensagem').textContent = "";
-  document.getElementById('palpite').value = "";
-  document.getElementById('palpite').disabled = false;
-  document.getElementById('btnAdivinhar').disabled = false;
-  document.getElementById('palpite').focus();
-}
-
-/**
- * Limpa os campos de input, o resultado do Cálculo de IMC e reabilita os elementos.
- */
-window.limparImc = function() {
-    const pesoInput = document.getElementById('peso');
-    const alturaInput = document.getElementById('altura');
-    const btnCalcular = document.getElementById('btnCalcularImc'); 
-
-    pesoInput.value = '';
-    alturaInput.value = '';
-    document.getElementById('imcResultado').innerHTML = '';
-
-    pesoInput.disabled = false;
-    alturaInput.disabled = false;
-    if (btnCalcular) {
-      btnCalcular.disabled = false;
-    }
-
-    pesoInput.focus(); 
-}
