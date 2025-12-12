@@ -443,7 +443,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Chamada inicial (se os campos tiverem valores) e evento do botão 'Calcular'
     if (contaValorInput) {
         calcularGorjeta();
-        document.getElementById('btnCalcularGorjeta').addEventListener('click', calcularGorjeta);
+        const btnCalcularGorjeta = document.getElementById('btnCalcularGorjeta');
+        if (btnCalcularGorjeta) btnCalcularGorjeta.addEventListener('click', calcularGorjeta);
     }
 
 
@@ -511,6 +512,248 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (loginForm) loginForm.addEventListener('submit', validarFormulario);
+
+
+    // =======================================================================
+    // NOVAS IDEIAS JS (15 a 19 - Filtro e Arrays)
+    // =======================================================================
+
+    // 15. Lista de Produtos Filtrável
+    const filtroProdutoInput = document.getElementById('filtroProduto');
+    const listaProdutosUL = document.getElementById('listaProdutos');
+
+    // Array de Objetos para simular um catálogo (DADOS)
+    const produtos = [
+        { id: 1, nome: "Notebook Gamer", categoria: "Eletrônicos" },
+        { id: 2, nome: "Mouse Óptico", categoria: "Acessórios" },
+        { id: 3, nome: "Monitor 24 polegadas", categoria: "Eletrônicos" },
+        { id: 4, nome: "Teclado Mecânico", categoria: "Acessórios" },
+        { id: 5, nome: "Headset Pro", categoria: "Áudio" },
+        { id: 6, nome: "Webcam HD", categoria: "Acessórios" }
+    ];
+
+    function renderizarProdutos(lista) {
+        if (!listaProdutosUL) return;
+
+        listaProdutosUL.innerHTML = ''; // Limpa a lista atual
+
+        if (lista.length === 0) {
+            listaProdutosUL.innerHTML = '<li>Nenhum produto encontrado.</li>';
+            return;
+        }
+
+        lista.forEach(produto => {
+            const li = document.createElement('li');
+            li.textContent = `${produto.nome} (${produto.categoria})`;
+            listaProdutosUL.appendChild(li);
+        });
+    }
+
+    function filtrarProdutos() {
+        const termo = filtroProdutoInput.value.toLowerCase().trim();
+
+        // Usa o método .filter() e .includes() para buscar correspondências
+        const produtosFiltrados = produtos.filter(produto => 
+            produto.nome.toLowerCase().includes(termo)
+        );
+        
+        renderizarProdutos(produtosFiltrados);
+    }
+
+    if (filtroProdutoInput) {
+        filtroProdutoInput.addEventListener('input', filtrarProdutos);
+        // Renderiza a lista inicial
+        renderizarProdutos(produtos);
+    }
+
+
+    // 16. Calculadora de Média (Adicionar e Remover)
+    let notas = []; // Array para armazenar as notas
+    const notaForm = document.getElementById('notaForm');
+    const notaInput = document.getElementById('notaInput');
+    const listaNotasUL = document.getElementById('listaNotas');
+    const mediaResultadoStrong = document.getElementById('mediaResultado');
+
+    function calcularMedia() {
+        if (notas.length === 0) {
+            mediaResultadoStrong.textContent = '0.0';
+            return;
+        }
+        // Usa .reduce() para somar todos os valores do array
+        const soma = notas.reduce((acc, nota) => acc + nota, 0); 
+        const media = (soma / notas.length).toFixed(1);
+        mediaResultadoStrong.textContent = media;
+    }
+
+    function renderizarNotas() {
+        if (!listaNotasUL) return;
+
+        listaNotasUL.innerHTML = '';
+        notas.forEach((nota, index) => {
+            const li = document.createElement('li');
+            li.style.cssText = `
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 5px 0;
+                border-bottom: 1px dotted var(--color-border);
+            `;
+            li.textContent = `Nota: ${nota}`;
+
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'Remover';
+            removeButton.style.cssText = `
+                background-color: #dc3545;
+                color: white;
+                border: none;
+                padding: 3px 8px;
+                cursor: pointer;
+                border-radius: 3px;
+                font-size: 0.8rem;
+            `;
+            
+            removeButton.addEventListener('click', () => {
+                // Remove a nota pelo seu índice
+                notas.splice(index, 1); 
+                renderizarNotas(); // Recarrega a lista
+                calcularMedia(); // Recalcula a média
+            });
+
+            li.appendChild(removeButton);
+            listaNotasUL.appendChild(li);
+        });
+        calcularMedia();
+    }
+
+    if (notaForm) {
+        notaForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nota = parseFloat(notaInput.value);
+
+            if (isNaN(nota) || nota < 0 || nota > 10) {
+                alert("Por favor, insira uma nota válida entre 0 e 10.");
+                return;
+            }
+
+            notas.push(nota);
+            notaInput.value = '';
+            notaInput.focus();
+            
+            renderizarNotas();
+        });
+    }
+
+
+    // 17. Gerador de Cores Aleatórias (RGB)
+    const btnGerarCor = document.getElementById('btnGerarCor');
+    const corBox = document.getElementById('corBox');
+    const codigoCorP = document.getElementById('codigoCor');
+
+    function gerarCorAleatoria() {
+        // Função para gerar um número aleatório entre 0 e 255 (componentes RGB)
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+
+        const corRGB = `rgb(${r}, ${g}, ${b})`;
+
+        // Define a cor do texto para contraste
+        const luminancia = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        const corTexto = (luminancia > 0.5) ? '#333333' : '#ffffff'; 
+
+        if (corBox && codigoCorP) {
+            corBox.style.backgroundColor = corRGB;
+            codigoCorP.textContent = corRGB.toUpperCase();
+            codigoCorP.style.color = corTexto;
+        }
+    }
+
+    if (btnGerarCor) {
+        btnGerarCor.addEventListener('click', gerarCorAleatoria);
+        gerarCorAleatoria(); // Gera uma cor inicial ao carregar
+    }
+
+
+    // 18. Conversor de Unidades (Dropdown/Select)
+    const btnConverterUnidade = document.getElementById('btnConverterUnidade');
+    const tipoConversaoSelect = document.getElementById('tipoConversao');
+    const valorOriginalInput = document.getElementById('valorOriginal');
+    const conversaoResultadoDiv = document.getElementById('conversaoResultado');
+
+    function converterUnidade() {
+        const tipo = tipoConversaoSelect.value;
+        const valor = parseFloat(valorOriginalInput.value);
+
+        if (isNaN(valor)) {
+            conversaoResultadoDiv.innerHTML = "⚠️ Por favor, insira um valor numérico válido.";
+            return;
+        }
+
+        let resultado;
+        let unidadeOriginal;
+        let unidadeConvertida;
+        const fatorKmMi = 0.621371;
+        const fatorLGal = 0.264172;
+
+        switch(tipo) {
+            case 'km_mi':
+                resultado = (valor * fatorKmMi).toFixed(3);
+                unidadeOriginal = 'Km';
+                unidadeConvertida = 'Milhas';
+                break;
+            case 'l_gal':
+                resultado = (valor * fatorLGal).toFixed(3);
+                unidadeOriginal = 'Litros';
+                unidadeConvertida = 'Galões (EUA)';
+                break;
+            default:
+                conversaoResultadoDiv.innerHTML = "Erro na seleção de conversão.";
+                return;
+        }
+
+        conversaoResultadoDiv.innerHTML = `
+            ${valor} ${unidadeOriginal} é igual a: <strong style="color: var(--color-primary);">${resultado} ${unidadeConvertida}</strong>.
+        `;
+    }
+
+    if (btnConverterUnidade) {
+        // Adiciona o listener de clique no botão e 'change' no select/input para conversão automática
+        btnConverterUnidade.addEventListener('click', converterUnidade);
+        tipoConversaoSelect.addEventListener('change', converterUnidade);
+        valorOriginalInput.addEventListener('input', converterUnidade);
+        
+        // Converte o valor inicial ao carregar
+        converterUnidade(); 
+    }
+
+
+    // 19. Contador de Caracteres e Palavras
+    const textoInput = document.getElementById('textoInput');
+    const contadorCaracteresStrong = document.getElementById('contadorCaracteres');
+    const contadorPalavrasStrong = document.getElementById('contadorPalavras');
+
+    function contarTexto() {
+        if (!textoInput) return;
+
+        const texto = textoInput.value;
+
+        // 1. Contador de Caracteres
+        contadorCaracteresStrong.textContent = texto.length;
+
+        // 2. Contador de Palavras
+        const palavras = texto.trim().split(/\s+/).filter(word => word.length > 0);
+        
+        if (texto.trim() === "") {
+            contadorPalavrasStrong.textContent = 0;
+        } else {
+            contadorPalavrasStrong.textContent = palavras.length;
+        }
+    }
+
+    if (textoInput) {
+        textoInput.addEventListener('input', contarTexto);
+        contarTexto(); // Inicia a contagem em 0
+    }
 
 }); // Fim do DOMContentLoaded
 
