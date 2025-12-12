@@ -29,6 +29,8 @@
 
     <main class="main-content">
 
+        <input type="text" id="busca-listas" placeholder="Buscar desafios por título (Ex: IMC, Senha, Média)..." style="width: 95%; margin: 10px auto; display: block; padding: 10px; border-radius: 5px; border: 1px solid var(--color-border); box-sizing: border-box;"> 
+        
         <div class="card">
             <h3>1. Dia da Semana</h3>
             <form id="form">
@@ -115,7 +117,10 @@
         </div>
 
         <div class="card">
-            <h3>9. Lista de Tarefas</h3>
+            <h3>9. Lista de Tarefas Filtrável</h3>
+            
+            <input type="text" id="filtroTodo" placeholder="Pesquisar tarefas..." style="margin-bottom: 10px;">
+
             <form id="todoForm" class="game-buttons">
                 <input type="text" id="todoInput" placeholder="Nova tarefa..." style="flex-grow: 1;">
                 <button type="submit">Adicionar</button>
