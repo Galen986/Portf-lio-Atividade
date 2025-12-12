@@ -25,6 +25,15 @@ function applyTheme(isDark) {
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
 }
 
+// Função de formatação de moeda para reutilização
+const formatCurrency = (value) => {
+    return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+    }).format(value);
+};
+
+
 // =======================================================================
 // Lógica Principal (Executada após o carregamento completo do DOM)
 // =======================================================================
@@ -80,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       this.reset();
     });
-    
+
     // 4. Saldo
     document.getElementById("balanceForm").addEventListener("submit", function(e){
       e.preventDefault();
@@ -91,11 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         alert("Por favor, digite o valor do saldo.");
       } else {
         let saldo = Number(valorDigitado);
-        let formatter = new Intl.NumberFormat('pt-BR', {
-          style: 'currency',
-          currency: 'BRL',
-        });
-        let saldoFormatado = formatter.format(saldo);
+        let saldoFormatado = formatCurrency(saldo);
         alert(`Seu saldo atual é: ${saldoFormatado} 💰`);
       }
       this.reset();
@@ -177,13 +182,13 @@ document.addEventListener('DOMContentLoaded', () => {
         alert(`Cálculo de IMC concluído: ${imcFormatado} (${classificacao})`);
     });
 
-    // 7. Conversor de Temperatura (Celsius para Fahrenheit) - AGORA COM RESET
+    // 7. Conversor de Temperatura (Celsius para Fahrenheit)
     document.getElementById("tempForm").addEventListener("submit", function(e) {
         e.preventDefault();
-        
+
         const celsiusInput = document.getElementById("celsius");
         const resultadoDiv = document.getElementById("tempResultado");
-        
+
         const celsius = parseFloat(celsiusInput.value);
 
         if (isNaN(celsius)) {
@@ -199,11 +204,11 @@ document.addEventListener('DOMContentLoaded', () => {
             ${celsius}°C é igual a: <strong style="color: var(--color-primary);">${fahrenheitFormatado}°F</strong> 🔥
         `;
         celsiusInput.focus();
-        this.reset(); // <--- Adicionado reset
+        this.reset();
     });
 
 
-    // 8. Contador de Cliques - AGORA DENTRO DO DOMContentLoaded
+    // 8. Contador de Cliques
     let contador = 0;
     const contadorElement = document.getElementById("contadorCliques");
     const btnContador = document.getElementById("btnContador");
@@ -227,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 9. Criador de Lista de Tarefas (To-Do List)
     document.getElementById("todoForm").addEventListener("submit", function(e) {
         e.preventDefault();
-        
+
         const todoInput = document.getElementById("todoInput");
         const todoList = document.getElementById("todoList");
         const taskText = todoInput.value.trim();
@@ -246,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
             border-bottom: 1px dashed var(--color-border);
             font-size: 1.1rem;
         `;
-        
+
         const span = document.createElement('span');
         span.textContent = taskText;
         li.appendChild(span);
@@ -273,6 +278,239 @@ document.addEventListener('DOMContentLoaded', () => {
         todoInput.value = '';
         todoInput.focus();
     });
+
+    // =======================================================================
+    // NOVAS IDEIAS JS (10 a 14)
+    // =======================================================================
+    
+    // 10. Contador Regressivo (Timer)
+    let timerInterval;
+    let tempoTotalSegundos = 0;
+    const timerDisplay = document.getElementById('timerDisplay');
+    const btnIniciarTimer = document.getElementById('btnIniciarTimer');
+    const btnPararTimer = document.getElementById('btnPararTimer');
+    const btnResetTimer = document.getElementById('btnResetTimer');
+    const inputMinutos = document.getElementById('minutos');
+    const inputSegundos = document.getElementById('segundos');
+
+    function atualizarDisplay() {
+        const min = Math.floor(tempoTotalSegundos / 60);
+        const seg = tempoTotalSegundos % 60;
+        timerDisplay.textContent = `${min.toString().padStart(2, '0')}:${seg.toString().padStart(2, '0')}`;
+    }
+
+    function iniciarTimer() {
+        if (timerInterval) return; // Já está rodando
+
+        tempoTotalSegundos = (Number(inputMinutos.value) * 60) + Number(inputSegundos.value);
+
+        if (tempoTotalSegundos <= 0) {
+            alert("Por favor, defina um tempo válido.");
+            return;
+        }
+
+        btnIniciarTimer.disabled = true;
+        btnPararTimer.disabled = false;
+        inputMinutos.disabled = true;
+        inputSegundos.disabled = true;
+
+        timerInterval = setInterval(() => {
+            tempoTotalSegundos--;
+            atualizarDisplay();
+
+            if (tempoTotalSegundos <= 0) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                timerDisplay.textContent = "TEMPO ESGOTADO! 🔔";
+                alert("O tempo acabou!");
+                btnIniciarTimer.disabled = false;
+                btnPararTimer.disabled = true;
+                inputMinutos.disabled = false;
+                inputSegundos.disabled = false;
+            }
+        }, 1000);
+    }
+
+    function pararTimer() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        btnIniciarTimer.disabled = false;
+        btnPararTimer.disabled = true;
+    }
+
+    function resetarTimer() {
+        pararTimer();
+        // Recarrega o tempo dos inputs para o reset
+        const minutosValor = inputMinutos.value.padStart(2, '0');
+        const segundosValor = inputSegundos.value.padStart(2, '0');
+        tempoTotalSegundos = (Number(minutosValor) * 60) + Number(segundosValor);
+        atualizarDisplay();
+        btnIniciarTimer.disabled = false;
+        btnPararTimer.disabled = true;
+        inputMinutos.disabled = false;
+        inputSegundos.disabled = false;
+        timerDisplay.textContent = `${minutosValor}:${segundosValor}`;
+    }
+
+    if (btnIniciarTimer) btnIniciarTimer.addEventListener('click', iniciarTimer);
+    if (btnPararTimer) btnPararTimer.addEventListener('click', pararTimer);
+    if (btnResetTimer) btnResetTimer.addEventListener('click', resetarTimer);
+    
+    // Configuração inicial do display
+    if (timerDisplay && inputMinutos && inputSegundos) {
+         timerDisplay.textContent = `${inputMinutos.value.padStart(2, '0')}:${inputSegundos.value.padStart(2, '0')}`;
+    }
+
+    // 11. Gerador de Senhas Aleatórias
+    const btnGerarSenha = document.getElementById('btnGerarSenha');
+    const btnCopiarSenha = document.getElementById('btnCopiarSenha');
+    const senhaGeradaInput = document.getElementById('senhaGerada');
+
+    function gerarSenha() {
+        const tamanho = Number(document.getElementById('tamanhoSenha').value);
+        const incluirMaiusculas = document.getElementById('incluirMaiusculas').checked;
+        const incluirNumeros = document.getElementById('incluirNumeros').checked;
+        const incluirSimbolos = document.getElementById('incluirSimbolos').checked;
+
+        const caracteresMinusculos = 'abcdefghijklmnopqrstuvwxyz';
+        const caracteresMaiusculos = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const caracteresNumeros = '0123456789';
+        const caracteresSimbolos = '!@#$%^&*()_+[]{}|;:,.<>?';
+
+        let pool = caracteresMinusculos; // Minúsculas sempre incluídas
+        if (incluirMaiusculas) pool += caracteresMaiusculos;
+        if (incluirNumeros) pool += caracteresNumeros;
+        if (incluirSimbolos) pool += caracteresSimbolos;
+
+        if (pool.length === 0 || tamanho < 4) {
+            alert("Defina um tamanho mínimo de 4 e selecione pelo menos um tipo de caractere.");
+            return;
+        }
+
+        let senha = '';
+        for (let i = 0; i < tamanho; i++) {
+            const indiceAleatorio = Math.floor(Math.random() * pool.length);
+            senha += pool[indiceAleatorio];
+        }
+
+        senhaGeradaInput.value = senha;
+    }
+
+    function copiarSenha() {
+        if (senhaGeradaInput.value) {
+            // Usa a API do Clipboard
+            navigator.clipboard.writeText(senhaGeradaInput.value)
+                .then(() => {
+                    alert("Senha copiada para a área de transferência!");
+                })
+                .catch(err => {
+                    console.error('Erro ao copiar: ', err);
+                    alert("Falha ao copiar a senha. Tente novamente.");
+                });
+        }
+    }
+
+    if (btnGerarSenha) btnGerarSenha.addEventListener('click', gerarSenha);
+    if (btnCopiarSenha) btnCopiarSenha.addEventListener('click', copiarSenha);
+
+    // 12. Calculadora de Gorjeta
+    const gorjetaResultadoDiv = document.getElementById('gorjetaResultado');
+    const contaValorInput = document.getElementById('contaValor');
+    const gorjetaPorcentagemInput = document.getElementById('gorjetaPorcentagem');
+    const numPessoasInput = document.getElementById('numPessoas');
+
+    window.calcularGorjeta = function() { // Tornada global para o oninput no HTML
+        const contaValor = parseFloat(contaValorInput.value);
+        const gorjetaPorcentagem = parseFloat(gorjetaPorcentagemInput.value);
+        const numPessoas = parseInt(numPessoasInput.value);
+
+        if (isNaN(contaValor) || contaValor <= 0 || isNaN(gorjetaPorcentagem) || isNaN(numPessoas) || numPessoas <= 0) {
+            gorjetaResultadoDiv.innerHTML = "⚠️ Por favor, insira valores válidos e positivos.";
+            return;
+        }
+
+        const gorjetaTotal = contaValor * (gorjetaPorcentagem / 100);
+        const totalComGorjeta = contaValor + gorjetaTotal;
+        const totalPorPessoa = totalComGorjeta / numPessoas;
+
+        gorjetaResultadoDiv.innerHTML = `
+            Gorjeta (${gorjetaPorcentagem}%): <strong>${formatCurrency(gorjetaTotal)}</strong><br>
+            Total da Conta: <strong>${formatCurrency(totalComGorjeta)}</strong><br>
+            Total por Pessoa (${numPessoas}x): <strong>${formatCurrency(totalPorPessoa)}</strong> 💵
+        `;
+    }
+
+    // Chamada inicial (se os campos tiverem valores) e evento do botão 'Calcular'
+    if (contaValorInput) {
+        calcularGorjeta();
+        document.getElementById('btnCalcularGorjeta').addEventListener('click', calcularGorjeta);
+    }
+
+
+    // 13. Mudança de Estilos Dinâmica (Editor de Estilos)
+    const corTextoInput = document.getElementById('corTexto');
+    const tamanhoFonteInput = document.getElementById('tamanhoFonte');
+    const blocoExemplo = document.getElementById('blocoExemplo');
+
+    function atualizarEstilos() {
+        if (blocoExemplo) {
+            blocoExemplo.style.color = corTextoInput.value;
+            blocoExemplo.style.fontSize = `${tamanhoFonteInput.value}px`;
+        }
+    }
+
+    if (corTextoInput) corTextoInput.addEventListener('input', atualizarEstilos);
+    if (tamanhoFonteInput) tamanhoFonteInput.addEventListener('input', atualizarEstilos);
+
+    // 14. Validador de Formulário Simples
+    const loginForm = document.getElementById('loginForm');
+    const emailInput = document.getElementById('loginEmail');
+    const senhaInput = document.getElementById('loginSenha');
+    const emailError = document.getElementById('emailError');
+    const senhaError = document.getElementById('senhaError');
+
+    function validarEmail(email) {
+        // Regex simples para validação de formato de e-mail
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    }
+
+    function validarFormulario(e) {
+        e.preventDefault(); 
+
+        const email = emailInput.value.trim();
+        const senha = senhaInput.value;
+        let formValido = true;
+
+        // Limpar mensagens de erro
+        emailError.textContent = '';
+        senhaError.textContent = '';
+
+        // Validação de Email
+        if (email === '') {
+            emailError.textContent = 'O email é obrigatório.';
+            formValido = false;
+        } else if (!validarEmail(email)) {
+            emailError.textContent = 'Por favor, insira um formato de email válido.';
+            formValido = false;
+        }
+
+        // Validação de Senha
+        if (senha === '') {
+            senhaError.textContent = 'A senha é obrigatória.';
+            formValido = false;
+        } else if (senha.length < 6) {
+            senhaError.textContent = 'A senha deve ter no mínimo 6 caracteres.';
+            formValido = false;
+        }
+
+        if (formValido) {
+            alert(`Login bem-sucedido! Email: ${email}`);
+            loginForm.reset();
+        }
+    }
+
+    if (loginForm) loginForm.addEventListener('submit', validarFormulario);
 
 }); // Fim do DOMContentLoaded
 
