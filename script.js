@@ -1,5 +1,5 @@
 // =======================================================================
-// Lógica de Tema (Claro/Escuro) - MANTIDA IGUAL
+// Lógica de Tema (Claro/Escuro) - CORRIGIDO
 // =======================================================================
 
 const body = document.getElementById('body-principal');
@@ -17,7 +17,8 @@ function applyTheme(isDark) {
         themeToggleBtn.setAttribute('aria-pressed', 'true');
         themeColorMeta.setAttribute('content', DARK_THEME_COLOR);
     } else {
-        body.classList.remove(DARK_THE_CLASS);
+        // CORREÇÃO: Usando a constante correta (DARK_THEME_CLASS) para remoção
+        body.classList.remove(DARK_THEME_CLASS);
         themeToggleBtn.textContent = '🌙'; 
         themeToggleBtn.setAttribute('aria-pressed', 'false');
         themeColorMeta.setAttribute('content', LIGHT_THEME_COLOR);
@@ -337,30 +338,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // 9. Lista de Tarefas Filtrável (REVISADO: Remoção por Índice no Render)
+    // 9. Lista de Tarefas Filtrável (Lógica de Renderização e Filtro Aprimorada)
     let tarefas = []; // Array que armazenará todas as tarefas como strings
     const todoInput = document.getElementById("todoInput");
     const todoList = document.getElementById("todoList");
     const filtroTodoInput = document.getElementById("filtroTodo");
 
-    function renderizarTarefas(listaTarefas = tarefas) {
+    function renderizarTarefas() {
         if (!todoList) return;
 
         todoList.innerHTML = ''; // Limpa a lista na tela
+        const termo = filtroTodoInput ? filtroTodoInput.value.toLowerCase().trim() : '';
 
-        if (listaTarefas.length === 0) {
+        // Usamos map para criar um novo array de tarefas com seus índices originais
+        const tarefasRenderizadas = tarefas.map((taskText, index) => ({ taskText, index }));
+
+        // Filtra as tarefas que devem ser mostradas
+        const tarefasFiltradas = tarefasRenderizadas.filter(item => {
+            if (termo === '') return true;
+            return item.taskText.toLowerCase().includes(termo);
+        });
+
+        if (tarefasFiltradas.length === 0) {
             todoList.innerHTML = '<li>Nenhuma tarefa para mostrar.</li>';
         }
 
-        // Iteramos sobre o ARRAY ORIGINAL (tarefas) para criar os listeners de exclusão
-        tarefas.forEach((taskText, index) => { // <-- USANDO 'index' DO ARRAY ORIGINAL
-            
-            // Verifica se a tarefa atual atende ao filtro antes de renderizar
-            const termo = filtroTodoInput ? filtroTodoInput.value.toLowerCase().trim() : '';
-            if (termo && !taskText.toLowerCase().includes(termo)) {
-                return; // Pula a renderização se não passar no filtro
-            }
-
+        tarefasFiltradas.forEach(item => {
             const li = document.createElement('li');
             li.style.cssText = `
                 display: flex;
@@ -372,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
             const span = document.createElement('span');
-            span.textContent = taskText;
+            span.textContent = item.taskText;
             li.appendChild(span);
 
             const deleteButton = document.createElement('button');
@@ -387,12 +390,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 transition: transform 0.1s;
             `;
 
+            // O listener remove a tarefa do array 'tarefas' usando o índice original
             deleteButton.addEventListener('click', function() {
-                // Remove a tarefa do array 'tarefas' pelo ÍNDICE do array original
-                tarefas.splice(index, 1); // <-- REMOÇÃO ROBUSTA POR ÍNDICE
-                
-                // Reaplica o filtro e renderiza a lista atualizada
-                aplicarFiltroTarefa(); 
+                tarefas.splice(item.index, 1);
+                // Re-renderiza tudo para atualizar os listeners de exclusão (que dependem dos índices)
+                renderizarTarefas(); 
             });
 
             li.appendChild(deleteButton);
@@ -400,11 +402,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function aplicarFiltroTarefa() {
-        // Agora, 'aplicarFiltroTarefa' só chama a renderização completa, 
-        // e a lógica de filtragem é feita dentro de renderizarTarefas
-        renderizarTarefas(tarefas);
-    }
 
     if (document.getElementById("todoForm")) {
         document.getElementById("todoForm").addEventListener("submit", function(e) {
@@ -422,13 +419,13 @@ document.addEventListener('DOMContentLoaded', () => {
             todoInput.value = '';
             todoInput.focus();
 
-            aplicarFiltroTarefa();
+            renderizarTarefas();
         });
     }
 
     if (filtroTodoInput) {
-        filtroTodoInput.addEventListener('input', aplicarFiltroTarefa);
-        renderizarTarefas(tarefas);
+        filtroTodoInput.addEventListener('input', renderizarTarefas);
+        renderizarTarefas();
     }
 
 
@@ -489,9 +486,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function resetarTimer() {
         pararTimer();
+        // Garante que o display volte ao valor inicial dos inputs
         const minutosValor = inputMinutos.value.padStart(2, '0');
         const segundosValor = inputSegundos.value.padStart(2, '0');
-        tempoTotalSegundos = (Number(minutosValor) * 60) + Number(segundosValor);
+        tempoTotalSegundos = (Number(inputMinutos.value) * 60) + Number(inputSegundos.value);
         atualizarDisplay();
         btnIniciarTimer.disabled = false;
         btnPararTimer.disabled = true;
@@ -551,7 +549,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .catch(err => {
                     console.error('Erro ao copiar: ', err);
-                    alert("Falha ao copiar a senha. Tente novamente.");
+                    // Uso de fallback para navegadores sem HTTPS ou permissões (Embora pouco comum hoje)
+                    senhaGeradaInput.select();
+                    document.execCommand('copy');
+                    alert("Senha copiada (Fallback).");
                 });
         }
     }
@@ -702,7 +703,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // 16. Calculadora de Média (REVISADO: Remoção por Índice)
+    // 16. Calculadora de Média (Lógica de Renderização e Remoção Aprimorada)
     let notas = [];
     const notaForm = document.getElementById('notaForm');
     const notaInput = document.getElementById('notaInput');
@@ -724,7 +725,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!listaNotasUL) return;
 
         listaNotasUL.innerHTML = '';
-        notas.forEach((nota, index) => { // <-- USANDO 'index'
+        // Usamos forEach no array de notas para garantir que os índices correspondam ao array
+        notas.forEach((nota, index) => { 
             const li = document.createElement('li');
             li.style.cssText = `
                 display: flex;
@@ -747,9 +749,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 font-size: 0.8rem;
             `;
 
-            // O listener usa o 'index' da iteração para remover o elemento exato
+            // O listener remove a nota do array 'notas' pelo ÍNDICE
             removeButton.addEventListener('click', () => {
-                notas.splice(index, 1); // <-- REMOÇÃO ROBUSTA POR ÍNDICE
+                notas.splice(index, 1); 
                 renderizarNotas(); // Re-renderiza a lista (os índices serão recalculados)
             });
 
@@ -792,7 +794,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const corRGB = `rgb(${r}, ${g}, ${b})`;
 
-        // Cálculo de Luminância para garantir contraste de texto
+        // Cálculo de Luminância para garantir contraste de texto (0.299R + 0.587G + 0.114B)
         const luminancia = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
         const corTexto = (luminancia > 0.5) ? '#333333' : '#ffffff';
 
@@ -805,7 +807,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (btnGerarCor) {
         btnGerarCor.addEventListener('click', gerarCorAleatoria);
-        gerarCorAleatoria();
+        gerarCorAleatoria(); // Gera uma cor inicial
     }
 
 
@@ -873,6 +875,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         contadorCaracteresStrong.textContent = texto.length;
 
+        // Divide o texto por um ou mais espaços/quebras de linha e remove entradas vazias (filter)
         const palavras = texto.trim().split(/\s+/).filter(word => word.length > 0);
 
         if (texto.trim() === "") {
@@ -884,7 +887,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (textoInput) {
         textoInput.addEventListener('input', contarTexto);
-        contarTexto();
+        contarTexto(); // Conta ao carregar (se houver texto inicial)
     }
 
 }); // Fim do DOMContentLoaded
