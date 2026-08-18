@@ -261,6 +261,31 @@
         <div class="card">
             <h3>19. Contador de Texto</h3>
             <textarea id="textoInput" placeholder="Comece a digitar aqui..." rows="5" style="width: 100%; box-sizing: border-box;"></textarea>
+
+<div class="card">
+    <h3>20. Calculadora de Mercado</h3>
+    
+    <form id="mercadoForm" class="game-buttons">
+        <input type="text" id="produtoNome" placeholder="Nome do produto" style="flex-grow: 1;">
+        <input type="number" id="produtoQtd" placeholder="Qtd" min="1" value="1" style="width: 70px;">
+        <input type="number" id="produtoValor" placeholder="Valor R$" min="0" step="0.01" style="width: 100px;">
+        <button type="submit">Adicionar</button>
+    </form>
+
+    <ul id="listaMercado" style="list-style: none; padding: 0; margin-top: 15px;">
+        </ul>
+
+    <div style="margin-top: 15px;">
+        <label for="descontoMercado">Desconto (%):</label>
+        <input type="number" id="descontoMercado" value="0" min="0" max="100" step="1" oninput="calcularTotalMercado()">
+    </div>
+
+    <div id="totalMercado" class="message-area" style="margin-top: 15px;">
+        Subtotal: R$ 0,00<br>
+        Desconto: R$ 0,00<br>
+        <strong>Total: R$ 0,00</strong>
+    </div>
+</div>
             
             <div style="margin-top: 10px;">
                 <p>Caracteres: <strong id="contadorCaracteres">0</strong></p>
