@@ -1323,10 +1323,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     iniciarQuiz(); // Carrega na primeira vez
 
-// 26. Jogo da Velha
+// 26. Jogo da Velha vs PC
     let tabuleiro = [];
-    let jogadorAtual = 'X';
+    let jogadorAtual = 'X'; // X = Você, O = PC
     let tamanho = 3;
+    let qtdParaGanhar = 3;
     let jogoAtivo = true;
     let celulasVitoria = [];
 
@@ -1334,16 +1335,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const vezJogador = document.getElementById('vezJogador');
     const resultadoVelha = document.getElementById('resultadoVelha');
     const selectTamanho = document.getElementById('tamanhoTabuleiro');
+    const selectQtdGanhar = document.getElementById('qtdParaGanhar');
+
+    // Atualiza a opção "Pra Ganhar" quando muda o tamanho
+    selectTamanho.addEventListener('change', () => {
+        tamanho = parseInt(selectTamanho.value);
+        selectQtdGanhar.innerHTML = '';
+        for(let i = 3; i <= tamanho; i++){
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            selectQtdGanhar.appendChild(option);
+        }
+    });
 
     window.iniciarJogoVelha = function() {
         tamanho = parseInt(selectTamanho.value);
+        qtdParaGanhar = parseInt(selectQtdGanhar.value);
         tabuleiro = Array(tamanho).fill(null).map(() => Array(tamanho).fill(''));
         jogadorAtual = 'X';
         jogoAtivo = true;
         celulasVitoria = [];
 
-        vezJogador.textContent = 'X';
-        resultadoVelha.innerHTML = 'Jogo iniciado! Boa sorte!';
+        vezJogador.textContent = 'X - Você';
+        resultadoVelha.innerHTML = `Tabuleiro ${tamanho}x${tamanho}. Faça ${qtdParaGanhar} em sequência para ganhar!`;
 
         renderizarTabuleiro();
     }
@@ -1351,8 +1366,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderizarTabuleiro() {
         tabuleiroVelha.innerHTML = '';
         tabuleiroVelha.style.gridTemplateColumns = `repeat(${tamanho}, 1fr)`;
-        // Ajusta o tamanho máximo do tabuleiro
-        const tamanhoMax = tamanho === 3? '300px' : tamanho === 4? '350px' : '400px';
+        const tamanhoMax = `${Math.min(400, tamanho * 50)}px`;
         tabuleiroVelha.style.maxWidth = tamanhoMax;
 
         for (let i = 0; i < tamanho; i++) {
@@ -1364,7 +1378,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 celula.textContent = tabuleiro[i][j];
 
                 if (tabuleiro[i][j]!== '') {
-                    celula.classList.add('jogada', tabuleiro[i][j].toLowerCase());
+                    celula.classList.add('jogada', tabuleiro[i][j].toLowerCase(), 'bloqueada');
                 }
                 if (celulasVitoria.some(c => c.l === i && c.c === j)) {
                     celula.classList.add('vitoria');
@@ -1377,67 +1391,118 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function fazerJogada(e) {
-        if (!jogoAtivo) return;
+        if (!jogoAtivo || jogadorAtual!== 'X') return;
 
         const linha = parseInt(e.target.dataset.linha);
         const coluna = parseInt(e.target.dataset.coluna);
 
-        if (tabuleiro[linha][coluna]!== '') return; // Já foi jogada
+        if (tabuleiro[linha][coluna]!== '') return;
 
-        tabuleiro[linha][coluna] = jogadorAtual;
+        jogar(linha, coluna, 'X');
 
-        if (verificarVitoria(linha, coluna)) {
+        if(jogoAtivo) {
+            setTimeout(jogadaPC, 500); // Delay pra parecer que o PC pensa
+        }
+    }
+
+    function jogadaPC() {
+        if (!jogoAtivo) return;
+        jogadorAtual = 'O';
+        vezJogador.textContent = 'O - PC Pensando...';
+
+        // IA Simples: 1. Tenta ganhar 2. Bloqueia você 3. Joga aleatório
+        let jogada = encontrarMelhorJogada('O') || encontrarMelhorJogada('X') || jogadaAleatoria();
+
+        setTimeout(() => {
+            jogar(jogada.l, jogada.c, 'O');
+        }, 500);
+    }
+
+    function jogar(l, c, jogador) {
+        tabuleiro[l][c] = jogador;
+
+        if (verificarVitoria(l, c, jogador)) {
             jogoAtivo = false;
-            resultadoVelha.innerHTML = `🎉 Jogador <strong>${jogadorAtual}</strong> venceu!`;
+            const vencedor = jogador === 'X'? 'Você venceu!' : 'PC venceu!';
+            resultadoVelha.innerHTML = `🎉 ${vencedor}`;
             marcarVitoria();
         } else if (verificarEmpate()) {
             jogoAtivo = false;
             resultadoVelha.innerHTML = `🤝 Deu Empate!`;
         } else {
-            jogadorAtual = jogadorAtual === 'X'? 'O' : 'X';
-            vezJogador.textContent = jogadorAtual;
+            jogadorAtual = jogador === 'X'? 'O' : 'X';
+            vezJogador.textContent = jogadorAtual === 'X'? 'X - Você' : 'O - PC';
         }
-
         renderizarTabuleiro();
     }
 
-    function verificarVitoria(linha, coluna) {
-        const simbolo = tabuleiro[linha][coluna];
+    function encontrarMelhorJogada(jogador) {
+        for(let i = 0; i < tamanho; i++){
+            for(let j = 0; j < tamanho; j++){
+                if(tabuleiro[i][j] === ''){
+                    tabuleiro[i][j] = jogador;
+                    if(verificarVitoria(i, j, jogador)){
+                        tabuleiro[i][j] = '';
+                        return {l: i, c: j};
+                    }
+                    tabuleiro[i][j] = '';
+                }
+            }
+        }
+        return null;
+    }
+
+    function jogadaAleatoria() {
+        let vazias = [];
+        for(let i = 0; i < tamanho; i++){
+            for(let j = 0; j < tamanho; j++){
+                if(tabuleiro[i][j] === '') vazias.push({l: i, c: j});
+            }
+        }
+        return vazias[Math.floor(Math.random() * vazias.length)];
+    }
+
+    function verificarVitoria(linha, coluna, simbolo) {
         celulasVitoria = [];
+        const direcoes = [
+            [0, 1], // Horizontal
+            [1, 0], // Vertical
+            [1, 1], // Diagonal \
+            [1, -1] // Diagonal /
+        ];
 
-        // 1. Verifica Linha
-        if (tabuleiro[linha].every(cel => cel === simbolo)) {
-            for(let c = 0; c < tamanho; c++) celulasVitoria.push({l: linha, c: c});
-            return true;
-        }
+        for (const [dl, dc] of direcoes) {
+            let count = 1;
+            let linhaAtual = linha;
+            let colunaAtual = coluna;
+            let sequencia = [{l: linha, c: coluna}];
 
-        // 2. Verifica Coluna
-        if (tabuleiro.every(linhaArr => linhaArr[coluna] === simbolo)) {
-            for(let l = 0; l < tamanho; l++) celulasVitoria.push({l: l, c: coluna});
-            return true;
-        }
+            // Verifica pra frente
+            for(let i = 1; i < qtdParaGanhar; i++){
+                linhaAtual += dl; colunaAtual += dc;
+                if(linhaAtual < 0 || linhaAtual >= tamanho || colunaAtual < 0 || colunaAtual >= tamanho || tabuleiro[linhaAtual][colunaAtual]!== simbolo) break;
+                count++;
+                sequencia.push({l: linhaAtual, c: colunaAtual});
+            }
 
-        // 3. Verifica Diagonal Principal
-        if (linha === coluna) {
-            if (tabuleiro.every((linhaArr, i) => linhaArr[i] === simbolo)) {
-                for(let i = 0; i < tamanho; i++) celulasVitoria.push({l: i, c: i});
+            // Verifica pra trás
+            linhaAtual = linha; colunaAtual = coluna;
+            for(let i = 1; i < qtdParaGanhar; i++){
+                linhaAtual -= dl; colunaAtual -= dc;
+                if(linhaAtual < 0 || linhaAtual >= tamanho || colunaAtual < 0 || colunaAtual >= tamanho || tabuleiro[linhaAtual][colunaAtual]!== simbolo) break;
+                count++;
+                sequencia.push({l: linhaAtual, c: colunaAtual});
+            }
+
+            if(count >= qtdParaGanhar){
+                celulasVitoria = sequencia.slice(0, qtdParaGanhar);
                 return true;
             }
         }
-
-        // 4. Verifica Diagonal Secundária
-        if (linha + coluna === tamanho - 1) {
-            if (tabuleiro.every((linhaArr, i) => linhaArr[tamanho - 1 - i] === simbolo)) {
-                for(let i = 0; i < tamanho; i++) celulasVitoria.push({l: i, c: tamanho - 1 - i});
-                return true;
-            }
-        }
-
         return false;
     }
 
     function marcarVitoria() {
-        // A classe 'vitoria' é adicionada no renderizarTabuleiro
         renderizarTabuleiro();
     }
 
@@ -1445,5 +1510,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return tabuleiro.flat().every(celula => celula!== '');
     }
 
-    iniciarJogoVelha(); // Inicia com 3x3
-}); // Fim do DOMContentLoaded
+    // Inicia e popula o select de "Pra Ganhar"
+    selectTamanho.dispatchEvent(new Event('change'));
+    iniciarJogoVelha();
