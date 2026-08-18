@@ -1,466 +1,806 @@
-/* Importações de Fontes */
-@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+/* =========================================================
+   DESAFIOS JS - ESTILO PRINCIPAL
+   ========================================================= */
 
-/*
-
-1. Variáveis de Cor e Fonte (Tema Claro e Escuro)
-
-*/
 :root {
-    /* Cores */
-    --color-primary: #006ac7; 
-    --color-primary-hover: #0056b3;
-    --color-text: #333333;
-    --color-text-secondary: #6c757d;
-    --color-background: #f8f9fa;
-    --color-surface: #ffffff;
-    --color-border: #dee2e6;
-    --color-shadow: rgba(0, 0, 0, 0.1);
-    --color-sucesso: #28a745;
-    --color-erro: #dc3545;
-    --color-aviso: #ffc107;
-
-    /* Fontes */
-    --font-body: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    --font-heading: 'Bebas Neue', sans-serif;
-    --font-logo: 'Lobster', cursive;
-    --font-marker: 'Permanent Marker', cursive;
+    --color-bg: #111827;
+    --color-bg-secondary: #1f2937;
+    --color-card: #1f2937;
+    --color-card-hover: #263449;
+    --color-text: #f3f4f6;
+    --color-text-secondary: #9ca3af;
+    --color-primary: #6366f1;
+    --color-primary-hover: #4f46e5;
+    --color-border: #374151;
+    --color-success: #22c55e;
+    --color-error: #ef4444;
+    --color-warning: #f59e0b;
+    --color-input: #111827;
+    --color-shadow: rgba(0, 0, 0, 0.35);
 }
 
-/* Variáveis para o Tema Escuro */
-.dark-theme {
-    --color-primary: #6cace4;
-    --color-primary-hover: #4a80b8;
-    --color-text: #e2e6e9;
-    --color-text-secondary: #adb5bd;
-    --color-background: #1a1a1a;
-    --color-surface: #2c2c2c;
-    --color-border: #495057;
-    --color-shadow: rgba(0, 0, 0, 0.5);
+/* =========================================================
+   TEMA CLARO
+   ========================================================= */
+
+body.light-theme {
+    --color-bg: #f3f4f6;
+    --color-bg-secondary: #ffffff;
+    --color-card: #ffffff;
+    --color-card-hover: #f9fafb;
+    --color-text: #1f2937;
+    --color-text-secondary: #6b7280;
+    --color-primary: #4f46e5;
+    --color-primary-hover: #4338ca;
+    --color-border: #d1d5db;
+    --color-input: #ffffff;
+    --color-shadow: rgba(0, 0, 0, 0.12);
 }
 
-/*
+/* =========================================================
+   RESET
+   ========================================================= */
 
-2. Reset e Tipografia Base
-
-*/
 * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
 }
 
-html {
-    font-size: 16px; /* Base para rem */
-}
-
-body {
-    font-family: var(--font-body); 
-    background-color: var(--color-background);
-    color: var(--color-text);
-    line-height: 1.6;
-    transition: background-color 0.3s, color 0.3s;
-    -webkit-font-smoothing: antialiased;
-}
-
-/*
-
-3. Header e Tema
-
-*/
-.header-container {
-    background-color: var(--color-surface);
-    color: var(--color-text);
-    padding: 15px 20px;
-    border-bottom: 1px solid var(--color-border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 4px var(--color-shadow);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    gap: 10px;
-}
-
-.imagem { /* Logo/Título */
-    font-family: var(--font-logo);
-    font-size: clamp(1.5rem, 5vw, 2.5rem); /* Responsivo */
-    font-weight: 400;
-    letter-spacing: 0;
-    margin: 0;
-    text-transform: none;
-    color: var(--color-primary);
-    line-height: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.theme-toggle-btn {
-    background: var(--color-background);
-    border: 1px solid var(--color-border);
-    font-size: 1.3rem;
-    cursor: pointer;
-    padding: 8px 12px;
-    border-radius: 8px;
-    transition: background-color 0.2s, transform 0.1s;
-    flex-shrink: 0;
-}
-
-.theme-toggle-btn:hover {
-    background-color: var(--color-border);
-}
-
-.theme-toggle-btn:active {
-    transform: scale(0.95);
-}
-
-/*
-
-4. Layout Principal
-
-*/
-.main-content {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 0 15px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-}
-
-/* Tablet */
-@media (max-width: 768px) {
-    .main-content {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 15px;
-        margin: 15px auto;
-    }
-}
-
-/* Celular */
-@media (max-width: 480px) {
-    .main-content {
-        grid-template-columns: 1fr;
-        padding: 0 10px;
-        gap: 15px;
-    }
-}
-
-/*
-
-5. Cards de Aplicações
-
-*/
-.card {
-    background-color: var(--color-surface);
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid var(--color-border);
-    box-shadow: 0 4px 12px var(--color-shadow);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px var(--color-shadow);
-}
-
-.card h3 { /* Título do Card */
-    font-family: var(--font-heading); 
-    color: var(--color-primary);
-    margin-bottom: 15px;
-    font-size: clamp(1.4rem, 4vw, 1.8rem); /* Responsivo */
-    letter-spacing: 1.5px;
-    border-bottom: 2px solid var(--color-border);
-    padding-bottom: 8px;
-    text-transform: uppercase;
-}
-
-/* Celular: menos padding */
-@media (max-width: 480px) {
-    .card {
-        padding: 15px;
-    }
-    .card:hover {
-        transform: none; /* Remove hover no mobile pra não bugar */
-    }
-}
-
-/*
-
-6. Elementos de Formulário (Inputs, Labels, Buttons)
-
-*/
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-label {
-    font-weight: 500;
-    color: var(--color-text);
-    font-size: 0.95rem;
-}
-
-/* Todos os inputs */
-input[type="text"],
-input[type="number"],
-input[type="email"],
-input[type="password"],
-select,
-textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    font-size: 1rem;
-    color: var(--color-text);
-    background-color: var(--color-background);
-    transition: border-color 0.2s, box-shadow 0.2s;
-    font-family: var(--font-body);
-}
-
-/* Campo desabilitado */
-input:disabled, select:disabled, textarea:disabled {
-    opacity: 0.6;
-    background-color: var(--color-border);
-    cursor: not-allowed;
-}
-
-input:focus, select:focus, textarea:focus {
-    border-color: var(--color-primary);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 106, 199, 0.25); 
-}
-
-/* Placeholder */
-input::placeholder, textarea::placeholder {
-    color: var(--color-text-secondary);
-    opacity: 0.7;
-}
-
-button {
-    background-color: var(--color-primary);
-    color: #ffffff;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    transition: background-color 0.2s, transform 0.1s;
-    font-family: var(--font-body);
-}
-
-button:hover {
-    background-color: var(--color-primary-hover);
-}
-
-button:active {
-    transform: translateY(1px);
-}
-
-button:disabled {
-    background-color: var(--color-text-secondary);
-    cursor: not-allowed;
-    opacity: 0.7;
-}
-
-/* Botões lado a lado ficam responsivos */
-.game-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-    flex-wrap: wrap; /* Quebra no mobile */
-}
-
-.game-buttons button, .game-buttons input {
-    flex: 1; /* Crescem igual */
-    min-width: 120px;
-}
-
-/* Celular: botões ficam 100% */
-@media (max-width: 480px) {
-    .game-buttons {
-        flex-direction: column;
-    }
-    .game-buttons button, .game-buttons input {
-        min-width: 100%;
-    }
-}
-
-/*
-
-7. Estilos Específicos
-
-*/
-.game-card p {
-    margin-bottom: 15px;
-}
-
-#palpite {
-    margin-bottom: 15px;
-}
-
-/* Área de resultado */
-.message-area {
-    margin-top: 15px;
-    padding: 12px;
-    border-radius: 8px;
-    background-color: var(--color-background);
-    border: 1px dashed var(--color-border);
-    font-size: 0.95rem;
-    min-height: 45px;
-    display: block;
-    word-wrap: break-word;
-}
-
-/* Mensagens de erro */
-.error-message {
-    color: var(--color-erro); 
-    font-size: 0.85em;
-    margin-top: -5px;
-    margin-bottom: 5px;
-    display: block; 
-}
-
-/* Jogo da Memória */
-#tabuleiroMemoria {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    margin-top: 15px;
-}
-
-/* Tablet: 4 colunas ainda */
-@media (max-width: 768px) {
-    #tabuleiroMemoria {
-        gap: 6px;
-    }
-}
-
-/* Celular pequeno: 4 colunas menores */
-@media (max-width: 380px) {
-    #tabuleiroMemoria {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 5px;
-    }
-}
-
-.carta {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    background-color: var(--color-primary);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: clamp(1.5rem, 6vw, 2.2rem); /* Emoji responsivo */
-    cursor: pointer;
-    transition: transform 0.4s, background-color 0.3s;
-    transform-style: preserve-3d;
-    user-select: none;
-}
-
-.carta.virada {
-    background-color: var(--color-surface);
-    border: 2px solid var(--color-primary);
-    transform: rotateY(180deg);
-}
-
-.carta.acertou {
-    background-color: var(--color-sucesso);
-    cursor: default;
-    opacity: 0.8;
-}
-
-.carta:hover:not(.virada):not(.acertou) {
-    transform: scale(1.05);
-}
-
-/* Barra de busca geral */
-#busca-listas, #filtroTodo, #filtroProduto {
-    width: 100%;
-    margin: 10px auto;
-    display: block;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid var(--color-border);
-    box-sizing: border-box;
-    background-color: var(--color-surface);
-    color: var(--color-text);
-}
-
-/* Listas */
-ul {
-    list-style: none;
-    padding: 0;
-}
-
-/* Scroll suave */
 html {
     scroll-behavior: smooth;
 }
 
-/* JOGO DA VELHA */
-#tabuleiroVelha {
-    display: grid;
-    gap: 5px;
-    margin-top: 15px;
-    justify-content: center;
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(99, 102, 241, 0.12),
+            transparent 35%
+        ),
+        var(--color-bg);
+
+    color: var(--color-text);
+
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
 }
 
-.celula-velha {
-    aspect-ratio: 1 / 1;
-    background-color: var(--color-background);
-    border: 2px solid var(--color-border);
-    border-radius: 8px;
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.header-container {
+    position: relative;
+
+    width: 100%;
+    min-height: 150px;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: var(--font-marker); /* Usa a fonte escrita a mão */
-    font-size: clamp(2rem, 8vw, 4rem);
-    font-weight: bold;
+
+    padding: 30px 60px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #111827,
+            #312e81,
+            #4f46e5
+        );
+
+    border-bottom: 3px solid var(--color-primary);
+
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+.imagem {
+    margin: 0;
+
+    color: white;
+
+    font-family: 'Lobster', cursive;
+
+    font-size: clamp(2rem, 5vw, 4rem);
+
+    text-align: center;
+
+    text-shadow:
+        3px 3px 0 rgba(0, 0, 0, 0.25),
+        0 0 20px rgba(255, 255, 255, 0.15);
+}
+
+/* =========================================================
+   BOTÃO TEMA
+   ========================================================= */
+
+.theme-toggle-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+
+    width: 50px;
+    height: 50px;
+
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.12);
+
+    color: white;
+
+    font-size: 1.4rem;
+
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+    transform: rotate(20deg) scale(1.08);
+    background: rgba(255, 255, 255, 0.22);
+}
+
+/* =========================================================
+   CONTEÚDO
+   ========================================================= */
+
+.main-content {
+    width: min(1100px, 94%);
+
+    margin: 30px auto 60px;
+}
+
+/* =========================================================
+   BUSCA
+   ========================================================= */
+
+#busca-listas {
+    background: var(--color-input);
     color: var(--color-text);
+
+    border: 1px solid var(--color-border) !important;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
-.celula-velha:hover {
-    background-color: var(--color-border);
+#busca-listas:focus {
+    border-color: var(--color-primary) !important;
+
+    box-shadow:
+        0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
-.celula-velha.jogada {
-    cursor: default;
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.card {
+    position: relative;
+
+    margin: 20px 0;
+    padding: 24px;
+
+    background: var(--color-card);
+
+    border: 1px solid var(--color-border);
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 8px 25px var(--color-shadow);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
 }
 
-.celula-velha.jogada.x {
+.card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 30px var(--color-shadow);
+
+    background: var(--color-card-hover);
+}
+
+.card h3 {
+    margin-top: 0;
+    margin-bottom: 18px;
+
+    color: var(--color-text);
+
+    font-family: 'Bebas Neue', sans-serif;
+
+    font-size: 1.7rem;
+
+    letter-spacing: 1px;
+
+    border-bottom: 2px solid var(--color-primary);
+
+    padding-bottom: 8px;
+}
+
+.card p {
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+}
+
+/* =========================================================
+   FORMULÁRIOS
+   ========================================================= */
+
+label {
+    display: block;
+
+    margin-top: 10px;
+    margin-bottom: 6px;
+
+    color: var(--color-text);
+
+    font-weight: bold;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+
+    padding: 11px 13px;
+
+    border-radius: 8px;
+
+    border: 1px solid var(--color-border);
+
+    background: var(--color-input);
+
+    color: var(--color-text);
+
+    font-family: inherit;
+
+    font-size: 1rem;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--color-primary);
+
+    box-shadow:
+        0 0 0 3px rgba(99, 102, 241, 0.18);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--color-text-secondary);
+}
+
+/* Inputs especiais */
+
+input[type="checkbox"] {
+    width: auto;
+
+    accent-color: var(--color-primary);
+
+    margin-right: 5px;
+}
+
+input[type="color"] {
+    height: 50px;
+
+    padding: 3px;
+
+    cursor: pointer;
+}
+
+input[type="range"] {
+    accent-color: var(--color-primary);
+
+    cursor: pointer;
+}
+
+/* =========================================================
+   BOTÕES
+   ========================================================= */
+
+button {
+    border: none;
+
+    border-radius: 8px;
+
+    padding: 11px 17px;
+
+    margin-top: 10px;
+
+    background: var(--color-primary);
+
+    color: white;
+
+    font-size: 0.95rem;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.15s ease,
+        box-shadow 0.2s ease;
+}
+
+button:hover {
+    background: var(--color-primary-hover);
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 5px 15px rgba(79, 70, 229, 0.3);
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+button:disabled {
+    opacity: 0.45;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+    box-shadow: none;
+}
+
+/* =========================================================
+   GRUPO DE BOTÕES
+   ========================================================= */
+
+.game-buttons {
+    display: flex;
+
+    gap: 10px;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+}
+
+/* =========================================================
+   ÁREAS DE RESULTADO
+   ========================================================= */
+
+.message-area {
+    min-height: 25px;
+
+    padding: 10px;
+
+    border-radius: 8px;
+
+    color: var(--color-text);
+
+    line-height: 1.5;
+}
+
+/* =========================================================
+   TODO LIST
+   ========================================================= */
+
+#todoList li {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    padding: 10px;
+
+    margin-bottom: 8px;
+
+    border-radius: 8px;
+
+    background: var(--color-bg);
+
+    border: 1px solid var(--color-border);
+}
+
+#todoList li.concluida {
+    opacity: 0.6;
+
+    text-decoration: line-through;
+}
+
+#todoList button {
+    margin: 0;
+
+    padding: 6px 10px;
+
+    background: var(--color-error);
+}
+
+/* =========================================================
+   PRODUTOS
+   ========================================================= */
+
+#listaProdutos li {
+    margin-bottom: 10px;
+
+    padding: 10px;
+
+    border-radius: 8px;
+
+    background: var(--color-bg);
+
+    border: 1px solid var(--color-border);
+}
+
+/* =========================================================
+   NOTAS
+   ========================================================= */
+
+#listaNotas li {
+    display: inline-block;
+
+    margin: 4px;
+
+    padding: 7px 12px;
+
+    border-radius: 20px;
+
+    background: var(--color-primary);
+
+    color: white;
+
+    font-weight: bold;
+}
+
+/* =========================================================
+   MERCADO
+   ========================================================= */
+
+#listaMercado li,
+#listaPessoas li {
+    margin-bottom: 8px;
+
+    padding: 12px;
+
+    border-radius: 8px;
+
+    background: var(--color-bg);
+
+    border: 1px solid var(--color-border);
+}
+
+/* =========================================================
+   JOGO DA MEMÓRIA
+   ========================================================= */
+
+.memoria-carta {
+    aspect-ratio: 1;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #312e81,
+            #6366f1
+        );
+
+    color: transparent;
+
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+
+    cursor: pointer;
+
+    user-select: none;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+.memoria-carta:hover {
+    transform: scale(1.04);
+}
+
+.memoria-carta.revelada,
+.memoria-carta.encontrada {
+    background: var(--color-bg);
+
+    color: var(--color-text);
+
+    border: 2px solid var(--color-primary);
+}
+
+.memoria-carta.encontrada {
+    border-color: var(--color-success);
+}
+
+/* =========================================================
+   PEDRA PAPEL TESOURA
+   ========================================================= */
+
+#resultadoPPT {
+    text-align: center;
+
+    font-size: 1.1rem;
+
+    font-weight: bold;
+}
+
+/* =========================================================
+   CLIQUE RÁPIDO
+   ========================================================= */
+
+#btnClicar {
+    min-width: 220px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ef4444,
+            #f97316
+        );
+}
+
+#btnClicar:hover:not(:disabled) {
+    background:
+        linear-gradient(
+            135deg,
+            #dc2626,
+            #ea580c
+        );
+
+    transform: scale(1.04);
+}
+
+/* =========================================================
+   QUIZ
+   ========================================================= */
+
+#opcoesQuiz button {
+    width: 100%;
+
+    margin-top: 0;
+}
+
+.quiz-correta {
+    background: var(--color-success) !important;
+}
+
+.quiz-errada {
+    background: var(--color-error) !important;
+}
+
+/* =========================================================
+   JOGO DA VELHA
+   ========================================================= */
+
+#tabuleiroVelha {
+    display: grid;
+
+    width: min(500px, 100%);
+
+    margin: 20px auto;
+
+    gap: 5px;
+}
+
+.velha-celula {
+    aspect-ratio: 1;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 0;
+
+    margin: 0;
+
+    border-radius: 6px;
+
+    background: var(--color-bg);
+
+    border: 2px solid var(--color-border);
+
+    color: var(--color-text);
+
+    font-size: clamp(1.2rem, 6vw, 3rem);
+
+    font-weight: bold;
+}
+
+.velha-celula:hover:not(:disabled) {
+    background: var(--color-primary);
+
+    border-color: var(--color-primary);
+}
+
+/* =========================================================
+   TIMER
+   ========================================================= */
+
+#timerDisplay {
+    font-family: monospace;
+
+    font-size: 2rem !important;
+
     color: var(--color-primary);
+
+    letter-spacing: 3px;
 }
 
-.celula-velha.jogada.o {
-    color: var(--color-erro);
+/* =========================================================
+   SENHA
+   ========================================================= */
+
+#senhaGerada {
+    font-family: monospace;
+
+    font-size: 1.1rem;
+
+    letter-spacing: 1px;
 }
 
-.celula-velha.vitoria {
-    background-color: var(--color-sucesso);
-    color: #fff;
-    animation: pulse 0.5s;
+/* =========================================================
+   RGB
+   ========================================================= */
+
+#corBox {
+    transition:
+        background-color 0.3s ease;
 }
 
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+/* =========================================================
+   ERROS
+   ========================================================= */
+
+.error-message {
+    color: var(--color-error);
+
+    font-size: 0.9em;
+
+    margin-top: -5px;
+
+    margin-bottom: 5px;
+
+    display: block;
+
+    min-height: 18px;
 }
 
-.celula-velha.bloqueada {
-    pointer-events: none;
-    opacity: 0.7;
+/* =========================================================
+   MENSAGENS DE SUCESSO
+   ========================================================= */
+
+.sucesso {
+    color: var(--color-success);
+
+    font-weight: bold;
+}
+
+.erro {
+    color: var(--color-error);
+
+    font-weight: bold;
+}
+
+.aviso {
+    color: var(--color-warning);
+
+    font-weight: bold;
+}
+
+/* =========================================================
+   RESPONSIVIDADE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .header-container {
+        min-height: 130px;
+
+        padding: 25px 60px 25px 20px;
+    }
+
+    .theme-toggle-btn {
+        width: 42px;
+        height: 42px;
+
+        top: 12px;
+        right: 12px;
+    }
+
+    .main-content {
+        width: 94%;
+
+        margin-top: 20px;
+    }
+
+    .card {
+        padding: 18px;
+
+        margin: 15px 0;
+    }
+
+    .card h3 {
+        font-size: 1.45rem;
+    }
+
+    .game-buttons {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .game-buttons button {
+        width: 100%;
+    }
+
+    #todoForm.game-buttons {
+        flex-direction: column;
+    }
+
+    #todoForm input {
+        width: 100%;
+    }
+
+    #tabuleiroMemoria {
+        grid-template-columns: repeat(4, 1fr) !important;
+
+        gap: 6px !important;
+    }
+
+    #btnClicar {
+        width: 100%;
+    }
+}
+
+@media (max-width: 420px) {
+
+    .imagem {
+        font-size: 2rem;
+    }
+
+    .card {
+        padding: 14px;
+    }
+
+    #tabuleiroMemoria {
+        gap: 4px !important;
+    }
+
+    .memoria-carta {
+        border-radius: 6px;
+    }
 }
