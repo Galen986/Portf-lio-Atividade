@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+8<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -371,6 +371,25 @@
 
     <div id="resultadoQuiz" class="message-area" style="margin-top: 15px; display: none;"></div>
     <button onclick="iniciarQuiz()" id="btnNovoQuiz" style="margin-top: 10px;">Novo Quiz</button>
+</div>
+
+<div class="card game-card">
+    <h3>26. Jogo da Velha</h3>
+
+    <div class="game-buttons" style="margin-bottom: 15px;">
+        <label>Tamanho:</label>
+        <select id="tamanhoTabuleiro">
+            <option value="3">3 x 3</option>
+            <option value="4">4 x 4</option>
+            <option value="5">5 x 5</option>
+        </select>
+        <button onclick="iniciarJogoVelha()">Novo Jogo</button>
+    </div>
+
+    <p>Vez de: <strong id="vezJogador">X</strong></p>
+    <div id="tabuleiroVelha"></div>
+
+    <div id="resultadoVelha" class="message-area" style="margin-top: 15px;"></div>
 </div>
 
     </main>
