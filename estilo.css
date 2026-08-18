@@ -804,3 +804,162 @@ button:disabled {
         border-radius: 6px;
     }
 }
+
+/* =========================================================
+   CONFIGURAÇÕES DO JOGO DA VELHA
+   ========================================================= */
+
+.config-velha {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(160px, 1fr));
+
+    gap: 15px;
+
+    align-items: end;
+
+    margin-bottom: 20px;
+}
+
+.config-velha > div {
+    min-width: 0;
+}
+
+.config-velha label {
+    margin-top: 0;
+}
+
+.config-velha select {
+    width: 100%;
+}
+
+.config-velha button {
+    width: 100%;
+
+    height: 44px;
+
+    margin-top: 0;
+}
+
+.status-velha {
+    padding: 12px 15px;
+
+    margin-bottom: 15px;
+
+    border-radius: 10px;
+
+    background: var(--color-bg);
+
+    border: 1px solid var(--color-border);
+
+    text-align: center;
+}
+
+.status-velha p {
+    margin: 5px 0;
+}
+
+#vezJogador {
+    color: var(--color-primary);
+
+    font-size: 1.1rem;
+}
+
+
+/* =========================================================
+   TABULEIRO
+   ========================================================= */
+
+#tabuleiroVelha {
+    width: min(550px, 100%);
+
+    margin: 20px auto;
+
+    display: grid;
+
+    gap: 6px;
+}
+
+.velha-celula {
+    width: 100%;
+
+    aspect-ratio: 1 / 1;
+
+    margin: 0;
+
+    padding: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: var(--color-bg);
+
+    border: 2px solid var(--color-border);
+
+    border-radius: 8px;
+
+    color: var(--color-text);
+
+    font-size: 2.5rem;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        background 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.velha-celula:hover:not(:disabled) {
+    background: var(--color-primary);
+
+    border-color: var(--color-primary);
+
+    transform: scale(1.04);
+}
+
+.velha-celula:disabled {
+    cursor: default;
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   CELULAS X / O
+   ========================================================= */
+
+.velha-celula:not(:empty) {
+    background:
+        linear-gradient(
+            135deg,
+            var(--color-bg),
+            var(--color-card-hover)
+        );
+}
+
+
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .config-velha {
+        grid-template-columns: 1fr;
+    }
+
+    #tabuleiroVelha {
+        gap: 4px;
+    }
+
+    .velha-celula {
+        font-size: 1.8rem;
+    }
+}
