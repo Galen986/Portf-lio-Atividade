@@ -1,900 +1,1517 @@
-// Helper to insert small message after a form/control
-function showMessageAfter(el, text, cls = 'message-area') {
-  let msg = el.parentElement.querySelector('.js-temp-message');
-  if (!msg) {
-    msg = document.createElement('div');
-    msg.className = 'js-temp-message ' + cls;
-    el.parentElement.appendChild(msg);
-  }
-  msg.textContent = text;
-  return msg;
+// =======================================================================
+// Lógica de Tema (Claro/Escuro) - CORRIGIDO
+// =======================================================================
+
+const body = document.getElementById('body-principal');
+const themeToggleBtn = document.getElementById('theme-toggle');
+const themeColorMeta = document.getElementById('theme-color-meta');
+const DARK_THEME_CLASS = 'dark-theme';
+const LIGHT_THEME_COLOR = '#ffffff';
+const DARK_THEME_COLOR = '#1a1a1a';
+
+// Função para aplicar o tema (Ícones ajustados para UX)
+function applyTheme(isDark) {
+    if (isDark) {
+        body.classList.add(DARK_THEME_CLASS);
+        themeToggleBtn.textContent = '☀️'; 
+        themeToggleBtn.setAttribute('aria-pressed', 'true');
+        themeColorMeta.setAttribute('content', DARK_THEME_COLOR);
+    } else {
+        // CORREÇÃO: Usando a constante correta (DARK_THEME_CLASS) para remoção
+        body.classList.remove(DARK_THEME_CLASS);
+        themeToggleBtn.textContent = '🌙'; 
+        themeToggleBtn.setAttribute('aria-pressed', 'false');
+        themeColorMeta.setAttribute('content', LIGHT_THEME_COLOR);
+    }
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
 }
 
-// 1. Dia da Semana
-(function(){
-  const form = qs('#form');
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const day = (qs('#day').value || '').trim().toLowerCase();
-    if (!day) return showMessageAfter(form, 'Por favor, informe um dia.');
-    const days = {
-      'domingo':'Domingo','segunda':'Segunda-feira','segunda-feira':'Segunda-feira',
-      'terca':'Terça-feira','terça':'Terça-feira','terça-feira':'Terça-feira',
-      'quarta':'Quarta-feira','quarta-feira':'Quarta-feira',
-      'quinta':'Quinta-feira','quinta-feira':'Quinta-feira',
-      'sexta':'Sexta-feira','sexta-feira':'Sexta-feira',
-      'sabado':'Sábado','sábado':'Sábado'
-    };
-    const result = days[day] || 'Dia inválido ou não reconhecido.';
-    showMessageAfter(form, typeof result === 'string' ? result : result);
-  });
-})();
+// Função de formatação de moeda para reutilização
+const formatCurrency = (value) => {
+    return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+    }).format(value);
+};
 
-// 2. Positivo ou Negativo
-(function(){
-  const form = qs('#numberForm');
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const num = Number(qs('#number').value);
-    if (Number.isNaN(num)) return showMessageAfter(form, 'Informe um número válido.');
-    const res = num === 0 ? 'Zero' : (num > 0 ? 'Positivo' : 'Negativo');
-    showMessageAfter(form, res);
-  });
-})();
+
+// =======================================================================
+// Funções Globais (Necessárias para chamadas 'onclick' no HTML)
+// =======================================================================
 
 // 3. Jogo de Adivinhação
-(function(){
-  let target = load('guess-target', null);
-  if (!target) { target = Math.floor(Math.random()*100)+1; save('guess-target', target); }
-  let attempts = load('guess-attempts', 0);
-  qs('#mensagem').textContent = `Tente adivinhar entre 1 e 100. Tentativas: ${attempts}`;
-  window.adivinhar = function() {
-    const input = qs('#palpite');
-    const val = Number(input.value);
-    if (!val || val < 1 || val > 100) return qs('#mensagem').textContent = 'Informe um palpite entre 1 e 100.';
-    attempts++;
-    save('guess-attempts', attempts);
-    if (val === target) {
-      qs('#mensagem').textContent = `Acertou! Número: ${target}. Tentativas: ${attempts}. Gerando novo número...`;
-      target = Math.floor(Math.random()*100)+1;
-      attempts = 0;
-      save('guess-target', target);
-      save('guess-attempts', attempts);
-    } else {
-      qs('#mensagem').textContent = val > target ? 'Muito alto! Tente menor.' : 'Muito baixo! Tente maior.';
-      qs('#mensagem').textContent += ` Tentativas: ${attempts}`;
+let numeroSecreto = Math.floor(Math.random() * 100) + 1;
+let tentativas = 0;
+let jogoEncerrado = false;
+
+window.adivinhar = function() {
+  if (jogoEncerrado) {
+    document.getElementById('mensagem').textContent = "Clique em Reiniciar para jogar novamente.";
+    return;
+  }
+
+  let palpiteInput = document.getElementById('palpite');
+  let palpite = palpiteInput.value.trim();
+
+  if (palpite === "") {
+    document.getElementById('mensagem').textContent = "Por favor, digite um número.";
+    return;
+  }
+
+  palpite = Number(palpite);
+  tentativas++;
+
+  if (isNaN(palpite) || palpite < 1 || palpite > 100) {
+    document.getElementById('mensagem').textContent = "Digite um número válido entre 1 e 100.";
+  } else if (palpite < numeroSecreto) {
+    document.getElementById('mensagem').textContent = `Você digitou: ${palpite}. Tente um número maior. ⬆️`;
+  } else if (palpite > numeroSecreto) {
+    document.getElementById('mensagem').textContent = `Você digitou: ${palpite}. Tente um número menor. ⬇️`;
+  } else {
+    document.getElementById('mensagem').textContent =
+      `🎉 Parabéns! Você acertou o número ${numeroSecreto} em ${tentativas} tentativa(s)!`;
+    jogoEncerrado = true;
+    document.getElementById('palpite').disabled = true;
+    document.getElementById('btnAdivinhar').disabled = true;
+    alert(`VITÓRIA! Você acertou o número secreto!`);
+  }
+
+  palpiteInput.value = "";
+  palpiteInput.focus();
+}
+
+window.reiniciar = function() {
+  numeroSecreto = Math.floor(Math.random() * 100) + 1;
+  tentativas = 0;
+  jogoEncerrado = false;
+
+  document.getElementById('mensagem').textContent = "";
+  document.getElementById('palpite').value = "";
+  document.getElementById('palpite').disabled = false;
+  document.getElementById('btnAdivinhar').disabled = false;
+  document.getElementById('palpite').focus();
+}
+
+/**
+ * Limpa os campos de input, o resultado do Cálculo de IMC e reabilita os elementos.
+ * Esta função precisa ser global (window.) pois é chamada via onclick no HTML.
+ */
+window.limparImc = function() {
+    const pesoInput = document.getElementById('peso');
+    const alturaInput = document.getElementById('altura');
+    const btnCalcular = document.getElementById('btnCalcularImc');
+
+    pesoInput.value = '';
+    alturaInput.value = '';
+    document.getElementById('imcResultado').innerHTML = '';
+
+    pesoInput.disabled = false;
+    alturaInput.disabled = false;
+    if (btnCalcular) {
+      btnCalcular.disabled = false;
     }
-  };
-  window.reiniciar = function() {
-    target = Math.floor(Math.random()*100)+1;
-    attempts = 0;
-    save('guess-target', target);
-    save('guess-attempts', attempts);
-    qs('#mensagem').textContent = 'Jogo reiniciado. Tente adivinhar novamente.';
-  };
-})();
 
-// 4. Saldo Atual
-(function(){
-  const form = qs('#balanceForm');
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const v = Number(qs('#balance').value);
-    if (Number.isNaN(v)) return showMessageAfter(form, 'Informe um valor válido.');
-    showMessageAfter(form, `Seu saldo: ${fmtBRL(v)}`);
-  });
-})();
+    pesoInput.focus();
+}
 
-// 5. Boas-vindas
-(function(){
-  const form = qs('#nameForm');
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const name = (qs('#name').value || '').trim();
-    if (!name) return showMessageAfter(form, 'Por favor, digite seu nome.');
-    showMessageAfter(form, `Olá, ${name}! Seja bem-vindo(a)!`);
-  });
-})();
 
-// 6. Cálculo de IMC
-(function(){
-  const form = qs('#imcForm');
-  const out = qs('#imcResultado');
-  window.limparImc = function() {
-    form.reset();
-    out.textContent = '';
-  };
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const peso = Number(qs('#peso').value);
-    const altura = Number(qs('#altura').value);
-    if (!peso || !altura) return out.textContent = 'Preencha peso e altura.';
-    const imc = peso / (altura * altura);
-    let categ = '';
-    if (imc < 18.5) categ = 'Abaixo do peso';
-    else if (imc < 25) categ = 'Peso normal';
-    else if (imc < 30) categ = 'Sobrepeso';
-    else categ = 'Obesidade';
-    out.innerHTML = `IMC: ${imc.toFixed(2)} — ${categ}`;
-  });
-})();
+// =======================================================================
+// Lógica Principal (Executada após o carregamento completo do DOM)
+// =======================================================================
 
-// 7. Conversor C/F
-(function(){
-  const form = qs('#tempForm');
-  const out = qs('#tempResultado');
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const c = Number(qs('#celsius').value);
-    if (Number.isNaN(c)) return out.textContent = 'Informe um valor válido.';
-    const f = (c * 9/5) + 32;
-    out.textContent = `${c.toFixed(1)}°C = ${f.toFixed(1)}°F`;
-  });
-})();
+document.addEventListener('DOMContentLoaded', () => {
+    // Carrega o tema ao iniciar
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = savedTheme
+        ? savedTheme === 'dark'
+        : window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-// 8. Contador de Cliques
-(function(){
-  const btn = qs('#btnContador');
-  const reset = qs('#btnResetContador');
-  const display = qs('#contadorCliques');
-  let count = load('contadorCliques', 0);
-  display.textContent = count;
-  btn.addEventListener('click', () => {
-    count++;
-    display.textContent = count;
-    save('contadorCliques', count);
-  });
-  reset.addEventListener('click', () => {
-    count = 0;
-    display.textContent = 0;
-    save('contadorCliques', count);
-  });
-})();
+    applyTheme(prefersDark);
 
-// 9. Lista de Tarefas Filtrável
-(function(){
-  const listEl = qs('#todoList');
-  const form = qs('#todoForm');
-  const input = qs('#todoInput');
-  const filter = qs('#filtroTodo');
-  let todos = load('todos', []);
-  function render() {
-    listEl.innerHTML = '';
-    const query = (filter.value || '').toLowerCase();
-    todos.filter(t => t.text.toLowerCase().includes(query)).forEach((t, idx) => {
-      const li = document.createElement('li');
-      li.style.display = 'flex';
-      li.style.alignItems = 'center';
-      li.style.gap = '8px';
-      li.innerHTML = `
-        <input type="checkbox" data-i="${idx}" ${t.done ? 'checked' : ''}>
-        <span style="flex:1; ${t.done ? 'text-decoration:line-through; opacity:0.7' : ''}">${t.text}</span>
-        <button data-del="${idx}" style="background:#dc3545;color:#fff;border:none;padding:4px 8px;border-radius:4px;">Excluir</button>
-      `;
-      listEl.appendChild(li);
+    // Event Listener para o botão de alternância
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            const isDark = body.classList.contains(DARK_THEME_CLASS);
+            applyTheme(!isDark);
+        });
+    }
+
+    // =======================================================================
+    // BUSCA GERAL DE CARDS (Filtro da Página)
+    // =======================================================================
+    const buscaListasInput = document.getElementById('busca-listas');
+    const cards = document.querySelectorAll('.card');
+
+    function filtrarCardsGeral() {
+        const termo = buscaListasInput.value.toLowerCase().trim();
+
+        cards.forEach(card => {
+            const tituloElement = card.querySelector('h3');
+
+            if (tituloElement) {
+                const titulo = tituloElement.textContent.toLowerCase();
+
+                if (titulo.includes(termo)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            }
+        });
+    }
+
+    if (buscaListasInput) {
+        buscaListasInput.addEventListener('input', filtrarCardsGeral);
+    }
+
+
+    // 1. Dia da semana
+    document.getElementById("form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      let dia = document.getElementById("day").value.trim().toLowerCase();
+      if (!dia) {
+        alert("Por favor, digite o dia da semana.");
+      } else if (dia === "sábado" || dia === "sabado" || dia === "domingo") {
+        alert("Bom fim de semana! 🎉");
+      } else {
+        alert("Boa semana! 💼");
+      }
+      this.reset();
     });
-  }
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const txt = (input.value || '').trim();
-    if (!txt) return;
-    todos.push({ text: txt, done: false, created: Date.now() });
-    save('todos', todos);
-    input.value = '';
-    render();
-  });
-  listEl.addEventListener('change', e => {
-    const idx = e.target.dataset.i;
-    if (idx !== undefined) {
-      todos[idx].done = e.target.checked;
-      save('todos', todos);
-      render();
-    }
-  });
-  listEl.addEventListener('click', e => {
-    const del = e.target.dataset.del;
-    if (del !== undefined) {
-      todos.splice(del,1);
-      save('todos', todos);
-      render();
-    }
-  });
-  filter.addEventListener('input', render);
-  render();
-})();
 
-// 10. Contador Regressivo
-(function(){
-  const display = qs('#timerDisplay');
-  const startBtn = qs('#btnIniciarTimer');
-  const stopBtn = qs('#btnPararTimer');
-  const resetBtn = qs('#btnResetTimer');
-  let timer = null;
-  let remaining = 0;
-  function format(ms) {
-    const s = Math.max(0, Math.floor(ms/1000));
-    const mm = String(Math.floor(s/60)).padStart(2,'0');
-    const ss = String(s%60).padStart(2,'0');
-    return `${mm}:${ss}`;
-  }
-  function updateInputsToRemaining() {
-    // no-op here
-  }
-  startBtn.addEventListener('click', () => {
-    const m = Number(qs('#minutos').value) || 0;
-    const s = Number(qs('#segundos').value) || 0;
-    if (!timer) {
-      remaining = (m*60 + s) * 1000;
-      if (remaining <= 0) return;
-      display.textContent = format(remaining);
-      timer = setInterval(() => {
-        remaining -= 1000;
-        display.textContent = format(remaining);
-        if (remaining <= 0) {
-          clearInterval(timer);
-          timer = null;
-          display.textContent = '00:00';
-          stopBtn.disabled = true;
+    // 2. Positivo ou negativo
+    document.getElementById("numberForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      let input = document.getElementById("number");
+      let valorDigitado = input.value.trim();
+
+      if (valorDigitado === "") {
+        alert("Por favor, digite um número.");
+      } else {
+        let num = Number(valorDigitado);
+        if (num > 0) {
+          alert("O número é positivo. ✅");
+        } else if (num < 0) {
+          alert("O número é negativo. ❌");
+        } else {
+          alert("O número é zero. 0️⃣");
         }
-      }, 1000);
-      startBtn.disabled = true;
-      stopBtn.disabled = false;
-    }
-  });
-  stopBtn.addEventListener('click', () => {
-    if (timer) {
-      clearInterval(timer);
-      timer = null;
-      startBtn.disabled = false;
-      stopBtn.disabled = true;
-    }
-  });
-  resetBtn.addEventListener('click', () => {
-    if (timer) { clearInterval(timer); timer = null; }
-    qs('#minutos').value = '1';
-    qs('#segundos').value = '0';
-    display.textContent = '01:00';
-    startBtn.disabled = false;
-    stopBtn.disabled = true;
-  });
-  // init
-  display.textContent = '01:00';
-  stopBtn.disabled = true;
-})();
-
-// 11. Gerador de Senhas
-(function(){
-  const btnGen = qs('#btnGerarSenha');
-  const btnCopy = qs('#btnCopiarSenha');
-  const out = qs('#senhaGerada');
-  function gen(len, {upper, nums, syms}) {
-    const lowerChars = 'abcdefghijklmnopqrstuvwxyz';
-    const upperChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const numChars = '0123456789';
-    const symChars = '!@#$%^&*()-_=+[]{};:,.<>?/';
-    let chars = lowerChars;
-    if (upper) chars += upperChars;
-    if (nums) chars += numChars;
-    if (syms) chars += symChars;
-    if (!chars.length) chars = lowerChars;
-    let pw = '';
-    for (let i=0;i<len;i++) pw += chars[Math.floor(Math.random()*chars.length)];
-    return pw;
-  }
-  btnGen.addEventListener('click', () => {
-    const len = Math.min(20, Math.max(4, Number(qs('#tamanhoSenha').value) || 12));
-    const upper = qs('#incluirMaiusculas').checked;
-    const nums = qs('#incluirNumeros').checked;
-    const syms = qs('#incluirSimbolos').checked;
-    const senha = gen(len, {upper, nums, syms});
-    out.value = senha;
-    save('senhaGerada', senha);
-  });
-  btnCopy.addEventListener('click', async () => {
-    if (!out.value) return;
-    try { await navigator.clipboard.writeText(out.value); alert('Senha copiada para a área de transferência.'); }
-    catch { alert('Não foi possível copiar automaticamente. Selecione e copie manualmente.'); }
-  });
-  // restore last
-  const last = load('senhaGerada', '');
-  if (last) out.value = last;
-})();
-
-// 12. Calculadora de Gorjeta
-(function(){
-  const conta = qs('#contaValor');
-  const range = qs('#gorjetaPorcentagem');
-  const numP = qs('#numPessoas');
-  const out = qs('#gorjetaResultado');
-  function calcularGorjeta() {
-    const valor = Number(conta.value) || 0;
-    const pct = Number(range.value) || 0;
-    const pessoas = Math.max(1, Number(numP.value) || 1);
-    const gorjeta = valor * (pct/100);
-    const total = valor + gorjeta;
-    out.innerHTML = `Gorjeta: ${fmtBRL(gorjeta)}<br>Por pessoa: ${fmtBRL(total / pessoas)}<br>Total: ${fmtBRL(total)}`;
-  }
-  qs('#btnCalcularGorjeta').addEventListener('click', calcularGorjeta);
-  conta.addEventListener('input', calcularGorjeta);
-  numP.addEventListener('input', calcularGorjeta);
-  range.addEventListener('input', calcularGorjeta);
-  calcularGorjeta();
-})();
-
-// 13. Editor de Estilos
-(function(){
-  const corTexto = qs('#corTexto');
-  const tamanho = qs('#tamanhoFonte');
-  const bloco = qs('#blocoExemplo');
-  corTexto.addEventListener('input', () => bloco.style.color = corTexto.value);
-  tamanho.addEventListener('input', () => bloco.style.fontSize = tamanho.value + 'px');
-})();
-
-// 14. Validador de Login
-(function(){
-  const form = qs('#loginForm');
-  const emailIn = qs('#loginEmail');
-  const passIn = qs('#loginSenha');
-  const emailError = qs('#emailError');
-  const senhaError = qs('#senhaError');
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    emailError.textContent = '';
-    senhaError.textContent = '';
-    const email = (emailIn.value || '').trim();
-    const senha = passIn.value || '';
-    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    if (!emailValid) emailError.textContent = 'Email inválido.';
-    if (senha.length < 6) senhaError.textContent = 'Senha deve ter ao menos 6 caracteres.';
-    if (emailValid && senha.length >= 6) {
-      alert('Login válido (simulado).');
-      form.reset();
-    }
-  });
-})();
-
-// 15. Catálogo de Produtos Filtrável
-(function(){
-  const lista = qs('#listaProdutos');
-  const filtro = qs('#filtroProduto');
-  let produtos = load('produtosCatalogo', [
-    { name: 'Camiseta', price: 29.9 },
-    { name: 'Caneca', price: 19.9 },
-    { name: 'Notebook', price: 2499.9 },
-    { name: 'Fone de Ouvido', price: 199.99 },
-    { name: 'Teclado', price: 129.5 }
-  ]);
-  function render() {
-    const q = (filtro.value || '').toLowerCase();
-    lista.innerHTML = '';
-    produtos.filter(p => p.name.toLowerCase().includes(q)).forEach(p => {
-      const li = document.createElement('li');
-      li.textContent = `${p.name} — ${fmtBRL(p.price)}`;
-      lista.appendChild(li);
+      }
+      this.reset();
     });
-  }
-  filtro.addEventListener('input', render);
-  render();
-})();
 
-// 16. Calculadora de Média
-(function(){
-  const form = qs('#notaForm');
-  const input = qs('#notaInput');
-  const lista = qs('#listaNotas');
-  const mediaOut = qs('#mediaResultado');
-  let notas = load('notas', []);
-  function render() {
-    lista.innerHTML = '';
-    notas.forEach((n,i) => {
-      const li = document.createElement('li');
-      li.style.display = 'flex';
-      li.style.justifyContent = 'space-between';
-      li.innerHTML = `<span>Nota ${i+1}: ${n.toFixed(1)}</span><button data-del="${i}" style="background:#dc3545;color:#fff;border:none;padding:2px 6px;border-radius:4px;">X</button>`;
-      lista.appendChild(li);
+    // 4. Saldo
+    document.getElementById("balanceForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      let input = document.getElementById("balance");
+      let valorDigitado = input.value.trim();
+
+      if (valorDigitado === "") {
+        alert("Por favor, digite o valor do saldo.");
+      } else {
+        let saldo = Number(valorDigitado);
+        let saldoFormatado = formatCurrency(saldo);
+        alert(`Seu saldo atual é: ${saldoFormatado} 💰`);
+      }
+      this.reset();
     });
-    const media = notas.length ? (notas.reduce((a,b)=>a+b,0)/notas.length) : 0;
-    mediaOut.textContent = media.toFixed(1);
-  }
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const n = Number(input.value);
-    if (Number.isNaN(n) || n < 0 || n > 10) return;
-    notas.push(n);
-    save('notas', notas);
-    input.value = '';
-    render();
-  });
-  lista.addEventListener('click', e => {
-    const del = e.target.dataset.del;
-    if (del !== undefined) {
-      notas.splice(del,1);
-      save('notas', notas);
-      render();
+
+    // 5. Boas-vindas com nome
+    document.getElementById("nameForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      let nome = document.getElementById("name").value.trim();
+      if (nome === "") {
+        alert("Por favor, digite seu nome.");
+      } else {
+        alert(`Bem-vindo(a), ${nome}! 👋`);
+      }
+      this.reset();
+    });
+
+    // 6. Cálculo de IMC
+    document.getElementById("imcForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const pesoInput = document.getElementById("peso");
+        const alturaInput = document.getElementById("altura");
+        const resultadoDiv = document.getElementById("imcResultado");
+        const btnCalcular = document.getElementById("btnCalcularImc");
+
+        const peso = parseFloat(pesoInput.value);
+        const altura = parseFloat(alturaInput.value);
+
+        if (isNaN(peso) || isNaN(altura) || peso <= 0 || altura <= 0) {
+            resultadoDiv.innerHTML = "⚠️ Por favor, insira valores válidos e positivos para peso e altura.";
+            return;
+        }
+
+        const imc = peso / (altura * altura);
+        const imcFormatado = imc.toFixed(2);
+
+        let classificacao = '';
+        let emoji = '';
+        let cor = '';
+        let corVerde = 'var(--color-primary)';
+        let corLaranja = '#ffc107';
+        let corVermelho = '#dc3545';
+
+        if (imc < 18.5) {
+            classificacao = 'Abaixo do peso';
+            emoji = '⬇️';
+            cor = 'var(--color-text-secondary)';
+        } else if (imc >= 18.5 && imc < 24.9) {
+            classificacao = 'Peso normal';
+            emoji = '✅';
+            cor = corVerde;
+        } else if (imc >= 25.0 && imc < 29.9) {
+            classificacao = 'Sobrepeso';
+            emoji = '🟠';
+            cor = corLaranja;
+        } else if (imc >= 30.0 && imc < 34.9) {
+            classificacao = 'Obesidade Grau I';
+            emoji = '🛑';
+            cor = corVermelho;
+        } else if (imc >= 35.0 && imc < 39.9) {
+            classificacao = 'Obesidade Grau II (Severa)';
+            emoji = '🚨';
+            cor = corVermelho;
+        } else {
+            classificacao = 'Obesidade Grau III (Mórbida)';
+            emoji = '⚠️';
+            cor = corVermelho;
+        }
+
+        resultadoDiv.innerHTML = `
+            Seu IMC é: <strong style="color: ${cor};">${imcFormatado}</strong><br>
+            Classificação: <strong style="color: ${cor};">${emoji} ${classificacao}</strong>
+        `;
+
+        pesoInput.disabled = true;
+        alturaInput.disabled = true;
+        btnCalcular.disabled = true;
+        alert(`Cálculo de IMC concluído: ${imcFormatado} (${classificacao})`);
+    });
+
+    // 7. Conversor de Temperatura (Celsius para Fahrenheit)
+    document.getElementById("tempForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const celsiusInput = document.getElementById("celsius");
+        const resultadoDiv = document.getElementById("tempResultado");
+
+        const celsius = parseFloat(celsiusInput.value);
+
+        if (isNaN(celsius)) {
+            resultadoDiv.innerHTML = "⚠️ Por favor, insira um valor numérico válido.";
+            return;
+        }
+
+        // Fórmula: F = C * 9/5 + 32
+        const fahrenheit = (celsius * 9/5) + 32;
+        const fahrenheitFormatado = fahrenheit.toFixed(1);
+
+        resultadoDiv.innerHTML = `
+            ${celsius}°C é igual a: <strong style="color: var(--color-primary);">${fahrenheitFormatado}°F</strong> 🔥
+        `;
+        celsiusInput.focus();
+        this.reset();
+    });
+
+
+    // 8. Contador de Cliques
+    let contador = 0;
+    const contadorElement = document.getElementById("contadorCliques");
+    const btnContador = document.getElementById("btnContador");
+    const btnReset = document.getElementById("btnResetContador");
+
+    if (btnContador && contadorElement && btnReset) {
+        btnContador.addEventListener('click', function() {
+            contador++;
+            contadorElement.textContent = contador;
+        });
+
+        btnReset.addEventListener('click', function() {
+            contador = 0;
+            contadorElement.textContent = contador;
+            alert("Contador zerado!");
+        });
     }
-  });
-  render();
-})();
 
-// 17. Gerador de Cores RGB
-(function(){
-  const btn = qs('#btnGerarCor');
-  const box = qs('#corBox');
-  const code = qs('#codigoCor');
-  function gerar() {
-    const r = Math.floor(Math.random()*256);
-    const g = Math.floor(Math.random()*256);
-    const b = Math.floor(Math.random()*256);
-    const rgb = `rgb(${r}, ${g}, ${b})`;
-    box.style.backgroundColor = rgb;
-    code.textContent = rgb.toUpperCase();
-    code.style.color = (r*0.299 + g*0.587 + b*0.114) > 186 ? '#000' : '#fff';
-  }
-  btn.addEventListener('click', gerar);
-  gerar();
-})();
 
-// 18. Conversor de Unidades
-(function(){
-  const btn = qs('#btnConverterUnidade');
-  const tipo = qs('#tipoConversao');
-  const valor = qs('#valorOriginal');
-  const out = qs('#conversaoResultado');
-  btn.addEventListener('click', () => {
-    const v = Number(valor.value) || 0;
-    if (tipo.value === 'km_mi') {
-      out.textContent = `${v} km = ${(v * 0.621371).toFixed(4)} mi`;
-    } else {
-      out.textContent = `${v} L = ${(v * 0.264172).toFixed(4)} gal (US)`;
+    // 9. Lista de Tarefas Filtrável (Lógica de Renderização e Filtro Aprimorada)
+    let tarefas = []; // Array que armazenará todas as tarefas como strings
+    const todoInput = document.getElementById("todoInput");
+    const todoList = document.getElementById("todoList");
+    const filtroTodoInput = document.getElementById("filtroTodo");
+
+    function renderizarTarefas() {
+        if (!todoList) return;
+
+        todoList.innerHTML = ''; // Limpa a lista na tela
+        const termo = filtroTodoInput ? filtroTodoInput.value.toLowerCase().trim() : '';
+
+        // Usamos map para criar um novo array de tarefas com seus índices originais
+        const tarefasRenderizadas = tarefas.map((taskText, index) => ({ taskText, index }));
+
+        // Filtra as tarefas que devem ser mostradas
+        const tarefasFiltradas = tarefasRenderizadas.filter(item => {
+            if (termo === '') return true;
+            return item.taskText.toLowerCase().includes(termo);
+        });
+
+        if (tarefasFiltradas.length === 0) {
+            todoList.innerHTML = '<li>Nenhuma tarefa para mostrar.</li>';
+        }
+
+        tarefasFiltradas.forEach(item => {
+            const li = document.createElement('li');
+            li.style.cssText = `
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 0;
+                border-bottom: 1px dashed var(--color-border);
+                font-size: 1.1rem;
+            `;
+
+            const span = document.createElement('span');
+            span.textContent = item.taskText;
+            li.appendChild(span);
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = '❌';
+            deleteButton.style.cssText = `
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 1rem;
+                padding: 5px;
+                margin-left: 10px;
+                transition: transform 0.1s;
+            `;
+
+            // O listener remove a tarefa do array 'tarefas' usando o índice original
+            deleteButton.addEventListener('click', function() {
+                tarefas.splice(item.index, 1);
+                // Re-renderiza tudo para atualizar os listeners de exclusão (que dependem dos índices)
+                renderizarTarefas(); 
+            });
+
+            li.appendChild(deleteButton);
+            todoList.appendChild(li);
+        });
     }
-  });
-})();
 
-// 19. Contador de Texto
-(function(){
-  const area = qs('#textoInput');
-  const chars = qs('#contadorCaracteres');
-  const words = qs('#contadorPalavras');
-  function update() {
-    const text = area.value || '';
-    chars.textContent = text.length;
-    const w = text.trim() ? text.trim().split(/\s+/).length : 0;
-    words.textContent = w;
-  }
-  area.addEventListener('input', update);
-  update();
-})();
+
+    if (document.getElementById("todoForm")) {
+        document.getElementById("todoForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const taskText = todoInput.value.trim();
+
+            if (taskText === "") {
+                alert("Por favor, digite uma tarefa.");
+                return;
+            }
+
+            tarefas.push(taskText);
+
+            todoInput.value = '';
+            todoInput.focus();
+
+            renderizarTarefas();
+        });
+    }
+
+    if (filtroTodoInput) {
+        filtroTodoInput.addEventListener('input', renderizarTarefas);
+        renderizarTarefas();
+    }
+
+
+    // 10. Contador Regressivo (Timer)
+    let timerInterval;
+    let tempoTotalSegundos = 0;
+    const timerDisplay = document.getElementById('timerDisplay');
+    const btnIniciarTimer = document.getElementById('btnIniciarTimer');
+    const btnPararTimer = document.getElementById('btnPararTimer');
+    const btnResetTimer = document.getElementById('btnResetTimer');
+    const inputMinutos = document.getElementById('minutos');
+    const inputSegundos = document.getElementById('segundos');
+
+    function atualizarDisplay() {
+        const min = Math.floor(tempoTotalSegundos / 60);
+        const seg = tempoTotalSegundos % 60;
+        timerDisplay.textContent = `${min.toString().padStart(2, '0')}:${seg.toString().padStart(2, '0')}`;
+    }
+
+    function iniciarTimer() {
+        if (timerInterval) return;
+
+        tempoTotalSegundos = (Number(inputMinutos.value) * 60) + Number(inputSegundos.value);
+
+        if (tempoTotalSegundos <= 0) {
+            alert("Por favor, defina um tempo válido.");
+            return;
+        }
+
+        btnIniciarTimer.disabled = true;
+        btnPararTimer.disabled = false;
+        inputMinutos.disabled = true;
+        inputSegundos.disabled = true;
+
+        timerInterval = setInterval(() => {
+            tempoTotalSegundos--;
+            atualizarDisplay();
+
+            if (tempoTotalSegundos <= 0) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                timerDisplay.textContent = "TEMPO ESGOTADO! 🔔";
+                alert("O tempo acabou!");
+                btnIniciarTimer.disabled = false;
+                btnPararTimer.disabled = true;
+                inputMinutos.disabled = false;
+                inputSegundos.disabled = false;
+            }
+        }, 1000);
+    }
+
+    function pararTimer() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        btnIniciarTimer.disabled = false;
+        btnPararTimer.disabled = true;
+    }
+
+    function resetarTimer() {
+        pararTimer();
+        // Garante que o display volte ao valor inicial dos inputs
+        const minutosValor = inputMinutos.value.padStart(2, '0');
+        const segundosValor = inputSegundos.value.padStart(2, '0');
+        tempoTotalSegundos = (Number(inputMinutos.value) * 60) + Number(inputSegundos.value);
+        atualizarDisplay();
+        btnIniciarTimer.disabled = false;
+        btnPararTimer.disabled = true;
+        inputMinutos.disabled = false;
+        inputSegundos.disabled = false;
+        timerDisplay.textContent = `${minutosValor}:${segundosValor}`;
+    }
+
+    if (btnIniciarTimer) btnIniciarTimer.addEventListener('click', iniciarTimer);
+    if (btnPararTimer) btnPararTimer.addEventListener('click', pararTimer);
+    if (btnResetTimer) btnResetTimer.addEventListener('click', resetarTimer);
+
+    if (timerDisplay && inputMinutos && inputSegundos) {
+         timerDisplay.textContent = `${inputMinutos.value.padStart(2, '0')}:${inputSegundos.value.padStart(2, '0')}`;
+    }
+
+    // 11. Gerador de Senhas Aleatórias
+    const btnGerarSenha = document.getElementById('btnGerarSenha');
+    const btnCopiarSenha = document.getElementById('btnCopiarSenha');
+    const senhaGeradaInput = document.getElementById('senhaGerada');
+
+    function gerarSenha() {
+        const tamanho = Number(document.getElementById('tamanhoSenha').value);
+        const incluirMaiusculas = document.getElementById('incluirMaiusculas').checked;
+        const incluirNumeros = document.getElementById('incluirNumeros').checked;
+        const incluirSimbolos = document.getElementById('incluirSimbolos').checked;
+
+        const caracteresMinusculos = 'abcdefghijklmnopqrstuvwxyz';
+        const caracteresMaiusculos = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const caracteresNumeros = '0123456789';
+        const caracteresSimbolos = '!@#$%^&*()_+[]{}|;:,.<>?';
+
+        let pool = caracteresMinusculos;
+        if (incluirMaiusculas) pool += caracteresMaiusculos;
+        if (incluirNumeros) pool += caracteresNumeros;
+        if (incluirSimbolos) pool += caracteresSimbolos;
+
+        if (pool.length === 0 || tamanho < 4) {
+            alert("Defina um tamanho mínimo de 4 e selecione pelo menos um tipo de caractere.");
+            return;
+        }
+
+        let senha = '';
+        for (let i = 0; i < tamanho; i++) {
+            const indiceAleatorio = Math.floor(Math.random() * pool.length);
+            senha += pool[indiceAleatorio];
+        }
+
+        senhaGeradaInput.value = senha;
+    }
+
+    function copiarSenha() {
+        if (senhaGeradaInput.value) {
+            navigator.clipboard.writeText(senhaGeradaInput.value)
+                .then(() => {
+                    alert("Senha copiada para a área de transferência!");
+                })
+                .catch(err => {
+                    console.error('Erro ao copiar: ', err);
+                    // Uso de fallback para navegadores sem HTTPS ou permissões (Embora pouco comum hoje)
+                    senhaGeradaInput.select();
+                    document.execCommand('copy');
+                    alert("Senha copiada (Fallback).");
+                });
+        }
+    }
+
+    if (btnGerarSenha) btnGerarSenha.addEventListener('click', gerarSenha);
+    if (btnCopiarSenha) btnCopiarSenha.addEventListener('click', copiarSenha);
+
+    // 12. Calculadora de Gorjeta
+    const gorjetaResultadoDiv = document.getElementById('gorjetaResultado');
+    const contaValorInput = document.getElementById('contaValor');
+    const gorjetaPorcentagemInput = document.getElementById('gorjetaPorcentagem');
+    const numPessoasInput = document.getElementById('numPessoas');
+
+    window.calcularGorjeta = function() {
+        const contaValor = parseFloat(contaValorInput.value);
+        const gorjetaPorcentagem = parseFloat(gorjetaPorcentagemInput.value);
+        const numPessoas = parseInt(numPessoasInput.value);
+
+        if (isNaN(contaValor) || contaValor <= 0 || isNaN(gorjetaPorcentagem) || isNaN(numPessoas) || numPessoas <= 0) {
+            gorjetaResultadoDiv.innerHTML = "⚠️ Por favor, insira valores válidos e positivos.";
+            return;
+        }
+
+        const gorjetaTotal = contaValor * (gorjetaPorcentagem / 100);
+        const totalComGorjeta = contaValor + gorjetaTotal;
+        const totalPorPessoa = totalComGorjeta / numPessoas;
+
+        gorjetaResultadoDiv.innerHTML = `
+            Gorjeta (${gorjetaPorcentagem}%): <strong>${formatCurrency(gorjetaTotal)}</strong><br>
+            Total da Conta: <strong>${formatCurrency(totalComGorjeta)}</strong><br>
+            Total por Pessoa (${numPessoas}x): <strong>${formatCurrency(totalPorPessoa)}</strong> 💵
+        `;
+    }
+
+    if (contaValorInput) {
+        calcularGorjeta();
+        const btnCalcularGorjeta = document.getElementById('btnCalcularGorjeta');
+        if (btnCalcularGorjeta) btnCalcularGorjeta.addEventListener('click', calcularGorjeta);
+    }
+
+
+    // 13. Mudança de Estilos Dinâmica (Editor de Estilos)
+    const corTextoInput = document.getElementById('corTexto');
+    const tamanhoFonteInput = document.getElementById('tamanhoFonte');
+    const blocoExemplo = document.getElementById('blocoExemplo');
+
+    function atualizarEstilos() {
+        if (blocoExemplo) {
+            blocoExemplo.style.color = corTextoInput.value;
+            blocoExemplo.style.fontSize = `${tamanhoFonteInput.value}px`;
+        }
+    }
+
+    if (corTextoInput) corTextoInput.addEventListener('input', atualizarEstilos);
+    if (tamanhoFonteInput) tamanhoFonteInput.addEventListener('input', atualizarEstilos);
+
+    // 14. Validador de Formulário Simples
+    const loginForm = document.getElementById('loginForm');
+    const emailInput = document.getElementById('loginEmail');
+    const senhaInput = document.getElementById('loginSenha');
+    const emailError = document.getElementById('emailError');
+    const senhaError = document.getElementById('senhaError');
+
+    function validarEmail(email) {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    }
+
+    function validarFormulario(e) {
+        e.preventDefault();
+
+        const email = emailInput.value.trim();
+        const senha = senhaInput.value;
+        let formValido = true;
+
+        emailError.textContent = '';
+        senhaError.textContent = '';
+
+        if (email === '') {
+            emailError.textContent = 'O email é obrigatório.';
+            formValido = false;
+        } else if (!validarEmail(email)) {
+            emailError.textContent = 'Por favor, insira um formato de email válido.';
+            formValido = false;
+        }
+
+        if (senha === '') {
+            senhaError.textContent = 'A senha é obrigatória.';
+            formValido = false;
+        } else if (senha.length < 6) {
+            senhaError.textContent = 'A senha deve ter no mínimo 6 caracteres.';
+            formValido = false;
+        }
+
+        if (formValido) {
+            alert(`Login bem-sucedido! Email: ${email}`);
+            loginForm.reset();
+        }
+    }
+
+    if (loginForm) loginForm.addEventListener('submit', validarFormulario);
+
+
+    // 15. Lista de Produtos Filtrável
+    const filtroProdutoInput = document.getElementById('filtroProduto');
+    const listaProdutosUL = document.getElementById('listaProdutos');
+
+    const produtos = [
+        { id: 1, nome: "Notebook Gamer", categoria: "Eletrônicos" },
+        { id: 2, nome: "Mouse Óptico", categoria: "Acessórios" },
+        { id: 3, nome: "Monitor 24 polegadas", categoria: "Eletrônicos" },
+        { id: 4, nome: "Teclado Mecânico", categoria: "Acessórios" },
+        { id: 5, nome: "Headset Pro", categoria: "Áudio" },
+        { id: 6, nome: "Webcam HD", categoria: "Acessórios" }
+    ];
+
+    function renderizarProdutos(lista) {
+        if (!listaProdutosUL) return;
+
+        listaProdutosUL.innerHTML = '';
+
+        if (lista.length === 0) {
+            listaProdutosUL.innerHTML = '<li>Nenhum produto encontrado.</li>';
+            return;
+        }
+
+        lista.forEach(produto => {
+            const li = document.createElement('li');
+            li.textContent = `${produto.nome} (${produto.categoria})`;
+            listaProdutosUL.appendChild(li);
+        });
+    }
+
+    function filtrarProdutos() {
+        if (!filtroProdutoInput) return;
+        const termo = filtroProdutoInput.value.toLowerCase().trim();
+
+        const produtosFiltrados = produtos.filter(produto =>
+            produto.nome.toLowerCase().includes(termo)
+        );
+
+        renderizarProdutos(produtosFiltrados);
+    }
+
+    if (filtroProdutoInput) {
+        filtroProdutoInput.addEventListener('input', filtrarProdutos);
+        renderizarProdutos(produtos);
+    }
+
+
+    // 16. Calculadora de Média (Lógica de Renderização e Remoção Aprimorada)
+    let notas = [];
+    const notaForm = document.getElementById('notaForm');
+    const notaInput = document.getElementById('notaInput');
+    const listaNotasUL = document.getElementById('listaNotas');
+    const mediaResultadoStrong = document.getElementById('mediaResultado');
+
+    function calcularMedia() {
+        if (!mediaResultadoStrong) return;
+        if (notas.length === 0) {
+            mediaResultadoStrong.textContent = '0.0';
+            return;
+        }
+        const soma = notas.reduce((acc, nota) => acc + nota, 0);
+        const media = (soma / notas.length).toFixed(1);
+        mediaResultadoStrong.textContent = media;
+    }
+
+    function renderizarNotas() {
+        if (!listaNotasUL) return;
+
+        listaNotasUL.innerHTML = '';
+        // Usamos forEach no array de notas para garantir que os índices correspondam ao array
+        notas.forEach((nota, index) => { 
+            const li = document.createElement('li');
+            li.style.cssText = `
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 5px 0;
+                border-bottom: 1px dotted var(--color-border);
+            `;
+            li.textContent = `Nota: ${nota}`;
+
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'Remover';
+            removeButton.style.cssText = `
+                background-color: #dc3545;
+                color: white;
+                border: none;
+                padding: 3px 8px;
+                cursor: pointer;
+                border-radius: 3px;
+                font-size: 0.8rem;
+            `;
+
+            // O listener remove a nota do array 'notas' pelo ÍNDICE
+            removeButton.addEventListener('click', () => {
+                notas.splice(index, 1); 
+                renderizarNotas(); // Re-renderiza a lista (os índices serão recalculados)
+            });
+
+            li.appendChild(removeButton);
+            listaNotasUL.appendChild(li);
+        });
+        calcularMedia();
+    }
+
+    if (notaForm) {
+        notaForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nota = parseFloat(notaInput.value);
+
+            if (isNaN(nota) || nota < 0 || nota > 10) {
+                alert("Por favor, insira uma nota válida entre 0 e 10.");
+                return;
+            }
+
+            notas.push(nota);
+            notaInput.value = '';
+            notaInput.focus();
+
+            renderizarNotas();
+        });
+    }
+    // Renderiza a lista inicial
+    renderizarNotas();
+
+
+    // 17. Gerador de Cores Aleatórias (RGB)
+    const btnGerarCor = document.getElementById('btnGerarCor');
+    const corBox = document.getElementById('corBox');
+    const codigoCorP = document.getElementById('codigoCor');
+
+    function gerarCorAleatoria() {
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+
+        const corRGB = `rgb(${r}, ${g}, ${b})`;
+
+        // Cálculo de Luminância para garantir contraste de texto (0.299R + 0.587G + 0.114B)
+        const luminancia = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        const corTexto = (luminancia > 0.5) ? '#333333' : '#ffffff';
+
+        if (corBox && codigoCorP) {
+            corBox.style.backgroundColor = corRGB;
+            codigoCorP.textContent = corRGB.toUpperCase();
+            codigoCorP.style.color = corTexto;
+        }
+    }
+
+    if (btnGerarCor) {
+        btnGerarCor.addEventListener('click', gerarCorAleatoria);
+        gerarCorAleatoria(); // Gera uma cor inicial
+    }
+
+
+    // 18. Conversor de Unidades (Dropdown/Select)
+    const btnConverterUnidade = document.getElementById('btnConverterUnidade');
+    const tipoConversaoSelect = document.getElementById('tipoConversao');
+    const valorOriginalInput = document.getElementById('valorOriginal');
+    const conversaoResultadoDiv = document.getElementById('conversaoResultado');
+
+    function converterUnidade() {
+        if (!tipoConversaoSelect || !valorOriginalInput) return;
+        const tipo = tipoConversaoSelect.value;
+        const valor = parseFloat(valorOriginalInput.value);
+
+        if (isNaN(valor)) {
+            conversaoResultadoDiv.innerHTML = "⚠️ Por favor, insira um valor numérico válido.";
+            return;
+        }
+
+        let resultado;
+        let unidadeOriginal;
+        let unidadeConvertida;
+        const fatorKmMi = 0.621371;
+        const fatorLGal = 0.264172;
+
+        switch(tipo) {
+            case 'km_mi':
+                resultado = (valor * fatorKmMi).toFixed(3);
+                unidadeOriginal = 'Km';
+                unidadeConvertida = 'Milhas';
+                break;
+            case 'l_gal':
+                resultado = (valor * fatorLGal).toFixed(3);
+                unidadeOriginal = 'Litros';
+                unidadeConvertida = 'Galões (EUA)';
+                break;
+            default:
+                conversaoResultadoDiv.innerHTML = "Erro na seleção de conversão.";
+                return;
+        }
+
+        conversaoResultadoDiv.innerHTML = `
+            ${valor} ${unidadeOriginal} é igual a: <strong style="color: var(--color-primary);">${resultado} ${unidadeConvertida}</strong>.
+        `;
+    }
+
+    if (btnConverterUnidade) {
+        btnConverterUnidade.addEventListener('click', converterUnidade);
+        tipoConversaoSelect.addEventListener('change', converterUnidade);
+        valorOriginalInput.addEventListener('input', converterUnidade);
+
+        converterUnidade();
+    }
+
+
+    // 19. Contador de Caracteres e Palavras
+    const textoInput = document.getElementById('textoInput');
+    const contadorCaracteresStrong = document.getElementById('contadorCaracteres');
+    const contadorPalavrasStrong = document.getElementById('contadorPalavras');
+
+    function contarTexto() {
+        if (!textoInput) return;
+
+        const texto = textoInput.value;
+
+        contadorCaracteresStrong.textContent = texto.length;
+
+        // Divide o texto por um ou mais espaços/quebras de linha e remove entradas vazias (filter)
+        const palavras = texto.trim().split(/\s+/).filter(word => word.length > 0);
+
+        if (texto.trim() === "") {
+            contadorPalavrasStrong.textContent = 0;
+        } else {
+            contadorPalavrasStrong.textContent = palavras.length;
+        }
+    }
+
+    if (textoInput) {
+        textoInput.addEventListener('input', contarTexto);
+        contarTexto(); // Conta ao carregar (se houver texto inicial)
+    }
 
 // 20. Calculadora de Mercado
-(function(){
-  const form = qs('#mercadoForm');
-  const nome = qs('#produtoNome');
-  const qtd = qs('#produtoQtd');
-  const valor = qs('#produtoValor');
-  const list = qs('#listaMercado');
-  const desconto = qs('#descontoMercado');
-  const out = qs('#totalMercado');
-  let items = load('marketItems', []);
-  function render() {
-    list.innerHTML = '';
-    items.forEach((it,i) => {
-      const li = document.createElement('li');
-      li.style.display = 'flex';
-      li.style.justifyContent = 'space-between';
-      li.innerHTML = `<span>${it.name} x${it.qtd} — ${fmtBRL(it.valor)}</span><div><button data-del="${i}" style="background:#dc3545;color:#fff;border:none;padding:2px 6px;border-radius:4px;">X</button></div>`;
-      list.appendChild(li);
-    });
-    calcularTotal();
-  }
-  function calcularTotal() {
-    const subtotal = items.reduce((s,it)=>s + (it.qtd * it.valor), 0);
-    const pct = Math.min(100, Math.max(0, Number(desconto.value) || 0));
-    const desc = subtotal * (pct/100);
-    const total = subtotal - desc;
-    out.innerHTML = `Subtotal: ${fmtBRL(subtotal)}<br>Desconto: ${fmtBRL(desc)}<br><strong>Total: ${fmtBRL(total)}</strong>`;
-  }
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const n = (nome.value || '').trim();
-    const q = Math.max(1, Number(qtd.value) || 1);
-    const v = Math.max(0, Number(valor.value) || 0);
-    if (!n) return;
-    items.push({ name: n, qtd: q, valor: v });
-    save('marketItems', items);
-    nome.value = '';
-    qtd.value = 1;
-    valor.value = '';
-    render();
-  });
-  list.addEventListener('click', e => {
-    const del = e.target.dataset.del;
-    if (del !== undefined) {
-      items.splice(del,1);
-      save('marketItems', items);
-      render();
-    }
-  });
-  desconto.addEventListener('input', () => { calcularTotal(); save('marketDiscount', desconto.value); });
-  desconto.value = load('marketDiscount', desconto.value);
-  render();
-})();
+    let itensMercado = [];
+    const mercadoForm = document.getElementById('mercadoForm');
+    const produtoNome = document.getElementById('produtoNome');
+    const produtoQtd = document.getElementById('produtoQtd');
+    const produtoValor = document.getElementById('produtoValor');
+    const listaMercado = document.getElementById('listaMercado');
+    const descontoMercado = document.getElementById('descontoMercado');
+    const totalMercadoDiv = document.getElementById('totalMercado');
 
-// 21. Rateio de Contas
-(function(){
-  const form = qs('#rateioForm');
-  const nome = qs('#nomePessoa');
-  const pct = qs('#porcentagemPessoa');
-  const list = qs('#listaPessoas');
-  const valorInp = qs('#valorConta');
-  const out = qs('#resultadoRateio');
-  const aviso = qs('#avisoRateio');
-  let pessoas = load('rateioPessoas', []);
-  function render() {
-    list.innerHTML = '';
-    pessoas.forEach((p,i) => {
-      const li = document.createElement('li');
-      li.style.display = 'flex';
-      li.style.justifyContent = 'space-between';
-      li.innerHTML = `<span>${p.name} — ${p.pct}%</span><div><button data-del="${i}" style="background:#dc3545;color:#fff;border:none;padding:2px 6px;border-radius:4px;">X</button></div>`;
-      list.appendChild(li);
-    });
-    calcular();
-  }
-  function calcular() {
-    const total = Number(valorInp.value) || 0;
-    const sumPct = pessoas.reduce((s,p)=>s+p.pct,0);
-    if (pessoas.length === 0) return out.textContent = 'Adicione pessoas para calcular o rateio.';
-    if (sumPct !== 100) {
-      aviso.textContent = `Soma das porcentagens = ${sumPct}%. Deve ser exatamente 100%.`;
-    } else {
-      aviso.textContent = '';
+    function renderizarMercado() {
+        if (!listaMercado) return;
+        listaMercado.innerHTML = '';
+        let subtotal = 0;
+
+        if(itensMercado.length === 0){
+            listaMercado.innerHTML = '<li>Nenhum item adicionado.</li>';
+        }
+
+        itensMercado.forEach((item, index) => {
+            const itemTotal = item.qtd * item.valor;
+            subtotal += itemTotal;
+
+            const li = document.createElement('li');
+            li.style.cssText = `
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 0;
+                border-bottom: 1px dashed var(--color-border);
+            `;
+            li.innerHTML = `
+                <span>${item.nome} - ${item.qtd}x ${formatCurrency(item.valor)} = <strong>${formatCurrency(itemTotal)}</strong></span>
+                <button style="background-color: #dc3545; padding: 4px 8px; font-size: 0.8rem;" onclick="removerItemMercado(${index})">Remover</button>
+            `;
+            listaMercado.appendChild(li);
+        });
+
+        calcularTotalMercado(subtotal);
     }
-    let html = '';
-    pessoas.forEach(p => {
-      const valor = total * (p.pct/100);
-      html += `${p.name}: ${fmtBRL(valor)} (${p.pct}%)<br>`;
-    });
-    out.innerHTML = html;
-  }
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const n = (nome.value || '').trim();
-    const p = Math.min(100, Math.max(0, Number(pct.value) || 0));
-    if (!n) return;
-    pessoas.push({ name: n, pct: p });
-    save('rateioPessoas', pessoas);
-    nome.value=''; pct.value='25';
-    render();
-  });
-  list.addEventListener('click', e => {
-    const del = e.target.dataset.del;
-    if (del !== undefined) {
-      pessoas.splice(del,1);
-      save('rateioPessoas', pessoas);
-      render();
+
+    window.removerItemMercado = function(index) {
+        itensMercado.splice(index, 1);
+        renderizarMercado();
     }
-  });
-  valorInp.addEventListener('input', calcular);
-  render();
-})();
+
+    window.calcularTotalMercado = function(subtotal = 0) {
+        if(itensMercado.length > 0 && subtotal === 0){
+            subtotal = itensMercado.reduce((acc, item) => acc + (item.qtd * item.valor), 0);
+        }
+
+        const descontoPerc = parseFloat(descontoMercado.value) || 0;
+        const valorDesconto = subtotal * (descontoPerc / 100);
+        const totalFinal = subtotal - valorDesconto;
+
+        totalMercadoDiv.innerHTML = `
+            Subtotal: ${formatCurrency(subtotal)}<br>
+            Desconto (${descontoPerc}%): -${formatCurrency(valorDesconto)}<br>
+            <strong>Total: ${formatCurrency(totalFinal)}</strong> 🛒
+        `;
+    }
+
+    if (mercadoForm) {
+        mercadoForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const nome = produtoNome.value.trim();
+            const qtd = parseFloat(produtoQtd.value);
+            const valor = parseFloat(produtoValor.value);
+
+            if (nome === '' || isNaN(qtd) || qtd <= 0 || isNaN(valor) || valor < 0) {
+                alert("Por favor, preencha nome, quantidade e valor válidos.");
+                return;
+            }
+
+            itensMercado.push({ nome, qtd, valor });
+
+            produtoNome.value = '';
+            produtoQtd.value = '1';
+            produtoValor.value = '';
+            produtoNome.focus();
+
+            renderizarMercado();
+        });
+    }
+
+    // Atualiza total quando muda desconto
+    if(descontoMercado) descontoMercado.addEventListener('input', () => calcularTotalMercado());
+
+    renderizarMercado(); // Carrega inicial
+
+// 21. Calculadora de Rateio de Contas
+    let pessoasRateio = [];
+    const rateioForm = document.getElementById('rateioForm');
+    const nomePessoa = document.getElementById('nomePessoa');
+    const porcentagemPessoa = document.getElementById('porcentagemPessoa');
+    const valorConta = document.getElementById('valorConta');
+    const listaPessoas = document.getElementById('listaPessoas');
+    const resultadoRateio = document.getElementById('resultadoRateio');
+    const avisoRateio = document.getElementById('avisoRateio');
+
+    function renderizarRateio() {
+        if (!listaPessoas) return;
+        listaPessoas.innerHTML = '';
+        let totalPorcentagem = 0;
+
+        if(pessoasRateio.length === 0){
+            listaPessoas.innerHTML = '<li>Nenhuma pessoa adicionada.</li>';
+        }
+
+        pessoasRateio.forEach((pessoa, index) => {
+            totalPorcentagem += pessoa.porcentagem;
+
+            const li = document.createElement('li');
+            li.style.cssText = `
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 0;
+                border-bottom: 1px dashed var(--color-border);
+            `;
+            li.innerHTML = `
+                <span><strong>${pessoa.nome}</strong> - ${pessoa.porcentagem}%</span>
+                <button style="background-color: #dc3545; padding: 4px 8px; font-size: 0.8rem;" onclick="removerPessoaRateio(${index})">Remover</button>
+            `;
+            listaPessoas.appendChild(li);
+        });
+
+        // Aviso se a soma não dá 100%
+        if(totalPorcentagem !== 100 && pessoasRateio.length > 0){
+            avisoRateio.textContent = `Atenção: A soma das % está em ${totalPorcentagem}%. O ideal é 100%.`;
+        } else {
+            avisoRateio.textContent = '';
+        }
+
+        calcularRateio();
+    }
+
+    window.removerPessoaRateio = function(index) {
+        pessoasRateio.splice(index, 1);
+        renderizarRateio();
+    }
+
+    window.calcularRateio = function() {
+        const valorTotal = parseFloat(valorConta.value) || 0;
+
+        if(pessoasRateio.length === 0 || valorTotal <= 0){
+            resultadoRateio.innerHTML = "Adicione pessoas e um valor para calcular.";
+            return;
+        }
+
+        let htmlResultado = '';
+        pessoasRateio.forEach(pessoa => {
+            const valorPessoa = valorTotal * (pessoa.porcentagem / 100);
+            htmlResultado += `${pessoa.nome}: <strong>${formatCurrency(valorPessoa)}</strong> (${pessoa.porcentagem}%)<br>`;
+        });
+
+        resultadoRateio.innerHTML = htmlResultado;
+    }
+
+    if (rateioForm) {
+        rateioForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const nome = nomePessoa.value.trim();
+            const porcentagem = parseFloat(porcentagemPessoa.value);
+
+            if (nome === '' || isNaN(porcentagem) || porcentagem <= 0) {
+                alert("Por favor, preencha nome e % válida.");
+                return;
+            }
+
+            pessoasRateio.push({ nome, porcentagem });
+
+            nomePessoa.value = '';
+            porcentagemPessoa.value = '25';
+            nomePessoa.focus();
+
+            renderizarRateio();
+        });
+    }
+
+    if(valorConta) valorConta.addEventListener('input', calcularRateio);
+
+    renderizarRateio();
+
 
 // 22. Jogo da Memória
-(function(){
-  const board = qs('#tabuleiroMemoria');
-  const result = qs('#resultadoMemoria');
-  const clicksDisplay = qs('#clicksMemoria');
-  let cards = [];
-  let flipped = [];
-  let matched = new Set();
-  let clicks = 0;
-  function createPairs(nPairs=8) {
-    const base = Array.from({length:nPairs}, (_,i) => i+1);
-    const arr = base.concat(base).sort(()=>Math.random()-0.5);
-    return arr;
-  }
-  window.iniciarJogoMemoria = function() {
-    cards = createPairs(8);
-    matched = new Set();
-    flipped = [];
-    clicks = 0;
-    clicksDisplay.textContent = clicks;
-    render();
-    result.textContent = '';
-  };
-  function render() {
-    board.innerHTML = '';
-    board.style.gridTemplateColumns = 'repeat(4, 1fr)';
-    cards.forEach((val, idx) => {
-      const btn = document.createElement('button');
-      btn.className = 'mem-card';
-      btn.style.padding = '20px';
-      btn.style.fontSize = '1.2rem';
-      btn.dataset.i = idx;
-      if (matched.has(idx)) {
-        btn.textContent = val;
-        btn.disabled = true;
-        btn.style.background = '#28a745';
-        btn.style.color = '#fff';
-      } else if (flipped.includes(idx)) {
-        btn.textContent = val;
-      } else {
-        btn.textContent = '?';
-      }
-      board.appendChild(btn);
-    });
-  }
-  board.addEventListener('click', e => {
-    const btn = e.target.closest('button');
-    if (!btn) return;
-    const i = Number(btn.dataset.i);
-    if (matched.has(i) || flipped.includes(i)) return;
-    flipped.push(i);
-    clicks++;
-    clicksDisplay.textContent = clicks;
-    if (flipped.length === 2) {
-      const [a,b] = flipped;
-      if (cards[a] === cards[b]) {
-        matched.add(a); matched.add(b);
-        flipped = [];
-        render();
-        if (matched.size === cards.length) result.textContent = `Você venceu em ${clicks} cliques!`;
-      } else {
-        render();
-        setTimeout(()=>{ flipped = []; render(); }, 700);
-      }
-    } else {
-      render();
+    const emojis = ['🍎', '🍌', '🍇', '🍓', '🍊', '🍉', '🍍', '🥝'];
+    let cartas = [...emojis, ...emojis]; // Duplica pra fazer os pares
+    let primeiraCarta = null;
+    let segundaCarta = null;
+    let travarTabuleiro = false;
+    let paresEncontrados = 0;
+    let clicksMemoria = 0;
+
+    const tabuleiroMemoria = document.getElementById('tabuleiroMemoria');
+    const clicksDisplay = document.getElementById('clicksMemoria');
+    const resultadoMemoria = document.getElementById('resultadoMemoria');
+
+    function embaralhar(array) {
+        return array.sort(() => Math.random() - 0.5);
     }
-  });
-  // start automatically
-  window.iniciarJogoMemoria();
-})();
+
+    window.iniciarJogoMemoria = function() {
+        cartas = embaralhar([...emojis, ...emojis]);
+        tabuleiroMemoria.innerHTML = '';
+        primeiraCarta = null;
+        segundaCarta = null;
+        travarTabuleiro = false;
+        paresEncontrados = 0;
+        clicksMemoria = 0;
+        clicksDisplay.textContent = 0;
+        resultadoMemoria.innerHTML = 'Clique nas cartas para começar!';
+
+        cartas.forEach((emoji, index) => {
+            const cartaDiv = document.createElement('div');
+            cartaDiv.classList.add('carta');
+            cartaDiv.dataset.emoji = emoji;
+            cartaDiv.dataset.index = index;
+            cartaDiv.innerHTML = '?'; // Verso da carta
+
+            cartaDiv.addEventListener('click', virarCarta);
+            tabuleiroMemoria.appendChild(cartaDiv);
+        });
+    }
+
+    function virarCarta() {
+        if (travarTabuleiro) return;
+        if (this === primeiraCarta) return;
+        if (this.classList.contains('virada')) return;
+
+        this.classList.add('virada');
+        this.innerHTML = this.dataset.emoji;
+        clicksMemoria++;
+        clicksDisplay.textContent = clicksMemoria;
+
+        if (!primeiraCarta) {
+            primeiraCarta = this;
+            return;
+        }
+
+        segundaCarta = this;
+        travarTabuleiro = true;
+        checarPar();
+    }
+
+    function checarPar() {
+        let acertou = primeiraCarta.dataset.emoji === segundaCarta.dataset.emoji;
+
+        if (acertou) {
+            desativarCartas();
+        } else {
+            desvirarCartas();
+        }
+    }
+
+    function desativarCartas() {
+        primeiraCarta.classList.add('acertou');
+        segundaCarta.classList.add('acertou');
+        primeiraCarta.removeEventListener('click', virarCarta);
+        segundaCarta.removeEventListener('click', virarCarta);
+        resetarTurno();
+        paresEncontrados++;
+
+        if (paresEncontrados === emojis.length) {
+            resultadoMemoria.innerHTML = `🎉 Parabéns! Você venceu em ${clicksMemoria} cliques!`;
+        }
+    }
+
+    function desvirarCartas() {
+        setTimeout(() => {
+            primeiraCarta.classList.remove('virada');
+            segundaCarta.classList.remove('virada');
+            primeiraCarta.innerHTML = '?';
+            segundaCarta.innerHTML = '?';
+            resetarTurno();
+        }, 1000);
+    }
+
+    function resetarTurno() {
+        [primeiraCarta, segundaCarta, travarTabuleiro] = [null, null, false];
+    }
+
+    iniciarJogoMemoria(); // Inicia quando carrega a página
 
 // 23. Pedra Papel Tesoura
-(function(){
-  const placarVoce = qs('#placarVoce');
-  const placarPc = qs('#placarPc');
-  const res = qs('#resultadoPPT');
-  let placar = load('pptPlacar', {you:0,pc:0});
-  function render() {
-    placarVoce.textContent = placar.you;
-    placarPc.textContent = placar.pc;
-  }
-  window.jogar = function(choice) {
-    const options = ['pedra','papel','tesoura'];
-    const pc = options[Math.floor(Math.random()*options.length)];
-    let outcome = '';
-    if (choice === pc) outcome = 'Empate';
-    else if ((choice==='pedra' && pc==='tesoura') || (choice==='papel' && pc==='pedra') || (choice==='tesoura' && pc==='papel')) {
-      outcome = 'Você venceu!';
-      placar.you++;
-    } else {
-      outcome = 'PC venceu!';
-      placar.pc++;
+    let placarVoce = 0;
+    let placarPc = 0;
+    const opcoes = ['pedra', 'papel', 'tesoura'];
+    const emojisPPT = { pedra: '✊', papel: '✋', tesoura: '✌️' };
+
+    window.jogar = function(escolhaVoce) {
+        const escolhaPc = opcoes[Math.floor(Math.random() * 3)];
+        let resultado = '';
+
+        if (escolhaVoce === escolhaPc) {
+            resultado = 'Empate! 🤝';
+        } else if (
+            (escolhaVoce === 'pedra' && escolhaPc === 'tesoura') ||
+            (escolhaVoce === 'papel' && escolhaPc === 'pedra') ||
+            (escolhaVoce === 'tesoura' && escolhaPc === 'papel')
+        ) {
+            resultado = 'Você Ganhou! 🎉';
+            placarVoce++;
+        } else {
+            resultado = 'PC Ganhou! 🤖';
+            placarPc++;
+        }
+
+        document.getElementById('placarVoce').textContent = placarVoce;
+        document.getElementById('placarPc').textContent = placarPc;
+        document.getElementById('resultadoPPT').innerHTML = `
+            Você: ${emojisPPT[escolhaVoce]} ${escolhaVoce.toUpperCase()}<br>
+            PC: ${emojisPPT[escolhaPc]} ${escolhaPc.toUpperCase()}<br>
+            <strong>${resultado}</strong>
+        `;
     }
-    res.textContent = `Você: ${choice} — PC: ${pc}. ${outcome}`;
-    save('pptPlacar', placar);
-    render();
-  };
-  window.resetarPlacarPPT = function() {
-    placar = {you:0,pc:0};
-    save('pptPlacar', placar);
-    render();
-    qs('#resultadoPPT').textContent = 'Placar zerado.';
-  };
-  render();
-})();
+
+    window.resetarPlacarPPT = function() {
+        placarVoce = 0;
+        placarPc = 0;
+        document.getElementById('placarVoce').textContent = 0;
+        document.getElementById('placarPc').textContent = 0;
+        document.getElementById('resultadoPPT').innerHTML = 'Placar zerado! Vamos jogar!';
+    }
 
 // 24. Clique Rápido
-(function(){
-  const btnStart = qs('#btnIniciarClique');
-  const btnClick = qs('#btnClicar');
-  const tempoDisplay = qs('#tempoClique');
-  const totalDisplay = qs('#totalCliques');
-  const resultado = qs('#resultadoClique');
-  let total = 0;
-  let timer = null;
-  btnStart.addEventListener('click', () => {
-    const t = Number(tempoDisplay.textContent) || 10;
-    total = 0;
-    totalDisplay.textContent = total;
-    btnClick.disabled = false;
-    btnStart.disabled = true;
-    resultado.textContent = 'Clique!';
-    timer = setTimeout(() => {
-      btnClick.disabled = true;
-      btnStart.disabled = false;
-      resultado.textContent = `Tempo esgotado! Total de cliques: ${total}`;
-    }, t*1000);
-  });
-  btnClick.addEventListener('click', () => {
-    total++;
-    totalDisplay.textContent = total;
-  });
-})();
+    let tempoRestante = 10;
+    let totalCliques = 0;
+    let jogoRodando = false;
+    let intervaloClique;
+
+    const btnIniciarClique = document.getElementById('btnIniciarClique');
+    const btnClicar = document.getElementById('btnClicar');
+    const tempoDisplay = document.getElementById('tempoClique');
+    const totalDisplay = document.getElementById('totalCliques');
+    const resultadoClique = document.getElementById('resultadoClique');
+
+    btnIniciarClique.addEventListener('click', function() {
+        tempoRestante = 10;
+        totalCliques = 0;
+        jogoRodando = true;
+        totalDisplay.textContent = 0;
+        tempoDisplay.textContent = 10;
+        resultadoClique.innerHTML = 'VALENDO! CLICA! CLICA!';
+
+        btnIniciarClique.disabled = true;
+        btnClicar.disabled = false;
+
+        intervaloClique = setInterval(() => {
+            tempoRestante--;
+            tempoDisplay.textContent = tempoRestante;
+            if (tempoRestante <= 0) {
+                clearInterval(intervaloClique);
+                jogoRodando = false;
+                btnIniciarClique.disabled = false;
+                btnClicar.disabled = true;
+
+                let nivel = totalCliques < 20 ? 'Iniciante 🐢' : totalCliques < 40 ? 'Rápido ⚡' : 'Lenda! 🔥';
+                resultadoClique.innerHTML = `Tempo Esgotado!<br>Total: <strong>${totalCliques} cliques</strong><br>Nível: ${nivel}`;
+            }
+        }, 1000);
+    });
+
+    btnClicar.addEventListener('click', function() {
+        if (jogoRodando) {
+            totalCliques++;
+            totalDisplay.textContent = totalCliques;
+        }
+    });
 
 // 25. Quiz Relâmpago
-(function(){
-  const area = qs('#areaPergunta');
-  const texto = qs('#textoPergunta');
-  const opcoes = qs('#opcoesQuiz');
-  const pontosEl = qs('#pontosQuiz');
-  const numPerg = qs('#numPergunta');
-  const resultado = qs('#resultadoQuiz');
-  let perguntas = [
-    {q:'Qual a capital do Brasil?', options:['Brasília','São Paulo','Rio de Janeiro','Salvador'], a:0},
-    {q:'2 + 2 * 2 = ?', options:['6','8','4','10'], a:0},
-    {q:'Linguagem principal para web (front-end)?', options:['Python','Java','JavaScript','C++'], a:2},
-    {q:'Qual é o mês com menos dias?', options:['Fevereiro','Abril','Junho','Setembro'], a:0},
-    {q:'HTML é usado para?', options:['Estilizar páginas','Estruturar conteúdo','Programar lógica','Banco de dados'], a:1}
-  ];
-  let index = 0, pontos = 0;
-  function render() {
-    const p = perguntas[index];
-    texto.textContent = p.q;
-    opcoes.innerHTML = '';
-    p.options.forEach((opt,i) => {
-      const btn = document.createElement('button');
-      btn.textContent = opt;
-      btn.style.margin = '4px 0';
-      btn.addEventListener('click', () => {
-        if (i === p.a) { pontos++; }
-        index++;
-        pontosEl.textContent = pontos;
-        numPerg.textContent = Math.min(index+1, perguntas.length);
-        if (index >= perguntas.length) {
-          area.style.display = 'none';
-          resultado.style.display = 'block';
-          resultado.textContent = `Quiz finalizado! Pontos: ${pontos}/${perguntas.length}`;
-        } else render();
-      });
-      opcoes.appendChild(btn);
-    });
-    pontosEl.textContent = pontos;
-    numPerg.textContent = index+1;
-  }
-  window.iniciarQuiz = function() {
-    index = 0; pontos = 0;
-    perguntas = perguntas.sort(()=>Math.random()-0.5).slice(0,5);
-    area.style.display = 'block';
-    resultado.style.display = 'none';
-    render();
-  };
-  // start
-  window.iniciarQuiz();
-})();
+    const perguntas = [
+        { pergunta: "Qual a capital do Brasil?", opcoes: ["São Paulo", "Brasília", "Rio de Janeiro"], correta: 1 },
+        { pergunta: "2 + 2 * 2 é igual a?", opcoes: ["6", "8", "4"], correta: 0 },
+        { pergunta: "Qual linguagem roda no navegador?", opcoes: ["Python", "JavaScript", "C++"], correta: 1 },
+        { pergunta: "Quantos bits tem 1 Byte?", opcoes: ["4", "8", "16"], correta: 1 },
+        { pergunta: "CSS significa?", opcoes: ["Cascading Style Sheets", "Computer Style System", "Colorful Style Sheet"], correta: 0 }
+    ];
+    let indiceAtual = 0;
+    let pontos = 0;
 
-// 26. Jogo da Velha vs PC (suave/aleatório)
-(function(){
-  const boardEl = qs('#tabuleiroVelha');
-  const vezEl = qs('#vezJogador');
-  const result = qs('#resultadoVelha');
-  const sizeSel = qs('#tamanhoTabuleiro');
-  const qtdWinSel = qs('#qtdParaGanhar');
-  let board = [];
-  let size = 3;
-  let toWin = 3;
-  let turn = 'X'; // X = player, O = PC
-  function initBoard(s) {
-    size = s;
-    board = Array.from({length:s}, () => Array.from({length:s}, () => ''));
-    boardEl.innerHTML = '';
-    boardEl.style.display = 'grid';
-    boardEl.style.gridTemplateColumns = `repeat(${s}, 1fr)`;
-    boardEl.style.gap = '6px';
-    for (let r=0;r<s;r++) for (let c=0;c<s;c++) {
-      const cell = document.createElement('button');
-      cell.style.height = '50px';
-      cell.style.fontSize = '1.2rem';
-      cell.dataset.r = r; cell.dataset.c = c;
-      cell.addEventListener('click', onCellClick);
-      boardEl.appendChild(cell);
+    function iniciarQuiz() {
+        indiceAtual = 0;
+        pontos = 0;
+        document.getElementById('pontosQuiz').textContent = 0;
+        document.getElementById('resultadoQuiz').style.display = 'none';
+        document.getElementById('areaPergunta').style.display = 'block';
+        mostrarPergunta();
     }
-    turn = 'X';
-    vezEl.textContent = 'X - Você';
-    result.textContent = '';
-  }
-  function onCellClick(e) {
-    const r = Number(e.currentTarget.dataset.r);
-    const c = Number(e.currentTarget.dataset.c);
-    if (board[r][c] || turn !== 'X') return;
-    board[r][c] = 'X';
-    renderBoard();
-    if (checkWin('X')) { result.textContent = 'Você venceu!'; return; }
-    if (isFull()) { result.textContent = 'Empate!'; return; }
-    turn = 'O';
-    vezEl.textContent = 'O - PC';
-    setTimeout(pcMove, 300);
-  }
-  function pcMove() {
-    // Simple AI: try to win, block, otherwise random
-    const move = findBestMove('O') || findBestMove('X') || randomMove();
-    if (move) {
-      board[move.r][move.c] = 'O';
-      renderBoard();
-      if (checkWin('O')) { result.textContent = 'PC venceu!'; return; }
-      if (isFull()) { result.textContent = 'Empate!'; return; }
-    }
-    turn = 'X';
-    vezEl.textContent = 'X - Você';
-  }
-  function randomMove() {
-    const empties = [];
-    for (let r=0;r<size;r++) for (let c=0;c<size;c++) if (!board[r][c]) empties.push({r,c});
-    if (!empties.length) return null;
-    return empties[Math.floor(Math.random()*empties.length)];
-  }
-  // Very simple pattern checker to try 1-move win/block by checking lines
-  function findBestMove(player) {
-    for (let r=0;r<size;r++) for (let c=0;c<size;c++) {
-      if (!board[r][c]) {
-        board[r][c] = player;
-        const canWin = checkWin(player);
-        board[r][c] = '';
-        if (canWin) return {r,c};
-      }
-    }
-    return null;
-  }
-  function isFull() { return board.flat().every(x=>x); }
-  function checkWin(player) {
-    const k = parseInt(qtdWinSel.value,10) || toWin;
-    // check rows
-    for (let r=0;r<size;r++) {
-      for (let c=0;c<=size-k;c++) {
-        let ok=true;
-        for (let t=0;t<k;t++) if (board[r][c+t] !== player) { ok=false; break; }
-        if (ok) return true;
-      }
-    }
-    // cols
-    for (let c=0;c<size;c++) {
-      for (let r=0;r<=size-k;r++) {
-        let ok=true;
-        for (let t=0;t<k;t++) if (board[r+t][c] !== player) { ok=false; break; }
-        if (ok) return true;
-      }
-    }
-    // diag down-right
-    for (let r=0;r<=size-k;r++) for (let c=0;c<=size-k;c++) {
-      let ok=true;
-      for (let t=0;t<k;t++) if (board[r+t][c+t] !== player) { ok=false; break; }
-      if (ok) return true;
-    }
-    // diag up-right
-    for (let r=k-1;r<size;r++) for (let c=0;c<=size-k;c++) {
-      let ok=true;
-      for (let t=0;t<k;t++) if (board[r-t][c+t] !== player) { ok=false; break; }
-      if (ok) return true;
-    }
-    return false;
-  }
-  function renderBoard() {
-    const cells = qsa('#tabuleiroVelha button');
-    cells.forEach(btn => {
-      const r = Number(btn.dataset.r), c = Number(btn.dataset.c);
-      const val = board[r][c];
-      btn.textContent = val;
-      btn.disabled = !!val || !!result.textContent;
-      btn.style.background = val === 'X' ? '#007bff' : val === 'O' ? '#6c757d' : '';
-      btn.style.color = val ? '#fff' : '';
-    });
-  }
-  window.iniciarJogoVelha = function() {
-    initBoard(Number(sizeSel.value) || 3);
-  };
-  sizeSel.addEventListener('change', () => iniciarJogoVelha());
-  qtdWinSel.addEventListener('change', () => { iniciarJogoVelha(); });
-  // init
-  iniciarJogoVelha();
-})();
 
-// Accessibility: ensure game buttons that rely on onclick in HTML are available globally
-window.adivinhar = window.adivinhar || function(){};
-window.reiniciar = window.reiniciar || function(){};
-window.limparImc = window.limparImc || function(){};
-window.iniciarJogoMemoria = window.iniciarJogoMemoria || function(){};
-window.jogar = window.jogar || function(){};
-window.resetarPlacarPPT = window.resetarPlacarPPT || function(){};
-window.iniciarQuiz = window.iniciarQuiz || function(){};
-window.iniciarJogoVelha = window.iniciarJogoVelha || function(){};
+    function mostrarPergunta() {
+        if (indiceAtual >= perguntas.length) {
+            finalizarQuiz();
+            return;
+        }
+
+        const p = perguntas[indiceAtual];
+        document.getElementById('numPergunta').textContent = indiceAtual + 1;
+        document.getElementById('textoPergunta').textContent = p.pergunta;
+
+        const divOpcoes = document.getElementById('opcoesQuiz');
+        divOpcoes.innerHTML = '';
+
+        p.opcoes.forEach((opcao, index) => {
+            const btn = document.createElement('button');
+            btn.textContent = opcao;
+            btn.onclick = () => verificarResposta(index);
+            divOpcoes.appendChild(btn);
+        });
+    }
+
+    function verificarResposta(escolha) {
+        const correta = perguntas[indiceAtual].correta;
+        if (escolha === correta) {
+            pontos++;
+            document.getElementById('pontosQuiz').textContent = pontos;
+        }
+        indiceAtual++;
+        mostrarPergunta();
+    }
+
+    function finalizarQuiz() {
+        document.getElementById('areaPergunta').style.display = 'none';
+        const resultadoDiv = document.getElementById('resultadoQuiz');
+        resultadoDiv.style.display = 'block';
+        let msg = pontos === 5 ? 'Perfeito! 🏆' : pontos >= 3 ? 'Mandou bem! 👏' : 'Treina mais! 💪';
+        resultadoDiv.innerHTML = `Fim de Jogo!<br>Você acertou <strong>${pontos}/5</strong><br>${msg}`;
+    }
+
+    iniciarQuiz(); // Carrega na primeira vez
+
+// 26. Jogo da Velha vs PC
+    let tabuleiro = [];
+    let jogadorAtual = 'X'; // X = Você, O = PC
+    let tamanho = 3;
+    let qtdParaGanhar = 3;
+    let jogoAtivo = true;
+    let celulasVitoria = [];
+
+    const tabuleiroVelha = document.getElementById('tabuleiroVelha');
+    const vezJogador = document.getElementById('vezJogador');
+    const resultadoVelha = document.getElementById('resultadoVelha');
+    const selectTamanho = document.getElementById('tamanhoTabuleiro');
+    const selectQtdGanhar = document.getElementById('qtdParaGanhar');
+
+    // Atualiza a opção "Pra Ganhar" quando muda o tamanho
+    selectTamanho.addEventListener('change', () => {
+        tamanho = parseInt(selectTamanho.value);
+        selectQtdGanhar.innerHTML = '';
+        for(let i = 3; i <= tamanho; i++){
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            selectQtdGanhar.appendChild(option);
+        }
+    });
+
+    window.iniciarJogoVelha = function() {
+        tamanho = parseInt(selectTamanho.value);
+        qtdParaGanhar = parseInt(selectQtdGanhar.value);
+        tabuleiro = Array(tamanho).fill(null).map(() => Array(tamanho).fill(''));
+        jogadorAtual = 'X';
+        jogoAtivo = true;
+        celulasVitoria = [];
+
+        vezJogador.textContent = 'X - Você';
+        resultadoVelha.innerHTML = `Tabuleiro ${tamanho}x${tamanho}. Faça ${qtdParaGanhar} em sequência para ganhar!`;
+
+        renderizarTabuleiro();
+    }
+
+    function renderizarTabuleiro() {
+        tabuleiroVelha.innerHTML = '';
+        tabuleiroVelha.style.gridTemplateColumns = `repeat(${tamanho}, 1fr)`;
+        const tamanhoMax = `${Math.min(400, tamanho * 50)}px`;
+        tabuleiroVelha.style.maxWidth = tamanhoMax;
+
+        for (let i = 0; i < tamanho; i++) {
+            for (let j = 0; j < tamanho; j++) {
+                const celula = document.createElement('div');
+                celula.classList.add('celula-velha');
+                celula.dataset.linha = i;
+                celula.dataset.coluna = j;
+                celula.textContent = tabuleiro[i][j];
+
+                if (tabuleiro[i][j]!== '') {
+                    celula.classList.add('jogada', tabuleiro[i][j].toLowerCase(), 'bloqueada');
+                }
+                if (celulasVitoria.some(c => c.l === i && c.c === j)) {
+                    celula.classList.add('vitoria');
+                }
+
+                celula.addEventListener('click', fazerJogada);
+                tabuleiroVelha.appendChild(celula);
+            }
+        }
+    }
+
+    function fazerJogada(e) {
+        if (!jogoAtivo || jogadorAtual!== 'X') return;
+
+        const linha = parseInt(e.target.dataset.linha);
+        const coluna = parseInt(e.target.dataset.coluna);
+
+        if (tabuleiro[linha][coluna]!== '') return;
+
+        jogar(linha, coluna, 'X');
+
+        if(jogoAtivo) {
+            setTimeout(jogadaPC, 500); // Delay pra parecer que o PC pensa
+        }
+    }
+
+    function jogadaPC() {
+        if (!jogoAtivo) return;
+        jogadorAtual = 'O';
+        vezJogador.textContent = 'O - PC Pensando...';
+
+        // IA Simples: 1. Tenta ganhar 2. Bloqueia você 3. Joga aleatório
+        let jogada = encontrarMelhorJogada('O') || encontrarMelhorJogada('X') || jogadaAleatoria();
+
+        setTimeout(() => {
+            jogar(jogada.l, jogada.c, 'O');
+        }, 500);
+    }
+
+    function jogar(l, c, jogador) {
+        tabuleiro[l][c] = jogador;
+
+        if (verificarVitoria(l, c, jogador)) {
+            jogoAtivo = false;
+            const vencedor = jogador === 'X'? 'Você venceu!' : 'PC venceu!';
+            resultadoVelha.innerHTML = `🎉 ${vencedor}`;
+            marcarVitoria();
+        } else if (verificarEmpate()) {
+            jogoAtivo = false;
+            resultadoVelha.innerHTML = `🤝 Deu Empate!`;
+        } else {
+            jogadorAtual = jogador === 'X'? 'O' : 'X';
+            vezJogador.textContent = jogadorAtual === 'X'? 'X - Você' : 'O - PC';
+        }
+        renderizarTabuleiro();
+    }
+
+    function encontrarMelhorJogada(jogador) {
+        for(let i = 0; i < tamanho; i++){
+            for(let j = 0; j < tamanho; j++){
+                if(tabuleiro[i][j] === ''){
+                    tabuleiro[i][j] = jogador;
+                    if(verificarVitoria(i, j, jogador)){
+                        tabuleiro[i][j] = '';
+                        return {l: i, c: j};
+                    }
+                    tabuleiro[i][j] = '';
+                }
+            }
+        }
+        return null;
+    }
+
+    function jogadaAleatoria() {
+        let vazias = [];
+        for(let i = 0; i < tamanho; i++){
+            for(let j = 0; j < tamanho; j++){
+                if(tabuleiro[i][j] === '') vazias.push({l: i, c: j});
+            }
+        }
+        return vazias[Math.floor(Math.random() * vazias.length)];
+    }
+
+    function verificarVitoria(linha, coluna, simbolo) {
+        celulasVitoria = [];
+        const direcoes = [
+            [0, 1], // Horizontal
+            [1, 0], // Vertical
+            [1, 1], // Diagonal \
+            [1, -1] // Diagonal /
+        ];
+
+        for (const [dl, dc] of direcoes) {
+            let count = 1;
+            let linhaAtual = linha;
+            let colunaAtual = coluna;
+            let sequencia = [{l: linha, c: coluna}];
+
+            // Verifica pra frente
+            for(let i = 1; i < qtdParaGanhar; i++){
+                linhaAtual += dl; colunaAtual += dc;
+                if(linhaAtual < 0 || linhaAtual >= tamanho || colunaAtual < 0 || colunaAtual >= tamanho || tabuleiro[linhaAtual][colunaAtual]!== simbolo) break;
+                count++;
+                sequencia.push({l: linhaAtual, c: colunaAtual});
+            }
+
+            // Verifica pra trás
+            linhaAtual = linha; colunaAtual = coluna;
+            for(let i = 1; i < qtdParaGanhar; i++){
+                linhaAtual -= dl; colunaAtual -= dc;
+                if(linhaAtual < 0 || linhaAtual >= tamanho || colunaAtual < 0 || colunaAtual >= tamanho || tabuleiro[linhaAtual][colunaAtual]!== simbolo) break;
+                count++;
+                sequencia.push({l: linhaAtual, c: colunaAtual});
+            }
+
+            if(count >= qtdParaGanhar){
+                celulasVitoria = sequencia.slice(0, qtdParaGanhar);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function marcarVitoria() {
+        renderizarTabuleiro();
+    }
+
+    function verificarEmpate() {
+        return tabuleiro.flat().every(celula => celula!== '');
+    }
+
+    // Inicia e popula o select de "Pra Ganhar"
+    selectTamanho.dispatchEvent(new Event('change'));
+    iniciarJogoVelha();
+
+Verificar  ser tá tudo certo se tiver  faltando uma coisa colocar
