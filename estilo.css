@@ -1,15 +1,13 @@
-  /* Importações de Fontes */
+/* Importações de Fontes */
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap'); /* <--- NOVA FONTE ADICIONADA */
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
 
 /*
-=========================================================
-1. Variáveis de Cor e Fonte (Tema Claro e Escuro)
-=========================================================
-*/
 
-/* Variáveis para o Tema Claro (Padrão) */
+1. Variáveis de Cor e Fonte (Tema Claro e Escuro)
+
+*/
 :root {
     /* Cores */
     --color-primary: #006ac7; 
@@ -20,12 +18,15 @@
     --color-surface: #ffffff;
     --color-border: #dee2e6;
     --color-shadow: rgba(0, 0, 0, 0.1);
+    --color-sucesso: #28a745;
+    --color-erro: #dc3545;
+    --color-aviso: #ffc107;
 
     /* Fontes */
     --font-body: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     --font-heading: 'Bebas Neue', sans-serif;
     --font-logo: 'Lobster', cursive;
-    --font-marker: 'Permanent Marker', cursive; /* <--- NOVA VARIÁVEL DE FONTE */
+    --font-marker: 'Permanent Marker', cursive;
 }
 
 /* Variáveis para o Tema Escuro */
@@ -40,17 +41,19 @@
     --color-shadow: rgba(0, 0, 0, 0.5);
 }
 
-
 /*
-=========================================================
-2. Reset e Tipografia Base
-=========================================================
-*/
 
+2. Reset e Tipografia Base
+
+*/
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+html {
+    font-size: 16px; /* Base para rem */
 }
 
 body {
@@ -59,19 +62,18 @@ body {
     color: var(--color-text);
     line-height: 1.6;
     transition: background-color 0.3s, color 0.3s;
+    -webkit-font-smoothing: antialiased;
 }
 
-
 /*
-=========================================================
-3. Header e Tema
-=========================================================
-*/
 
+3. Header e Tema
+
+*/
 .header-container {
     background-color: var(--color-surface);
     color: var(--color-text);
-    padding: 20px 40px;
+    padding: 15px 20px;
     border-bottom: 1px solid var(--color-border);
     display: flex;
     justify-content: space-between;
@@ -80,27 +82,32 @@ body {
     position: sticky;
     top: 0;
     z-index: 1000;
+    gap: 10px;
 }
 
 .imagem { /* Logo/Título */
     font-family: var(--font-logo);
-    font-size: 2.5rem; 
+    font-size: clamp(1.5rem, 5vw, 2.5rem); /* Responsivo */
     font-weight: 400;
     letter-spacing: 0;
     margin: 0;
     text-transform: none;
     color: var(--color-primary);
     line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .theme-toggle-btn {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    font-size: 1.3rem;
     cursor: pointer;
-    padding: 5px 10px;
+    padding: 8px 12px;
     border-radius: 8px;
     transition: background-color 0.2s, transform 0.1s;
+    flex-shrink: 0;
 }
 
 .theme-toggle-btn:hover {
@@ -111,57 +118,46 @@ body {
     transform: scale(0.95);
 }
 
-/* --- Responsividade do Header --- */
-@media (max-width: 600px) {
-    .header-container {
-        padding: 15px 20px;
-    }
-
-    .imagem {
-        font-size: 2rem;
-    }
-}
-
-
 /*
-=========================================================
-4. Layout Principal
-=========================================================
-*/
 
+4. Layout Principal
+
+*/
 .main-content {
     max-width: 1200px;
-    margin: 40px auto;
-    padding: 0 20px;
+    margin: 20px auto;
+    padding: 0 15px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
+    gap: 20px;
 }
 
-/* --- Responsividade do Layout --- */
+/* Tablet */
 @media (max-width: 768px) {
     .main-content {
-        padding: 0 15px; 
-        margin: 20px auto; 
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 15px;
+        margin: 15px auto;
     }
 }
 
-@media (max-width: 380px) {
+/* Celular */
+@media (max-width: 480px) {
     .main-content {
         grid-template-columns: 1fr;
+        padding: 0 10px;
+        gap: 15px;
     }
 }
 
-
 /*
-=========================================================
-5. Cards de Aplicações
-=========================================================
-*/
 
+5. Cards de Aplicações
+
+*/
 .card {
     background-color: var(--color-surface);
-    padding: 25px;
+    padding: 20px;
     border-radius: 12px;
     border: 1px solid var(--color-border);
     box-shadow: 0 4px 12px var(--color-shadow);
@@ -177,32 +173,47 @@ body {
     font-family: var(--font-heading); 
     color: var(--color-primary);
     margin-bottom: 15px;
-    font-size: 1.8rem;
-    letter-spacing: 2px;
+    font-size: clamp(1.4rem, 4vw, 1.8rem); /* Responsivo */
+    letter-spacing: 1.5px;
     border-bottom: 2px solid var(--color-border);
     padding-bottom: 8px;
     text-transform: uppercase;
 }
 
-/*
-=========================================================
-6. Elementos de Formulário (Inputs, Labels, Buttons)
-=========================================================
-*/
+/* Celular: menos padding */
+@media (max-width: 480px) {
+    .card {
+        padding: 15px;
+    }
+    .card:hover {
+        transform: none; /* Remove hover no mobile pra não bugar */
+    }
+}
 
+/*
+
+6. Elementos de Formulário (Inputs, Labels, Buttons)
+
+*/
 form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
 }
 
 label {
     font-weight: 500;
     color: var(--color-text);
+    font-size: 0.95rem;
 }
 
+/* Todos os inputs */
 input[type="text"],
-input[type="number"] {
+input[type="number"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
     width: 100%;
     padding: 12px;
     border: 1px solid var(--color-border);
@@ -211,24 +222,24 @@ input[type="number"] {
     color: var(--color-text);
     background-color: var(--color-background);
     transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: var(--font-body);
 }
 
 /* Campo desabilitado */
-input:disabled {
-    opacity: 0.7;
+input:disabled, select:disabled, textarea:disabled {
+    opacity: 0.6;
     background-color: var(--color-border);
     cursor: not-allowed;
 }
 
-input[type="text"]:focus,
-input[type="number"]:focus {
+input:focus, select:focus, textarea:focus {
     border-color: var(--color-primary);
     outline: none;
     box-shadow: 0 0 0 3px rgba(0, 106, 199, 0.25); 
 }
 
 /* Placeholder */
-input::placeholder {
+input::placeholder, textarea::placeholder {
     color: var(--color-text-secondary);
     opacity: 0.7;
 }
@@ -244,6 +255,7 @@ button {
     font-weight: 600;
     letter-spacing: 0.5px;
     transition: background-color 0.2s, transform 0.1s;
+    font-family: var(--font-body);
 }
 
 button:hover {
@@ -257,44 +269,88 @@ button:active {
 button:disabled {
     background-color: var(--color-text-secondary);
     cursor: not-allowed;
+    opacity: 0.7;
 }
 
-/*
-=========================================================
-7. Estilos Específicos do Jogo de Adivinhação / IMC / Tarefas
-=========================================================
-*/
-
-.game-card p {
-    margin-bottom: 15px;
-}
-
+/* Botões lado a lado ficam responsivos */
 .game-buttons {
     display: flex;
     gap: 10px;
     margin-top: 10px;
+    flex-wrap: wrap; /* Quebra no mobile */
+}
+
+.game-buttons button, .game-buttons input {
+    flex: 1; /* Crescem igual */
+    min-width: 120px;
+}
+
+/* Celular: botões ficam 100% */
+@media (max-width: 480px) {
+    .game-buttons {
+        flex-direction: column;
+    }
+    .game-buttons button, .game-buttons input {
+        min-width: 100%;
+    }
+}
+
+/*
+
+7. Estilos Específicos
+
+*/
+.game-card p {
+    margin-bottom: 15px;
 }
 
 #palpite {
     margin-bottom: 15px;
 }
 
-/* ESTILO REVISADO: Padrão para áreas de resultado, permitindo múltiplas linhas (como no IMC) */
+/* Área de resultado */
 .message-area {
-    margin-top: 20px;
-    padding: 10px;
-    border-radius: 6px;
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 8px;
     background-color: var(--color-background);
     border: 1px dashed var(--color-border);
-    font-style: italic;
+    font-size: 0.95rem;
     min-height: 45px;
-    display: block; /* Garante que o <br> seja respeitado e o conteúdo empilhado */
+    display: block;
+    word-wrap: break-word;
 }
 
-/* ESTILO ESPECÍFICO: Para o Jogo de Adivinhação (ID 'mensagem') */
-#mensagem { 
-    display: flex;
-    align-items: center; /* Centraliza a linha única do jogo verticalmente */
+/* Mensagens de erro */
+.error-message {
+    color: var(--color-erro); 
+    font-size: 0.85em;
+    margin-top: -5px;
+    margin-bottom: 5px;
+    display: block; 
+}
+
+/* Jogo da Memória */
+#tabuleiroMemoria {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 15px;
+}
+
+/* Tablet: 4 colunas ainda */
+@media (max-width: 768px) {
+    #tabuleiroMemoria {
+        gap: 6px;
+    }
+}
+
+/* Celular pequeno: 4 colunas menores */
+@media (max-width: 380px) {
+    #tabuleiroMemoria {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 5px;
+    }
 }
 
 .carta {
@@ -305,10 +361,11 @@ button:disabled {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 6vw, 2.2rem); /* Emoji responsivo */
     cursor: pointer;
-    transition: transform 0.3s;
+    transition: transform 0.4s, background-color 0.3s;
     transform-style: preserve-3d;
+    user-select: none;
 }
 
 .carta.virada {
@@ -318,7 +375,35 @@ button:disabled {
 }
 
 .carta.acertou {
-    background-color: #28a745;
+    background-color: var(--color-sucesso);
     cursor: default;
-    opacity: 0.7;
+    opacity: 0.8;
+}
+
+.carta:hover:not(.virada):not(.acertou) {
+    transform: scale(1.05);
+}
+
+/* Barra de busca geral */
+#busca-listas, #filtroTodo, #filtroProduto {
+    width: 100%;
+    margin: 10px auto;
+    display: block;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    box-sizing: border-box;
+    background-color: var(--color-surface);
+    color: var(--color-text);
+}
+
+/* Listas */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+/* Scroll suave */
+html {
+    scroll-behavior: smooth;
 }
