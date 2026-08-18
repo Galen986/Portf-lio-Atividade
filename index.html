@@ -329,6 +329,50 @@
     <div id="resultadoMemoria" class="message-area" style="margin-top: 10px;"></div>
 </div>
 
+<div class="card game-card">
+    <h3>23. Pedra Papel Tesoura</h3>
+    <p>Você: <strong id="placarVoce">0</strong> x <strong id="placarPc">0</strong> PC</p>
+    
+    <div class="game-buttons">
+        <button onclick="jogar('pedra')">✊ Pedra</button>
+        <button onclick="jogar('papel')">✋ Papel</button>
+        <button onclick="jogar('tesoura')">✌️ Tesoura</button>
+    </div>
+
+    <div id="resultadoPPT" class="message-area" style="margin-top: 15px;">
+        Escolha uma opção para jogar!
+    </div>
+    <button onclick="resetarPlacarPPT()" style="background-color: var(--color-erro); margin-top: 10px;">Zerar Placar</button>
+</div>
+
+<div class="card game-card">
+    <h3>24. Clique Rápido</h3>
+    <p>Tempo: <strong id="tempoClique">10</strong>s | Cliques: <strong id="totalCliques">0</strong></p>
+    
+    <div class="game-buttons">
+        <button id="btnIniciarClique">Iniciar</button>
+        <button id="btnClicar" disabled style="font-size: 1.5rem; padding: 20px;">CLICA AQUI!</button>
+    </div>
+
+    <div id="resultadoClique" class="message-area" style="margin-top: 15px;">
+        Clique em "Iniciar" e depois clica o mais rápido que puder!
+    </div>
+</div>
+
+<div class="card game-card">
+    <h3>25. Quiz Relâmpago</h3>
+    <p>Pontos: <strong id="pontosQuiz">0</strong> | Pergunta: <strong id="numPergunta">1</strong>/5</p>
+    
+    <div id="areaPergunta">
+        <h4 id="textoPergunta">Carregando...</h4>
+        <div id="opcoesQuiz" class="game-buttons" style="flex-direction: column;">
+            </div>
+    </div>
+
+    <div id="resultadoQuiz" class="message-area" style="margin-top: 15px; display: none;"></div>
+    <button onclick="iniciarQuiz()" id="btnNovoQuiz" style="margin-top: 10px;">Novo Quiz</button>
+</div>
+
     </main>
 
     <script src="script.js"></script>
