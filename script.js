@@ -1076,4 +1076,103 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderizarRateio();
 
+
+// 22. Jogo da Memória
+    const emojis = ['🍎', '🍌', '🍇', '🍓', '🍊', '🍉', '🍍', '🥝'];
+    let cartas = [...emojis, ...emojis]; // Duplica pra fazer os pares
+    let primeiraCarta = null;
+    let segundaCarta = null;
+    let travarTabuleiro = false;
+    let paresEncontrados = 0;
+    let clicksMemoria = 0;
+
+    const tabuleiroMemoria = document.getElementById('tabuleiroMemoria');
+    const clicksDisplay = document.getElementById('clicksMemoria');
+    const resultadoMemoria = document.getElementById('resultadoMemoria');
+
+    function embaralhar(array) {
+        return array.sort(() => Math.random() - 0.5);
+    }
+
+    window.iniciarJogoMemoria = function() {
+        cartas = embaralhar([...emojis, ...emojis]);
+        tabuleiroMemoria.innerHTML = '';
+        primeiraCarta = null;
+        segundaCarta = null;
+        travarTabuleiro = false;
+        paresEncontrados = 0;
+        clicksMemoria = 0;
+        clicksDisplay.textContent = 0;
+        resultadoMemoria.innerHTML = 'Clique nas cartas para começar!';
+
+        cartas.forEach((emoji, index) => {
+            const cartaDiv = document.createElement('div');
+            cartaDiv.classList.add('carta');
+            cartaDiv.dataset.emoji = emoji;
+            cartaDiv.dataset.index = index;
+            cartaDiv.innerHTML = '?'; // Verso da carta
+
+            cartaDiv.addEventListener('click', virarCarta);
+            tabuleiroMemoria.appendChild(cartaDiv);
+        });
+    }
+
+    function virarCarta() {
+        if (travarTabuleiro) return;
+        if (this === primeiraCarta) return;
+        if (this.classList.contains('virada')) return;
+
+        this.classList.add('virada');
+        this.innerHTML = this.dataset.emoji;
+        clicksMemoria++;
+        clicksDisplay.textContent = clicksMemoria;
+
+        if (!primeiraCarta) {
+            primeiraCarta = this;
+            return;
+        }
+
+        segundaCarta = this;
+        travarTabuleiro = true;
+        checarPar();
+    }
+
+    function checarPar() {
+        let acertou = primeiraCarta.dataset.emoji === segundaCarta.dataset.emoji;
+
+        if (acertou) {
+            desativarCartas();
+        } else {
+            desvirarCartas();
+        }
+    }
+
+    function desativarCartas() {
+        primeiraCarta.classList.add('acertou');
+        segundaCarta.classList.add('acertou');
+        primeiraCarta.removeEventListener('click', virarCarta);
+        segundaCarta.removeEventListener('click', virarCarta);
+        resetarTurno();
+        paresEncontrados++;
+
+        if (paresEncontrados === emojis.length) {
+            resultadoMemoria.innerHTML = `🎉 Parabéns! Você venceu em ${clicksMemoria} cliques!`;
+        }
+    }
+
+    function desvirarCartas() {
+        setTimeout(() => {
+            primeiraCarta.classList.remove('virada');
+            segundaCarta.classList.remove('virada');
+            primeiraCarta.innerHTML = '?';
+            segundaCarta.innerHTML = '?';
+            resetarTurno();
+        }, 1000);
+    }
+
+    function resetarTurno() {
+        [primeiraCarta, segundaCarta, travarTabuleiro] = [null, null, false];
+    }
+
+    iniciarJogoMemoria(); // Inicia quando carrega a página
 }); // Fim do DOMContentLoaded
