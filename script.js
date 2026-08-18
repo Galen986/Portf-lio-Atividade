@@ -2146,567 +2146,1321 @@ document.addEventListener("DOMContentLoaded", () => {
     /* =====================================================
        26. JOGO DA VELHA VS PC
        ===================================================== */
+/* =========================================================
+   26. JOGO DA VELHA - PC / PESSOA
+   ========================================================= */
 
-    let tamanhoVelha = 3;
-    let ganharVelha = 3;
-    let tabuleiroVelha = [];
-    let jogoVelhaAtivo = false;
+let tamanhoVelha = 3;
+let ganharVelha = 3;
 
-    window.iniciarJogoVelha =
-        function () {
+let tabuleiroVelha = [];
 
-            tamanhoVelha =
-                Number(
-                    document.getElementById(
-                        "tamanhoTabuleiro"
-                    ).value
-                );
+let jogoVelhaAtivo = false;
 
-            ganharVelha =
-                Number(
-                    document.getElementById(
-                        "qtdParaGanhar"
-                    ).value
-                );
+let modoVelha = "pc";
 
-            if (ganharVelha > tamanhoVelha) {
+let jogadorHumano = "X";
+let jogadorPC = "O";
 
-                alert(
-                    "A quantidade para ganhar não pode ser maior que o tamanho do tabuleiro."
-                );
+let vezVelha = "X";
 
-                return;
-            }
-
-            tabuleiroVelha =
-                Array(
-                    tamanhoVelha *
-                    tamanhoVelha
-                ).fill("");
-
-            jogoVelhaAtivo = true;
-
-            document.getElementById(
-                "resultadoVelha"
-            ).textContent = "";
-
-            document.getElementById(
-                "vezJogador"
-            ).textContent =
-                "X - Você";
-
-            criarTabuleiroVelha();
-        };
-
-    function criarTabuleiroVelha() {
-
-        const tabuleiro =
-            document.getElementById(
-                "tabuleiroVelha"
-            );
-
-        tabuleiro.innerHTML = "";
-
-        tabuleiro.style.gridTemplateColumns =
-            `repeat(${tamanhoVelha}, 1fr)`;
-
-        tabuleiroVelha.forEach(
-            (valor, index) => {
-
-                const celula =
-                    document.createElement("button");
-
-                celula.className =
-                    "velha-celula";
-
-                celula.textContent =
-                    valor;
-
-                celula.addEventListener(
-                    "click",
-                    () => jogarVelha(index)
-                );
-
-                tabuleiro.appendChild(celula);
-            }
-        );
-    }
-
-    function jogarVelha(index) {
-
-        if (
-            !jogoVelhaAtivo ||
-            tabuleiroVelha[index] !== ""
-        ) {
-            return;
-        }
-
-        tabuleiroVelha[index] = "X";
-
-        criarTabuleiroVelha();
-
-        if (
-            verificarVitoriaVelha(
-                "X"
-            )
-        ) {
-
-            finalizarVelha(
-                "🎉 Você venceu!"
-            );
-
-            return;
-        }
-
-        if (
-            tabuleiroVelha.every(
-                celula => celula !== ""
-            )
-        ) {
-
-            finalizarVelha(
-                "🤝 Empate!"
-            );
-
-            return;
-        }
-
-        document.getElementById(
-            "vezJogador"
-        ).textContent =
-            "O - PC";
-
-        setTimeout(jogadaPC, 400);
-    }
-
-    function jogadaPC() {
-
-        if (!jogoVelhaAtivo) return;
-
-        const livres =
-            tabuleiroVelha
-                .map((valor, index) =>
-                    valor === "" ? index : null
-                )
-                .filter(index => index !== null);
-
-        if (livres.length === 0) return;
-
-        let escolha;
-
-        /*
-         * Primeiro tenta ganhar.
-         */
-        escolha =
-            encontrarJogadaVencedora("O");
-
-        /*
-         * Depois tenta bloquear o jogador.
-         */
-        if (escolha === null) {
-
-            escolha =
-                encontrarJogadaVencedora("X");
-        }
-
-        /*
-         * Caso não encontre, escolhe uma
-         * posição estratégica.
-         */
-        if (escolha === null) {
-
-            const centro =
-                Math.floor(
-                    tabuleiroVelha.length / 2
-                );
-
-            if (
-                tabuleiroVelha[centro] === ""
-            ) {
-
-                escolha = centro;
-
-            } else {
-
-                escolha =
-                    livres[
-                        Math.floor(
-                            Math.random() *
-                            livres.length
-                        )
-                    ];
-            }
-        }
-
-        tabuleiroVelha[escolha] = "O";
-
-        criarTabuleiroVelha();
-
-        if (
-            verificarVitoriaVelha("O")
-        ) {
-
-            finalizarVelha(
-                "🤖 O PC venceu!"
-            );
-
-            return;
-        }
-
-        if (
-            tabuleiroVelha.every(
-                celula => celula !== ""
-            )
-        ) {
-
-            finalizarVelha(
-                "🤝 Empate!"
-            );
-
-            return;
-        }
-
-        document.getElementById(
-            "vezJogador"
-        ).textContent =
-            "X - Você";
-    }
-
-    function encontrarJogadaVencedora(jogador) {
-
-        for (
-            let i = 0;
-            i < tabuleiroVelha.length;
-            i++
-        ) {
-
-            if (tabuleiroVelha[i] !== "")
-                continue;
-
-            tabuleiroVelha[i] = jogador;
-
-            const venceu =
-                verificarVitoriaVelha(jogador);
-
-            tabuleiroVelha[i] = "";
-
-            if (venceu) {
-                return i;
-            }
-        }
-
-        return null;
-    }
-
-    function verificarVitoriaVelha(jogador) {
-
-        const n = tamanhoVelha;
-        const k = ganharVelha;
-
-        /*
-         * Horizontal
-         */
-        for (let linha = 0; linha < n; linha++) {
-
-            for (
-                let coluna = 0;
-                coluna <= n - k;
-                coluna++
-            ) {
-
-                let ganhou = true;
-
-                for (
-                    let i = 0;
-                    i < k;
-                    i++
-                ) {
-
-                    if (
-                        tabuleiroVelha[
-                            linha * n +
-                            coluna +
-                            i
-                        ] !== jogador
-                    ) {
-
-                        ganhou = false;
-                        break;
-                    }
-                }
-
-                if (ganhou) return true;
-            }
-        }
-
-        /*
-         * Vertical
-         */
-        for (let coluna = 0; coluna < n; coluna++) {
-
-            for (
-                let linha = 0;
-                linha <= n - k;
-                linha++
-            ) {
-
-                let ganhou = true;
-
-                for (
-                    let i = 0;
-                    i < k;
-                    i++
-                ) {
-
-                    if (
-                        tabuleiroVelha[
-                            (linha + i) * n +
-                            coluna
-                        ] !== jogador
-                    ) {
-
-                        ganhou = false;
-                        break;
-                    }
-                }
-
-                if (ganhou) return true;
-            }
-        }
-
-        /*
-         * Diagonal \
-         */
-        for (
-            let linha = 0;
-            linha <= n - k;
-            linha++
-        ) {
-
-            for (
-                let coluna = 0;
-                coluna <= n - k;
-                coluna++
-            ) {
-
-                let ganhou = true;
-
-                for (
-                    let i = 0;
-                    i < k;
-                    i++
-                ) {
-
-                    if (
-                        tabuleiroVelha[
-                            (linha + i) * n +
-                            (coluna + i)
-                        ] !== jogador
-                    ) {
-
-                        ganhou = false;
-                        break;
-                    }
-                }
-
-                if (ganhou) return true;
-            }
-        }
-
-        /*
-         * Diagonal /
-         */
-        for (
-            let linha = 0;
-            linha <= n - k;
-            linha++
-        ) {
-
-            for (
-                let coluna = k - 1;
-                coluna < n;
-                coluna++
-            ) {
-
-                let ganhou = true;
-
-                for (
-                    let i = 0;
-                    i < k;
-                    i++
-                ) {
-
-                    if (
-                        tabuleiroVelha[
-                            (linha + i) * n +
-                            (coluna - i)
-                        ] !== jogador
-                    ) {
-
-                        ganhou = false;
-                        break;
-                    }
-                }
-
-                if (ganhou) return true;
-            }
-        }
-
-        return false;
-    }
-
-    function finalizarVelha(mensagem) {
-
-        jogoVelhaAtivo = false;
-
-        document.getElementById(
-            "resultadoVelha"
-        ).innerHTML =
-            `<strong>${mensagem}</strong>`;
-    }
-
-    iniciarJogoVelha();
-
-
-    /* =====================================================
-       BUSCA GERAL DOS DESAFIOS
-       ===================================================== */
-
-    const busca =
-        document.getElementById(
-            "busca-listas"
-        );
-
-    if (busca) {
-
-        busca.addEventListener(
-            "input",
-            () => {
-
-                const termo =
-                    busca.value
-                        .trim()
-                        .toLowerCase();
-
-                const cards =
-                    document.querySelectorAll(
-                        ".main-content > .card"
-                    );
-
-                cards.forEach(card => {
-
-                    const titulo =
-                        card.querySelector("h3");
-
-                    if (!titulo) return;
-
-                    const texto =
-                        titulo.textContent
-                            .toLowerCase();
-
-                    card.style.display =
-                        texto.includes(termo)
-                            ? ""
-                            : "none";
-                });
-            }
-        );
-    }
-
-
-    /* =====================================================
-       TEMA CLARO / ESCURO
-       ===================================================== */
-
-    const themeToggle =
-        document.getElementById(
-            "theme-toggle"
-        );
-
-    const themeMeta =
-        document.getElementById(
-            "theme-color-meta"
-        );
-
-    const temaSalvo =
-        localStorage.getItem("tema");
-
-    if (temaSalvo === "light") {
-
-        document.body.classList.add(
-            "light-theme"
-        );
-
-        themeToggle.textContent = "☀️";
-
-        if (themeMeta) {
-            themeMeta.content = "#f3f4f6";
-        }
-    }
-
-    if (themeToggle) {
-
-        themeToggle.addEventListener(
-            "click",
-            () => {
-
-                document.body.classList.toggle(
-                    "light-theme"
-                );
-
-                const claro =
-                    document.body.classList.contains(
-                        "light-theme"
-                    );
-
-                themeToggle.textContent =
-                    claro ? "☀️" : "🌙";
-
-                localStorage.setItem(
-                    "tema",
-                    claro ? "light" : "dark"
-                );
-
-                if (themeMeta) {
-
-                    themeMeta.content =
-                        claro
-                            ? "#f3f4f6"
-                            : "#1a1a1a";
-                }
-            }
-        );
-    }
-
-});
+let dificuldadeVelha = "facil";
 
 
 /* =========================================================
-   FUNÇÕES AUXILIARES
+   INICIAR JOGO
    ========================================================= */
 
-function formatarMoeda(valor) {
+window.iniciarJogoVelha = function () {
 
-    return Number(valor).toLocaleString(
-        "pt-BR",
-        {
-            style: "currency",
-            currency: "BRL"
+    tamanhoVelha = Number(
+        document.getElementById(
+            "tamanhoTabuleiro"
+        ).value
+    );
+
+    ganharVelha = Number(
+        document.getElementById(
+            "qtdParaGanhar"
+        ).value
+    );
+
+    modoVelha =
+        document.getElementById(
+            "modoJogo"
+        ).value;
+
+    dificuldadeVelha =
+        document.getElementById(
+            "dificuldadeVelha"
+        ).value;
+
+    jogadorHumano =
+        document.getElementById(
+            "simboloJogador"
+        ).value;
+
+    jogadorPC =
+        jogadorHumano === "X"
+            ? "O"
+            : "X";
+
+
+    /* -----------------------------------------------------
+       Verificar quantidade para ganhar
+       ----------------------------------------------------- */
+
+    if (ganharVelha > tamanhoVelha) {
+
+        alert(
+            "A quantidade para ganhar não pode ser maior que o tamanho do tabuleiro."
+        );
+
+        return;
+    }
+
+
+    /* -----------------------------------------------------
+       Criar tabuleiro
+       ----------------------------------------------------- */
+
+    tabuleiroVelha =
+        Array(
+            tamanhoVelha *
+            tamanhoVelha
+        ).fill("");
+
+
+    jogoVelhaAtivo = true;
+
+
+    /*
+     * No modo pessoa, X começa.
+     *
+     * No modo PC:
+     * Se jogador escolheu X, começa.
+     * Se jogador escolheu O, PC começa.
+     */
+
+    if (modoVelha === "pessoa") {
+
+        vezVelha = "X";
+
+    } else {
+
+        vezVelha = "X";
+    }
+
+
+    document.getElementById(
+        "resultadoVelha"
+    ).textContent = "";
+
+
+    atualizarInformacoesVelha();
+
+    criarTabuleiroVelha();
+
+
+    /*
+     * Se o jogador escolheu O,
+     * o PC começa automaticamente.
+     */
+
+    if (
+        modoVelha === "pc" &&
+        jogadorPC === "X"
+    ) {
+
+        setTimeout(
+            jogadaPCVelha,
+            500
+        );
+    }
+};
+
+
+/* =========================================================
+   CRIAR TABULEIRO
+   ========================================================= */
+
+function criarTabuleiroVelha() {
+
+    const tabuleiro =
+        document.getElementById(
+            "tabuleiroVelha"
+        );
+
+    tabuleiro.innerHTML = "";
+
+
+    tabuleiro.style.display = "grid";
+
+    tabuleiro.style.gridTemplateColumns =
+        `repeat(${tamanhoVelha}, 1fr)`;
+
+
+    /*
+     * Quanto maior o tabuleiro,
+     * menor o espaço entre as casas.
+     */
+
+    const gap =
+        tamanhoVelha <= 4
+            ? "6px"
+            : "4px";
+
+    tabuleiro.style.gap = gap;
+
+
+    tabuleiroVelha.forEach(
+        (valor, index) => {
+
+            const celula =
+                document.createElement(
+                    "button"
+                );
+
+            celula.className =
+                "velha-celula";
+
+
+            celula.textContent =
+                valor;
+
+
+            /*
+             * Ajustar tamanho da fonte
+             */
+
+            if (tamanhoVelha >= 7) {
+
+                celula.style.fontSize =
+                    "1.3rem";
+
+            } else if (tamanhoVelha >= 5) {
+
+                celula.style.fontSize =
+                    "1.7rem";
+
+            } else {
+
+                celula.style.fontSize =
+                    "2.5rem";
+            }
+
+
+            /*
+             * Desabilitar casas ocupadas
+             */
+
+            if (valor !== "") {
+
+                celula.disabled = true;
+            }
+
+
+            celula.addEventListener(
+                "click",
+                () => jogarVelha(index)
+            );
+
+
+            tabuleiro.appendChild(
+                celula
+            );
         }
     );
 }
 
 
-/*
- * Evita que texto digitado pelo usuário
- * seja interpretado como HTML.
- */
-function escaparHTML(texto) {
+/* =========================================================
+   JOGADA DO JOGADOR
+   ========================================================= */
 
-    const div =
-        document.createElement("div");
+function jogarVelha(index) {
 
-    div.textContent = texto;
+    if (!jogoVelhaAtivo) {
+        return;
+    }
 
-    return div.innerHTML;
+
+    /*
+     * Casa ocupada
+     */
+
+    if (tabuleiroVelha[index] !== "") {
+        return;
+    }
+
+
+    /*
+     * MODO PESSOA
+     */
+
+    if (modoVelha === "pessoa") {
+
+        tabuleiroVelha[index] =
+            vezVelha;
+
+        criarTabuleiroVelha();
+
+
+        if (
+            verificarVitoriaVelha(
+                vezVelha
+            )
+        ) {
+
+            finalizarVelha(
+                `🎉 Jogador ${vezVelha} venceu!`
+            );
+
+            return;
+        }
+
+
+        if (
+            tabuleiroVelha.every(
+                casa => casa !== ""
+            )
+        ) {
+
+            finalizarVelha(
+                "🤝 Deu empate!"
+            );
+
+            return;
+        }
+
+
+        /*
+         * Trocar jogador
+         */
+
+        vezVelha =
+            vezVelha === "X"
+                ? "O"
+                : "X";
+
+
+        atualizarInformacoesVelha();
+
+        return;
+    }
+
+
+    /*
+     * MODO CONTRA PC
+     */
+
+    if (
+        vezVelha !== jogadorHumano
+    ) {
+        return;
+    }
+
+
+    /*
+     * Jogada do jogador humano
+     */
+
+    tabuleiroVelha[index] =
+        jogadorHumano;
+
+    criarTabuleiroVelha();
+
+
+    /*
+     * Verificar vitória
+     */
+
+    if (
+        verificarVitoriaVelha(
+            jogadorHumano
+        )
+    ) {
+
+        finalizarVelha(
+            "🎉 Você venceu!"
+        );
+
+        return;
+    }
+
+
+    /*
+     * Empate
+     */
+
+    if (
+        tabuleiroVelha.every(
+            casa => casa !== ""
+        )
+    ) {
+
+        finalizarVelha(
+            "🤝 Deu empate!"
+        );
+
+        return;
+    }
+
+
+    /*
+     * Passar para PC
+     */
+
+    vezVelha =
+        jogadorPC;
+
+    atualizarInformacoesVelha();
+
+
+    /*
+     * Pequeno atraso para parecer
+     * que o PC está pensando.
+     */
+
+    setTimeout(
+        jogadaPCVelha,
+        350
+    );
+}
+
+
+/* =========================================================
+   JOGADA DO PC
+   ========================================================= */
+
+function jogadaPCVelha() {
+
+    if (!jogoVelhaAtivo) {
+        return;
+    }
+
+
+    if (modoVelha !== "pc") {
+        return;
+    }
+
+
+    if (vezVelha !== jogadorPC) {
+        return;
+    }
+
+
+    let jogada = null;
+
+
+    /*
+     * ================================================
+     * FÁCIL
+     * ================================================
+     *
+     * Escolhe aleatoriamente.
+     */
+
+    if (
+        dificuldadeVelha === "facil"
+    ) {
+
+        jogada =
+            escolherCasaAleatoria();
+    }
+
+
+    /*
+     * ================================================
+     * MÉDIO
+     * ================================================
+     *
+     * 1. Tenta ganhar.
+     * 2. Tenta bloquear.
+     * 3. Caso contrário, joga aleatoriamente.
+     */
+
+    else if (
+        dificuldadeVelha === "medio"
+    ) {
+
+        jogada =
+            encontrarJogadaVencedora(
+                jogadorPC
+            );
+
+
+        if (jogada === null) {
+
+            jogada =
+                encontrarJogadaVencedora(
+                    jogadorHumano
+                );
+        }
+
+
+        if (jogada === null) {
+
+            jogada =
+                escolherCasaEstrategica();
+        }
+    }
+
+
+    /*
+     * ================================================
+     * DIFÍCIL
+     * ================================================
+     *
+     * 1. Tenta ganhar.
+     * 2. Bloqueia.
+     * 3. Centro.
+     * 4. Cantos.
+     * 5. Estratégia.
+     */
+
+    else if (
+        dificuldadeVelha === "dificil"
+    ) {
+
+        jogada =
+            encontrarJogadaVencedora(
+                jogadorPC
+            );
+
+
+        if (jogada === null) {
+
+            jogada =
+                encontrarJogadaVencedora(
+                    jogadorHumano
+                );
+        }
+
+
+        if (jogada === null) {
+
+            jogada =
+                escolherCasaEstrategica();
+        }
+
+
+        if (jogada === null) {
+
+            jogada =
+                escolherCasaAleatoria();
+        }
+    }
+
+
+    /*
+     * ================================================
+     * IMPOSSÍVEL
+     * ================================================
+     *
+     * Para 3x3 usa Minimax.
+     *
+     * Para tabuleiros maiores usa uma
+     * inteligência estratégica.
+     */
+
+    else {
+
+        if (
+            tamanhoVelha === 3 &&
+            ganharVelha === 3
+        ) {
+
+            jogada =
+                melhorJogadaMinimax();
+
+        } else {
+
+            jogada =
+                encontrarJogadaVencedora(
+                    jogadorPC
+                );
+
+
+            if (jogada === null) {
+
+                jogada =
+                    encontrarJogadaVencedora(
+                        jogadorHumano
+                    );
+            }
+
+
+            if (jogada === null) {
+
+                jogada =
+                    escolherCasaEstrategica();
+            }
+
+
+            if (jogada === null) {
+
+                jogada =
+                    escolherCasaAleatoria();
+            }
+        }
+    }
+
+
+    /*
+     * Garantia de jogada válida
+     */
+
+    if (
+        jogada === null ||
+        tabuleiroVelha[jogada] !== ""
+    ) {
+
+        jogada =
+            escolherCasaAleatoria();
+    }
+
+
+    /*
+     * Fazer jogada
+     */
+
+    tabuleiroVelha[jogada] =
+        jogadorPC;
+
+
+    criarTabuleiroVelha();
+
+
+    /*
+     * Verificar vitória
+     */
+
+    if (
+        verificarVitoriaVelha(
+            jogadorPC
+        )
+    ) {
+
+        finalizarVelha(
+            "🤖 O PC venceu!"
+        );
+
+        return;
+    }
+
+
+    /*
+     * Verificar empate
+     */
+
+    if (
+        tabuleiroVelha.every(
+            casa => casa !== ""
+        )
+    ) {
+
+        finalizarVelha(
+            "🤝 Deu empate!"
+        );
+
+        return;
+    }
+
+
+    /*
+     * Voltar para jogador
+     */
+
+    vezVelha =
+        jogadorHumano;
+
+    atualizarInformacoesVelha();
+}
+
+
+/* =========================================================
+   CASA ALEATÓRIA
+   ========================================================= */
+
+function escolherCasaAleatoria() {
+
+    const livres =
+        obterCasasLivres();
+
+    if (livres.length === 0) {
+        return null;
+    }
+
+
+    return livres[
+        Math.floor(
+            Math.random() *
+            livres.length
+        )
+    ];
+}
+
+
+/* =========================================================
+   CASAS LIVRES
+   ========================================================= */
+
+function obterCasasLivres() {
+
+    return tabuleiroVelha
+        .map(
+            (valor, index) =>
+                valor === ""
+                    ? index
+                    : null
+        )
+        .filter(
+            index => index !== null
+        );
+}
+
+
+/* =========================================================
+   ENCONTRAR JOGADA VENCEDORA
+   ========================================================= */
+
+function encontrarJogadaVencedora(
+    jogador
+) {
+
+    const livres =
+        obterCasasLivres();
+
+
+    for (const index of livres) {
+
+        tabuleiroVelha[index] =
+            jogador;
+
+
+        const venceu =
+            verificarVitoriaVelha(
+                jogador
+            );
+
+
+        tabuleiroVelha[index] =
+            "";
+
+
+        if (venceu) {
+            return index;
+        }
+    }
+
+
+    return null;
+}
+
+
+/* =========================================================
+   CASA ESTRATÉGICA
+   ========================================================= */
+
+function escolherCasaEstrategica() {
+
+    const livres =
+        obterCasasLivres();
+
+
+    if (livres.length === 0) {
+        return null;
+    }
+
+
+    /*
+     * Centro
+     */
+
+    const centro =
+        Math.floor(
+            (tamanhoVelha *
+             tamanhoVelha) / 2
+        );
+
+
+    if (
+        tabuleiroVelha[centro] === ""
+    ) {
+
+        return centro;
+    }
+
+
+    /*
+     * Cantos
+     */
+
+    const cantos = [
+        0,
+        tamanhoVelha - 1,
+        tamanhoVelha *
+            (tamanhoVelha - 1),
+        tamanhoVelha *
+            tamanhoVelha - 1
+    ];
+
+
+    const cantosLivres =
+        cantos.filter(
+            index =>
+                index >= 0 &&
+                index <
+                    tabuleiroVelha.length &&
+                tabuleiroVelha[index] === ""
+        );
+
+
+    if (
+        cantosLivres.length > 0
+    ) {
+
+        return cantosLivres[
+            Math.floor(
+                Math.random() *
+                cantosLivres.length
+            )
+        ];
+    }
+
+
+    return null;
+}
+
+
+/* =========================================================
+   MINIMAX - 3x3
+   ========================================================= */
+
+function melhorJogadaMinimax() {
+
+    let melhorPontuacao =
+        -Infinity;
+
+    let melhorMovimento = null;
+
+
+    const livres =
+        obterCasasLivres();
+
+
+    for (const index of livres) {
+
+        tabuleiroVelha[index] =
+            jogadorPC;
+
+
+        const pontuacao =
+            minimax(
+                false,
+                0
+            );
+
+
+        tabuleiroVelha[index] =
+            "";
+
+
+        if (
+            pontuacao >
+            melhorPontuacao
+        ) {
+
+            melhorPontuacao =
+                pontuacao;
+
+            melhorMovimento =
+                index;
+        }
+    }
+
+
+    return melhorMovimento;
+}
+
+
+/* =========================================================
+   MINIMAX
+   ========================================================= */
+
+function minimax(
+    maximizando,
+    profundidade
+) {
+
+    if (
+        verificarVitoriaVelha(
+            jogadorPC
+        )
+    ) {
+
+        return 10 - profundidade;
+    }
+
+
+    if (
+        verificarVitoriaVelha(
+            jogadorHumano
+        )
+    ) {
+
+        return profundidade - 10;
+    }
+
+
+    if (
+        tabuleiroVelha.every(
+            casa => casa !== ""
+        )
+    ) {
+
+        return 0;
+    }
+
+
+    const livres =
+        obterCasasLivres();
+
+
+    if (maximizando) {
+
+        let melhor =
+            -Infinity;
+
+
+        for (
+            const index of livres
+        ) {
+
+            tabuleiroVelha[index] =
+                jogadorPC;
+
+
+            const pontuacao =
+                minimax(
+                    false,
+                    profundidade + 1
+                );
+
+
+            tabuleiroVelha[index] =
+                "";
+
+
+            melhor =
+                Math.max(
+                    melhor,
+                    pontuacao
+                );
+        }
+
+
+        return melhor;
+
+    } else {
+
+        let melhor =
+            Infinity;
+
+
+        for (
+            const index of livres
+        ) {
+
+            tabuleiroVelha[index] =
+                jogadorHumano;
+
+
+            const pontuacao =
+                minimax(
+                    true,
+                    profundidade + 1
+                );
+
+
+            tabuleiroVelha[index] =
+                "";
+
+
+            melhor =
+                Math.min(
+                    melhor,
+                    pontuacao
+                );
+        }
+
+
+        return melhor;
+    }
+}
+
+
+/* =========================================================
+   VERIFICAR VITÓRIA
+   ========================================================= */
+
+function verificarVitoriaVelha(
+    jogador
+) {
+
+    const n =
+        tamanhoVelha;
+
+    const necessario =
+        ganharVelha;
+
+
+    /*
+     * HORIZONTAL
+     */
+
+    for (
+        let linha = 0;
+        linha < n;
+        linha++
+    ) {
+
+        for (
+            let coluna = 0;
+            coluna <= n - necessario;
+            coluna++
+        ) {
+
+            let ganhou = true;
+
+
+            for (
+                let i = 0;
+                i < necessario;
+                i++
+            ) {
+
+                if (
+                    tabuleiroVelha[
+                        linha * n +
+                        coluna +
+                        i
+                    ] !== jogador
+                ) {
+
+                    ganhou = false;
+
+                    break;
+                }
+            }
+
+
+            if (ganhou) {
+                return true;
+            }
+        }
+    }
+
+
+    /*
+     * VERTICAL
+     */
+
+    for (
+        let coluna = 0;
+        coluna < n;
+        coluna++
+    ) {
+
+        for (
+            let linha = 0;
+            linha <= n - necessario;
+            linha++
+        ) {
+
+            let ganhou = true;
+
+
+            for (
+                let i = 0;
+                i < necessario;
+                i++
+            ) {
+
+                if (
+                    tabuleiroVelha[
+                        (linha + i) * n +
+                        coluna
+                    ] !== jogador
+                ) {
+
+                    ganhou = false;
+
+                    break;
+                }
+            }
+
+
+            if (ganhou) {
+                return true;
+            }
+        }
+    }
+
+
+    /*
+     * DIAGONAL \
+     */
+
+    for (
+        let linha = 0;
+        linha <= n - necessario;
+        linha++
+    ) {
+
+        for (
+            let coluna = 0;
+            coluna <= n - necessario;
+            coluna++
+        ) {
+
+            let ganhou = true;
+
+
+            for (
+                let i = 0;
+                i < necessario;
+                i++
+            ) {
+
+                if (
+                    tabuleiroVelha[
+                        (linha + i) * n +
+                        (coluna + i)
+                    ] !== jogador
+                ) {
+
+                    ganhou = false;
+
+                    break;
+                }
+            }
+
+
+            if (ganhou) {
+                return true;
+            }
+        }
+    }
+
+
+    /*
+     * DIAGONAL /
+     */
+
+    for (
+        let linha = 0;
+        linha <= n - necessario;
+        linha++
+    ) {
+
+        for (
+            let coluna = necessario - 1;
+            coluna < n;
+            coluna++
+        ) {
+
+            let ganhou = true;
+
+
+            for (
+                let i = 0;
+                i < necessario;
+                i++
+            ) {
+
+                if (
+                    tabuleiroVelha[
+                        (linha + i) * n +
+                        (coluna - i)
+                    ] !== jogador
+                ) {
+
+                    ganhou = false;
+
+                    break;
+                }
+            }
+
+
+            if (ganhou) {
+                return true;
+            }
+        }
+    }
+
+
+    return false;
+}
+
+
+/* =========================================================
+   FINALIZAR
+   ========================================================= */
+
+function finalizarVelha(
+    mensagem
+) {
+
+    jogoVelhaAtivo = false;
+
+
+    document.getElementById(
+        "resultadoVelha"
+    ).innerHTML =
+        `<strong>${mensagem}</strong>`;
+
+
+    atualizarInformacoesVelha();
+}
+
+
+/* =========================================================
+   ATUALIZAR STATUS
+   ========================================================= */
+
+function atualizarInformacoesVelha() {
+
+    const vez =
+        document.getElementById(
+            "vezJogador"
+        );
+
+
+    const simboloExibido =
+        document.getElementById(
+            "simboloExibido"
+        );
+
+
+    const simboloAdversario =
+        document.getElementById(
+            "simboloAdversario"
+        );
+
+
+    if (
+        modoVelha === "pessoa"
+    ) {
+
+        vez.textContent =
+            `${vezVelha} - Jogador ${vezVelha}`;
+
+
+        simboloExibido.textContent =
+            "X / O";
+
+
+        simboloAdversario.textContent =
+            "X / O";
+
+
+        return;
+    }
+
+
+    /*
+     * Contra PC
+     */
+
+    if (
+        vezVelha === jogadorHumano
+    ) {
+
+        vez.textContent =
+            `${jogadorHumano} - Você`;
+
+    } else {
+
+        vez.textContent =
+            `${jogadorPC} - PC`;
+    }
+
+
+    simboloExibido.textContent =
+        jogadorHumano;
+
+
+    simboloAdversario.textContent =
+        jogadorPC;
+}
+
+
+/* =========================================================
+   MOSTRAR / ESCONDER DIFICULDADE E SÍMBOLO
+   ========================================================= */
+
+const modoJogoElement =
+    document.getElementById(
+        "modoJogo"
+    );
+
+
+if (modoJogoElement) {
+
+    modoJogoElement.addEventListener(
+        "change",
+        function () {
+
+            const modo =
+                this.value;
+
+
+            const areaDificuldade =
+                document.getElementById(
+                    "areaDificuldade"
+                );
+
+
+            const areaSimbolo =
+                document.getElementById(
+                    "areaSimbolo"
+                );
+
+
+            if (
+                modo === "pessoa"
+            ) {
+
+                areaDificuldade.style.display =
+                    "none";
+
+                areaSimbolo.style.display =
+                    "none";
+
+            } else {
+
+                areaDificuldade.style.display =
+                    "block";
+
+                areaSimbolo.style.display =
+                    "block";
+            }
+        }
+    );
+}
+
+
+/* =========================================================
+   INICIAR AUTOMATICAMENTE
+   ========================================================= */
+
+if (
+    document.getElementById(
+        "tamanhoTabuleiro"
+    )
+) {
+
+    iniciarJogoVelha();
 }
