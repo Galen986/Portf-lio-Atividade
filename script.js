@@ -1175,4 +1175,151 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     iniciarJogoMemoria(); // Inicia quando carrega a página
+
+// 23. Pedra Papel Tesoura
+    let placarVoce = 0;
+    let placarPc = 0;
+    const opcoes = ['pedra', 'papel', 'tesoura'];
+    const emojisPPT = { pedra: '✊', papel: '✋', tesoura: '✌️' };
+
+    window.jogar = function(escolhaVoce) {
+        const escolhaPc = opcoes[Math.floor(Math.random() * 3)];
+        let resultado = '';
+
+        if (escolhaVoce === escolhaPc) {
+            resultado = 'Empate! 🤝';
+        } else if (
+            (escolhaVoce === 'pedra' && escolhaPc === 'tesoura') ||
+            (escolhaVoce === 'papel' && escolhaPc === 'pedra') ||
+            (escolhaVoce === 'tesoura' && escolhaPc === 'papel')
+        ) {
+            resultado = 'Você Ganhou! 🎉';
+            placarVoce++;
+        } else {
+            resultado = 'PC Ganhou! 🤖';
+            placarPc++;
+        }
+
+        document.getElementById('placarVoce').textContent = placarVoce;
+        document.getElementById('placarPc').textContent = placarPc;
+        document.getElementById('resultadoPPT').innerHTML = `
+            Você: ${emojisPPT[escolhaVoce]} ${escolhaVoce.toUpperCase()}<br>
+            PC: ${emojisPPT[escolhaPc]} ${escolhaPc.toUpperCase()}<br>
+            <strong>${resultado}</strong>
+        `;
+    }
+
+    window.resetarPlacarPPT = function() {
+        placarVoce = 0;
+        placarPc = 0;
+        document.getElementById('placarVoce').textContent = 0;
+        document.getElementById('placarPc').textContent = 0;
+        document.getElementById('resultadoPPT').innerHTML = 'Placar zerado! Vamos jogar!';
+    }
+
+// 24. Clique Rápido
+    let tempoRestante = 10;
+    let totalCliques = 0;
+    let jogoRodando = false;
+    let intervaloClique;
+
+    const btnIniciarClique = document.getElementById('btnIniciarClique');
+    const btnClicar = document.getElementById('btnClicar');
+    const tempoDisplay = document.getElementById('tempoClique');
+    const totalDisplay = document.getElementById('totalCliques');
+    const resultadoClique = document.getElementById('resultadoClique');
+
+    btnIniciarClique.addEventListener('click', function() {
+        tempoRestante = 10;
+        totalCliques = 0;
+        jogoRodando = true;
+        totalDisplay.textContent = 0;
+        tempoDisplay.textContent = 10;
+        resultadoClique.innerHTML = 'VALENDO! CLICA! CLICA!';
+        
+        btnIniciarClique.disabled = true;
+        btnClicar.disabled = false;
+
+        intervaloClique = setInterval(() => {
+            tempoRestante--;
+            tempoDisplay.textContent = tempoRestante;
+            if (tempoRestante <= 0) {
+                clearInterval(intervaloClique);
+                jogoRodando = false;
+                btnIniciarClique.disabled = false;
+                btnClicar.disabled = true;
+                
+                let nivel = totalCliques < 20 ? 'Iniciante 🐢' : totalCliques < 40 ? 'Rápido ⚡' : 'Lenda! 🔥';
+                resultadoClique.innerHTML = `Tempo Esgotado!<br>Total: <strong>${totalCliques} cliques</strong><br>Nível: ${nivel}`;
+            }
+        }, 1000);
+    });
+
+    btnClicar.addEventListener('click', function() {
+        if (jogoRodando) {
+            totalCliques++;
+            totalDisplay.textContent = totalCliques;
+        }
+    });
+
+// 25. Quiz Relâmpago
+    const perguntas = [
+        { pergunta: "Qual a capital do Brasil?", opcoes: ["São Paulo", "Brasília", "Rio de Janeiro"], correta: 1 },
+        { pergunta: "2 + 2 * 2 é igual a?", opcoes: ["6", "8", "4"], correta: 0 },
+        { pergunta: "Qual linguagem roda no navegador?", opcoes: ["Python", "JavaScript", "C++"], correta: 1 },
+        { pergunta: "Quantos bits tem 1 Byte?", opcoes: ["4", "8", "16"], correta: 1 },
+        { pergunta: "CSS significa?", opcoes: ["Cascading Style Sheets", "Computer Style System", "Colorful Style Sheet"], correta: 0 }
+    ];
+    let indiceAtual = 0;
+    let pontos = 0;
+
+    function iniciarQuiz() {
+        indiceAtual = 0;
+        pontos = 0;
+        document.getElementById('pontosQuiz').textContent = 0;
+        document.getElementById('resultadoQuiz').style.display = 'none';
+        document.getElementById('areaPergunta').style.display = 'block';
+        mostrarPergunta();
+    }
+
+    function mostrarPergunta() {
+        if (indiceAtual >= perguntas.length) {
+            finalizarQuiz();
+            return;
+        }
+
+        const p = perguntas[indiceAtual];
+        document.getElementById('numPergunta').textContent = indiceAtual + 1;
+        document.getElementById('textoPergunta').textContent = p.pergunta;
+        
+        const divOpcoes = document.getElementById('opcoesQuiz');
+        divOpcoes.innerHTML = '';
+        
+        p.opcoes.forEach((opcao, index) => {
+            const btn = document.createElement('button');
+            btn.textContent = opcao;
+            btn.onclick = () => verificarResposta(index);
+            divOpcoes.appendChild(btn);
+        });
+    }
+
+    function verificarResposta(escolha) {
+        const correta = perguntas[indiceAtual].correta;
+        if (escolha === correta) {
+            pontos++;
+            document.getElementById('pontosQuiz').textContent = pontos;
+        }
+        indiceAtual++;
+        mostrarPergunta();
+    }
+
+    function finalizarQuiz() {
+        document.getElementById('areaPergunta').style.display = 'none';
+        const resultadoDiv = document.getElementById('resultadoQuiz');
+        resultadoDiv.style.display = 'block';
+        let msg = pontos === 5 ? 'Perfeito! 🏆' : pontos >= 3 ? 'Mandou bem! 👏' : 'Treina mais! 💪';
+        resultadoDiv.innerHTML = `Fim de Jogo!<br>Você acertou <strong>${pontos}/5</strong><br>${msg}`;
+    }
+
+    iniciarQuiz(); // Carrega na primeira vez
 }); // Fim do DOMContentLoaded
