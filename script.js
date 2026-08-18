@@ -981,4 +981,99 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderizarMercado(); // Carrega inicial
 
+// 21. Calculadora de Rateio de Contas
+    let pessoasRateio = [];
+    const rateioForm = document.getElementById('rateioForm');
+    const nomePessoa = document.getElementById('nomePessoa');
+    const porcentagemPessoa = document.getElementById('porcentagemPessoa');
+    const valorConta = document.getElementById('valorConta');
+    const listaPessoas = document.getElementById('listaPessoas');
+    const resultadoRateio = document.getElementById('resultadoRateio');
+    const avisoRateio = document.getElementById('avisoRateio');
+
+    function renderizarRateio() {
+        if (!listaPessoas) return;
+        listaPessoas.innerHTML = '';
+        let totalPorcentagem = 0;
+
+        if(pessoasRateio.length === 0){
+            listaPessoas.innerHTML = '<li>Nenhuma pessoa adicionada.</li>';
+        }
+
+        pessoasRateio.forEach((pessoa, index) => {
+            totalPorcentagem += pessoa.porcentagem;
+
+            const li = document.createElement('li');
+            li.style.cssText = `
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 0;
+                border-bottom: 1px dashed var(--color-border);
+            `;
+            li.innerHTML = `
+                <span><strong>${pessoa.nome}</strong> - ${pessoa.porcentagem}%</span>
+                <button style="background-color: #dc3545; padding: 4px 8px; font-size: 0.8rem;" onclick="removerPessoaRateio(${index})">Remover</button>
+            `;
+            listaPessoas.appendChild(li);
+        });
+
+        // Aviso se a soma não dá 100%
+        if(totalPorcentagem !== 100 && pessoasRateio.length > 0){
+            avisoRateio.textContent = `Atenção: A soma das % está em ${totalPorcentagem}%. O ideal é 100%.`;
+        } else {
+            avisoRateio.textContent = '';
+        }
+
+        calcularRateio();
+    }
+
+    window.removerPessoaRateio = function(index) {
+        pessoasRateio.splice(index, 1);
+        renderizarRateio();
+    }
+
+    window.calcularRateio = function() {
+        const valorTotal = parseFloat(valorConta.value) || 0;
+        
+        if(pessoasRateio.length === 0 || valorTotal <= 0){
+            resultadoRateio.innerHTML = "Adicione pessoas e um valor para calcular.";
+            return;
+        }
+
+        let htmlResultado = '';
+        pessoasRateio.forEach(pessoa => {
+            const valorPessoa = valorTotal * (pessoa.porcentagem / 100);
+            htmlResultado += `${pessoa.nome}: <strong>${formatCurrency(valorPessoa)}</strong> (${pessoa.porcentagem}%)<br>`;
+        });
+
+        resultadoRateio.innerHTML = htmlResultado;
+    }
+
+    if (rateioForm) {
+        rateioForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nome = nomePessoa.value.trim();
+            const porcentagem = parseFloat(porcentagemPessoa.value);
+
+            if (nome === '' || isNaN(porcentagem) || porcentagem <= 0) {
+                alert("Por favor, preencha nome e % válida.");
+                return;
+            }
+
+            pessoasRateio.push({ nome, porcentagem });
+
+            nomePessoa.value = '';
+            porcentagemPessoa.value = '25';
+            nomePessoa.focus();
+
+            renderizarRateio();
+        });
+    }
+
+    if(valorConta) valorConta.addEventListener('input', calcularRateio);
+
+    renderizarRateio();
+
 }); // Fim do DOMContentLoaded
