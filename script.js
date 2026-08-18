@@ -1,7 +1,8 @@
 // =======================================================================
-// Lógica de Tema (Claro/Escuro) - CORRIGIDO
+// ARQUIVO COMPLETO - 26 MINI APLICAÇÕES JS
 // =======================================================================
 
+// VARIAVEIS GLOBAIS TEMA
 const body = document.getElementById('body-principal');
 const themeToggleBtn = document.getElementById('theme-toggle');
 const themeColorMeta = document.getElementById('theme-color-meta');
@@ -9,1507 +10,524 @@ const DARK_THEME_CLASS = 'dark-theme';
 const LIGHT_THEME_COLOR = '#ffffff';
 const DARK_THEME_COLOR = '#1a1a1a';
 
-// Função para aplicar o tema (Ícones ajustados para UX)
-function applyTheme(isDark) {
-    if (isDark) {
-        body.classList.add(DARK_THEME_CLASS);
-        themeToggleBtn.textContent = '☀️'; 
-        themeToggleBtn.setAttribute('aria-pressed', 'true');
-        themeColorMeta.setAttribute('content', DARK_THEME_COLOR);
-    } else {
-        // CORREÇÃO: Usando a constante correta (DARK_THEME_CLASS) para remoção
-        body.classList.remove(DARK_THEME_CLASS);
-        themeToggleBtn.textContent = '🌙'; 
-        themeToggleBtn.setAttribute('aria-pressed', 'false');
-        themeColorMeta.setAttribute('content', LIGHT_THEME_COLOR);
-    }
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-}
-
-// Função de formatação de moeda para reutilização
+// FUNÇÃO AUXILIAR MOEDA
 const formatCurrency = (value) => {
-    return new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL',
-    }).format(value);
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 };
 
-
-// =======================================================================
-// Funções Globais (Necessárias para chamadas 'onclick' no HTML)
-// =======================================================================
-
-// 3. Jogo de Adivinhação
-let numeroSecreto = Math.floor(Math.random() * 100) + 1;
-let tentativas = 0;
-let jogoEncerrado = false;
-
-window.adivinhar = function() {
-  if (jogoEncerrado) {
-    document.getElementById('mensagem').textContent = "Clique em Reiniciar para jogar novamente.";
-    return;
-  }
-
-  let palpiteInput = document.getElementById('palpite');
-  let palpite = palpiteInput.value.trim();
-
-  if (palpite === "") {
-    document.getElementById('mensagem').textContent = "Por favor, digite um número.";
-    return;
-  }
-
-  palpite = Number(palpite);
-  tentativas++;
-
-  if (isNaN(palpite) || palpite < 1 || palpite > 100) {
-    document.getElementById('mensagem').textContent = "Digite um número válido entre 1 e 100.";
-  } else if (palpite < numeroSecreto) {
-    document.getElementById('mensagem').textContent = `Você digitou: ${palpite}. Tente um número maior. ⬆️`;
-  } else if (palpite > numeroSecreto) {
-    document.getElementById('mensagem').textContent = `Você digitou: ${palpite}. Tente um número menor. ⬇️`;
-  } else {
-    document.getElementById('mensagem').textContent =
-      `🎉 Parabéns! Você acertou o número ${numeroSecreto} em ${tentativas} tentativa(s)!`;
-    jogoEncerrado = true;
-    document.getElementById('palpite').disabled = true;
-    document.getElementById('btnAdivinhar').disabled = true;
-    alert(`VITÓRIA! Você acertou o número secreto!`);
-  }
-
-  palpiteInput.value = "";
-  palpiteInput.focus();
-}
-
-window.reiniciar = function() {
-  numeroSecreto = Math.floor(Math.random() * 100) + 1;
-  tentativas = 0;
-  jogoEncerrado = false;
-
-  document.getElementById('mensagem').textContent = "";
-  document.getElementById('palpite').value = "";
-  document.getElementById('palpite').disabled = false;
-  document.getElementById('btnAdivinhar').disabled = false;
-  document.getElementById('palpite').focus();
-}
-
-/**
- * Limpa os campos de input, o resultado do Cálculo de IMC e reabilita os elementos.
- * Esta função precisa ser global (window.) pois é chamada via onclick no HTML.
- */
-window.limparImc = function() {
-    const pesoInput = document.getElementById('peso');
-    const alturaInput = document.getElementById('altura');
-    const btnCalcular = document.getElementById('btnCalcularImc');
-
-    pesoInput.value = '';
-    alturaInput.value = '';
-    document.getElementById('imcResultado').innerHTML = '';
-
-    pesoInput.disabled = false;
-    alturaInput.disabled = false;
-    if (btnCalcular) {
-      btnCalcular.disabled = false;
+// APLICA TEMA
+function applyTheme(isDark) {
+    if (!body ||!themeToggleBtn ||!themeColorMeta) return;
+    if (isDark) {
+        body.classList.add(DARK_THEME_CLASS);
+        themeToggleBtn.textContent = '☀️';
+        themeColorMeta.setAttribute('content', DARK_THEME_COLOR);
+    } else {
+        body.classList.remove(DARK_THEME_CLASS);
+        themeToggleBtn.textContent = '🌙';
+        themeColorMeta.setAttribute('content', LIGHT_THEME_COLOR);
     }
-
-    pesoInput.focus();
+    localStorage.setItem('theme', isDark? 'dark' : 'light');
 }
 
-
 // =======================================================================
-// Lógica Principal (Executada após o carregamento completo do DOM)
+// DOM CARREGADO
 // =======================================================================
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Carrega o tema ao iniciar
+
+    // TEMA
     const savedTheme = localStorage.getItem('theme');
-    const prefersDark = savedTheme
-        ? savedTheme === 'dark'
-        : window.matchMedia('(prefers-color-scheme: dark)').matches;
-
+    const prefersDark = savedTheme? savedTheme === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
     applyTheme(prefersDark);
+    themeToggleBtn?.addEventListener('click', () => { applyTheme(!body.classList.contains(DARK_THEME_CLASS)); });
 
-    // Event Listener para o botão de alternância
-    if (themeToggleBtn) {
-        themeToggleBtn.addEventListener('click', () => {
-            const isDark = body.classList.contains(DARK_THEME_CLASS);
-            applyTheme(!isDark);
+    // BUSCA GERAL
+    document.getElementById('busca-listas')?.addEventListener('input', (e) => {
+        const termo = e.target.value.toLowerCase();
+        document.querySelectorAll('.card').forEach(card => {
+            const titulo = card.querySelector('h3')?.textContent.toLowerCase() || '';
+            card.style.display = titulo.includes(termo)? 'block' : 'none';
         });
-    }
-
-    // =======================================================================
-    // BUSCA GERAL DE CARDS (Filtro da Página)
-    // =======================================================================
-    const buscaListasInput = document.getElementById('busca-listas');
-    const cards = document.querySelectorAll('.card');
-
-    function filtrarCardsGeral() {
-        const termo = buscaListasInput.value.toLowerCase().trim();
-
-        cards.forEach(card => {
-            const tituloElement = card.querySelector('h3');
-
-            if (tituloElement) {
-                const titulo = tituloElement.textContent.toLowerCase();
-
-                if (titulo.includes(termo)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            }
-        });
-    }
-
-    if (buscaListasInput) {
-        buscaListasInput.addEventListener('input', filtrarCardsGeral);
-    }
-
-
-    // 1. Dia da semana
-    document.getElementById("form").addEventListener("submit", function(e) {
-      e.preventDefault();
-      let dia = document.getElementById("day").value.trim().toLowerCase();
-      if (!dia) {
-        alert("Por favor, digite o dia da semana.");
-      } else if (dia === "sábado" || dia === "sabado" || dia === "domingo") {
-        alert("Bom fim de semana! 🎉");
-      } else {
-        alert("Boa semana! 💼");
-      }
-      this.reset();
     });
 
-    // 2. Positivo ou negativo
-    document.getElementById("numberForm").addEventListener("submit", function(e){
-      e.preventDefault();
-      let input = document.getElementById("number");
-      let valorDigitado = input.value.trim();
-
-      if (valorDigitado === "") {
-        alert("Por favor, digite um número.");
-      } else {
-        let num = Number(valorDigitado);
-        if (num > 0) {
-          alert("O número é positivo. ✅");
-        } else if (num < 0) {
-          alert("O número é negativo. ❌");
-        } else {
-          alert("O número é zero. 0️⃣");
-        }
-      }
-      this.reset();
-    });
-
-    // 4. Saldo
-    document.getElementById("balanceForm").addEventListener("submit", function(e){
-      e.preventDefault();
-      let input = document.getElementById("balance");
-      let valorDigitado = input.value.trim();
-
-      if (valorDigitado === "") {
-        alert("Por favor, digite o valor do saldo.");
-      } else {
-        let saldo = Number(valorDigitado);
-        let saldoFormatado = formatCurrency(saldo);
-        alert(`Seu saldo atual é: ${saldoFormatado} 💰`);
-      }
-      this.reset();
-    });
-
-    // 5. Boas-vindas com nome
-    document.getElementById("nameForm").addEventListener("submit", function(e){
-      e.preventDefault();
-      let nome = document.getElementById("name").value.trim();
-      if (nome === "") {
-        alert("Por favor, digite seu nome.");
-      } else {
-        alert(`Bem-vindo(a), ${nome}! 👋`);
-      }
-      this.reset();
-    });
-
-    // 6. Cálculo de IMC
-    document.getElementById("imcForm").addEventListener("submit", function(e) {
+    // ===================================================================
+    // CARD 1: DIA DA SEMANA
+    // ===================================================================
+    document.getElementById("form")?.addEventListener("submit", function(e) {
         e.preventDefault();
-
-        const pesoInput = document.getElementById("peso");
-        const alturaInput = document.getElementById("altura");
-        const resultadoDiv = document.getElementById("imcResultado");
-        const btnCalcular = document.getElementById("btnCalcularImc");
-
-        const peso = parseFloat(pesoInput.value);
-        const altura = parseFloat(alturaInput.value);
-
-        if (isNaN(peso) || isNaN(altura) || peso <= 0 || altura <= 0) {
-            resultadoDiv.innerHTML = "⚠️ Por favor, insira valores válidos e positivos para peso e altura.";
-            return;
-        }
-
-        const imc = peso / (altura * altura);
-        const imcFormatado = imc.toFixed(2);
-
-        let classificacao = '';
-        let emoji = '';
-        let cor = '';
-        let corVerde = 'var(--color-primary)';
-        let corLaranja = '#ffc107';
-        let corVermelho = '#dc3545';
-
-        if (imc < 18.5) {
-            classificacao = 'Abaixo do peso';
-            emoji = '⬇️';
-            cor = 'var(--color-text-secondary)';
-        } else if (imc >= 18.5 && imc < 24.9) {
-            classificacao = 'Peso normal';
-            emoji = '✅';
-            cor = corVerde;
-        } else if (imc >= 25.0 && imc < 29.9) {
-            classificacao = 'Sobrepeso';
-            emoji = '🟠';
-            cor = corLaranja;
-        } else if (imc >= 30.0 && imc < 34.9) {
-            classificacao = 'Obesidade Grau I';
-            emoji = '🛑';
-            cor = corVermelho;
-        } else if (imc >= 35.0 && imc < 39.9) {
-            classificacao = 'Obesidade Grau II (Severa)';
-            emoji = '🚨';
-            cor = corVermelho;
-        } else {
-            classificacao = 'Obesidade Grau III (Mórbida)';
-            emoji = '⚠️';
-            cor = corVermelho;
-        }
-
-        resultadoDiv.innerHTML = `
-            Seu IMC é: <strong style="color: ${cor};">${imcFormatado}</strong><br>
-            Classificação: <strong style="color: ${cor};">${emoji} ${classificacao}</strong>
-        `;
-
-        pesoInput.disabled = true;
-        alturaInput.disabled = true;
-        btnCalcular.disabled = true;
-        alert(`Cálculo de IMC concluído: ${imcFormatado} (${classificacao})`);
-    });
-
-    // 7. Conversor de Temperatura (Celsius para Fahrenheit)
-    document.getElementById("tempForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-
-        const celsiusInput = document.getElementById("celsius");
-        const resultadoDiv = document.getElementById("tempResultado");
-
-        const celsius = parseFloat(celsiusInput.value);
-
-        if (isNaN(celsius)) {
-            resultadoDiv.innerHTML = "⚠️ Por favor, insira um valor numérico válido.";
-            return;
-        }
-
-        // Fórmula: F = C * 9/5 + 32
-        const fahrenheit = (celsius * 9/5) + 32;
-        const fahrenheitFormatado = fahrenheit.toFixed(1);
-
-        resultadoDiv.innerHTML = `
-            ${celsius}°C é igual a: <strong style="color: var(--color-primary);">${fahrenheitFormatado}°F</strong> 🔥
-        `;
-        celsiusInput.focus();
+        const dia = document.getElementById("day").value.trim().toLowerCase();
+        if (!dia) return alert("Digite um dia!");
+        alert((dia.includes("sabado") || dia.includes("domingo"))? "Bom fim de semana! 🎉" : "Boa semana! 💼");
         this.reset();
     });
 
-
-    // 8. Contador de Cliques
-    let contador = 0;
-    const contadorElement = document.getElementById("contadorCliques");
-    const btnContador = document.getElementById("btnContador");
-    const btnReset = document.getElementById("btnResetContador");
-
-    if (btnContador && contadorElement && btnReset) {
-        btnContador.addEventListener('click', function() {
-            contador++;
-            contadorElement.textContent = contador;
-        });
-
-        btnReset.addEventListener('click', function() {
-            contador = 0;
-            contadorElement.textContent = contador;
-            alert("Contador zerado!");
-        });
-    }
-
-
-    // 9. Lista de Tarefas Filtrável (Lógica de Renderização e Filtro Aprimorada)
-    let tarefas = []; // Array que armazenará todas as tarefas como strings
-    const todoInput = document.getElementById("todoInput");
-    const todoList = document.getElementById("todoList");
-    const filtroTodoInput = document.getElementById("filtroTodo");
-
-    function renderizarTarefas() {
-        if (!todoList) return;
-
-        todoList.innerHTML = ''; // Limpa a lista na tela
-        const termo = filtroTodoInput ? filtroTodoInput.value.toLowerCase().trim() : '';
-
-        // Usamos map para criar um novo array de tarefas com seus índices originais
-        const tarefasRenderizadas = tarefas.map((taskText, index) => ({ taskText, index }));
-
-        // Filtra as tarefas que devem ser mostradas
-        const tarefasFiltradas = tarefasRenderizadas.filter(item => {
-            if (termo === '') return true;
-            return item.taskText.toLowerCase().includes(termo);
-        });
-
-        if (tarefasFiltradas.length === 0) {
-            todoList.innerHTML = '<li>Nenhuma tarefa para mostrar.</li>';
-        }
-
-        tarefasFiltradas.forEach(item => {
-            const li = document.createElement('li');
-            li.style.cssText = `
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 8px 0;
-                border-bottom: 1px dashed var(--color-border);
-                font-size: 1.1rem;
-            `;
-
-            const span = document.createElement('span');
-            span.textContent = item.taskText;
-            li.appendChild(span);
-
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = '❌';
-            deleteButton.style.cssText = `
-                background: none;
-                border: none;
-                cursor: pointer;
-                font-size: 1rem;
-                padding: 5px;
-                margin-left: 10px;
-                transition: transform 0.1s;
-            `;
-
-            // O listener remove a tarefa do array 'tarefas' usando o índice original
-            deleteButton.addEventListener('click', function() {
-                tarefas.splice(item.index, 1);
-                // Re-renderiza tudo para atualizar os listeners de exclusão (que dependem dos índices)
-                renderizarTarefas(); 
-            });
-
-            li.appendChild(deleteButton);
-            todoList.appendChild(li);
-        });
-    }
-
-
-    if (document.getElementById("todoForm")) {
-        document.getElementById("todoForm").addEventListener("submit", function(e) {
-            e.preventDefault();
-
-            const taskText = todoInput.value.trim();
-
-            if (taskText === "") {
-                alert("Por favor, digite uma tarefa.");
-                return;
-            }
-
-            tarefas.push(taskText);
-
-            todoInput.value = '';
-            todoInput.focus();
-
-            renderizarTarefas();
-        });
-    }
-
-    if (filtroTodoInput) {
-        filtroTodoInput.addEventListener('input', renderizarTarefas);
-        renderizarTarefas();
-    }
-
-
-    // 10. Contador Regressivo (Timer)
-    let timerInterval;
-    let tempoTotalSegundos = 0;
-    const timerDisplay = document.getElementById('timerDisplay');
-    const btnIniciarTimer = document.getElementById('btnIniciarTimer');
-    const btnPararTimer = document.getElementById('btnPararTimer');
-    const btnResetTimer = document.getElementById('btnResetTimer');
-    const inputMinutos = document.getElementById('minutos');
-    const inputSegundos = document.getElementById('segundos');
-
-    function atualizarDisplay() {
-        const min = Math.floor(tempoTotalSegundos / 60);
-        const seg = tempoTotalSegundos % 60;
-        timerDisplay.textContent = `${min.toString().padStart(2, '0')}:${seg.toString().padStart(2, '0')}`;
-    }
-
-    function iniciarTimer() {
-        if (timerInterval) return;
-
-        tempoTotalSegundos = (Number(inputMinutos.value) * 60) + Number(inputSegundos.value);
-
-        if (tempoTotalSegundos <= 0) {
-            alert("Por favor, defina um tempo válido.");
-            return;
-        }
-
-        btnIniciarTimer.disabled = true;
-        btnPararTimer.disabled = false;
-        inputMinutos.disabled = true;
-        inputSegundos.disabled = true;
-
-        timerInterval = setInterval(() => {
-            tempoTotalSegundos--;
-            atualizarDisplay();
-
-            if (tempoTotalSegundos <= 0) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-                timerDisplay.textContent = "TEMPO ESGOTADO! 🔔";
-                alert("O tempo acabou!");
-                btnIniciarTimer.disabled = false;
-                btnPararTimer.disabled = true;
-                inputMinutos.disabled = false;
-                inputSegundos.disabled = false;
-            }
-        }, 1000);
-    }
-
-    function pararTimer() {
-        clearInterval(timerInterval);
-        timerInterval = null;
-        btnIniciarTimer.disabled = false;
-        btnPararTimer.disabled = true;
-    }
-
-    function resetarTimer() {
-        pararTimer();
-        // Garante que o display volte ao valor inicial dos inputs
-        const minutosValor = inputMinutos.value.padStart(2, '0');
-        const segundosValor = inputSegundos.value.padStart(2, '0');
-        tempoTotalSegundos = (Number(inputMinutos.value) * 60) + Number(inputSegundos.value);
-        atualizarDisplay();
-        btnIniciarTimer.disabled = false;
-        btnPararTimer.disabled = true;
-        inputMinutos.disabled = false;
-        inputSegundos.disabled = false;
-        timerDisplay.textContent = `${minutosValor}:${segundosValor}`;
-    }
-
-    if (btnIniciarTimer) btnIniciarTimer.addEventListener('click', iniciarTimer);
-    if (btnPararTimer) btnPararTimer.addEventListener('click', pararTimer);
-    if (btnResetTimer) btnResetTimer.addEventListener('click', resetarTimer);
-
-    if (timerDisplay && inputMinutos && inputSegundos) {
-         timerDisplay.textContent = `${inputMinutos.value.padStart(2, '0')}:${inputSegundos.value.padStart(2, '0')}`;
-    }
-
-    // 11. Gerador de Senhas Aleatórias
-    const btnGerarSenha = document.getElementById('btnGerarSenha');
-    const btnCopiarSenha = document.getElementById('btnCopiarSenha');
-    const senhaGeradaInput = document.getElementById('senhaGerada');
-
-    function gerarSenha() {
-        const tamanho = Number(document.getElementById('tamanhoSenha').value);
-        const incluirMaiusculas = document.getElementById('incluirMaiusculas').checked;
-        const incluirNumeros = document.getElementById('incluirNumeros').checked;
-        const incluirSimbolos = document.getElementById('incluirSimbolos').checked;
-
-        const caracteresMinusculos = 'abcdefghijklmnopqrstuvwxyz';
-        const caracteresMaiusculos = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const caracteresNumeros = '0123456789';
-        const caracteresSimbolos = '!@#$%^&*()_+[]{}|;:,.<>?';
-
-        let pool = caracteresMinusculos;
-        if (incluirMaiusculas) pool += caracteresMaiusculos;
-        if (incluirNumeros) pool += caracteresNumeros;
-        if (incluirSimbolos) pool += caracteresSimbolos;
-
-        if (pool.length === 0 || tamanho < 4) {
-            alert("Defina um tamanho mínimo de 4 e selecione pelo menos um tipo de caractere.");
-            return;
-        }
-
-        let senha = '';
-        for (let i = 0; i < tamanho; i++) {
-            const indiceAleatorio = Math.floor(Math.random() * pool.length);
-            senha += pool[indiceAleatorio];
-        }
-
-        senhaGeradaInput.value = senha;
-    }
-
-    function copiarSenha() {
-        if (senhaGeradaInput.value) {
-            navigator.clipboard.writeText(senhaGeradaInput.value)
-                .then(() => {
-                    alert("Senha copiada para a área de transferência!");
-                })
-                .catch(err => {
-                    console.error('Erro ao copiar: ', err);
-                    // Uso de fallback para navegadores sem HTTPS ou permissões (Embora pouco comum hoje)
-                    senhaGeradaInput.select();
-                    document.execCommand('copy');
-                    alert("Senha copiada (Fallback).");
-                });
-        }
-    }
-
-    if (btnGerarSenha) btnGerarSenha.addEventListener('click', gerarSenha);
-    if (btnCopiarSenha) btnCopiarSenha.addEventListener('click', copiarSenha);
-
-    // 12. Calculadora de Gorjeta
-    const gorjetaResultadoDiv = document.getElementById('gorjetaResultado');
-    const contaValorInput = document.getElementById('contaValor');
-    const gorjetaPorcentagemInput = document.getElementById('gorjetaPorcentagem');
-    const numPessoasInput = document.getElementById('numPessoas');
-
-    window.calcularGorjeta = function() {
-        const contaValor = parseFloat(contaValorInput.value);
-        const gorjetaPorcentagem = parseFloat(gorjetaPorcentagemInput.value);
-        const numPessoas = parseInt(numPessoasInput.value);
-
-        if (isNaN(contaValor) || contaValor <= 0 || isNaN(gorjetaPorcentagem) || isNaN(numPessoas) || numPessoas <= 0) {
-            gorjetaResultadoDiv.innerHTML = "⚠️ Por favor, insira valores válidos e positivos.";
-            return;
-        }
-
-        const gorjetaTotal = contaValor * (gorjetaPorcentagem / 100);
-        const totalComGorjeta = contaValor + gorjetaTotal;
-        const totalPorPessoa = totalComGorjeta / numPessoas;
-
-        gorjetaResultadoDiv.innerHTML = `
-            Gorjeta (${gorjetaPorcentagem}%): <strong>${formatCurrency(gorjetaTotal)}</strong><br>
-            Total da Conta: <strong>${formatCurrency(totalComGorjeta)}</strong><br>
-            Total por Pessoa (${numPessoas}x): <strong>${formatCurrency(totalPorPessoa)}</strong> 💵
-        `;
-    }
-
-    if (contaValorInput) {
-        calcularGorjeta();
-        const btnCalcularGorjeta = document.getElementById('btnCalcularGorjeta');
-        if (btnCalcularGorjeta) btnCalcularGorjeta.addEventListener('click', calcularGorjeta);
-    }
-
-
-    // 13. Mudança de Estilos Dinâmica (Editor de Estilos)
-    const corTextoInput = document.getElementById('corTexto');
-    const tamanhoFonteInput = document.getElementById('tamanhoFonte');
-    const blocoExemplo = document.getElementById('blocoExemplo');
-
-    function atualizarEstilos() {
-        if (blocoExemplo) {
-            blocoExemplo.style.color = corTextoInput.value;
-            blocoExemplo.style.fontSize = `${tamanhoFonteInput.value}px`;
-        }
-    }
-
-    if (corTextoInput) corTextoInput.addEventListener('input', atualizarEstilos);
-    if (tamanhoFonteInput) tamanhoFonteInput.addEventListener('input', atualizarEstilos);
-
-    // 14. Validador de Formulário Simples
-    const loginForm = document.getElementById('loginForm');
-    const emailInput = document.getElementById('loginEmail');
-    const senhaInput = document.getElementById('loginSenha');
-    const emailError = document.getElementById('emailError');
-    const senhaError = document.getElementById('senhaError');
-
-    function validarEmail(email) {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return regex.test(email);
-    }
-
-    function validarFormulario(e) {
+    // ===================================================================
+    // CARD 2: POSITIVO OU NEGATIVO
+    // ===================================================================
+    document.getElementById("numberForm")?.addEventListener("submit", function(e){
         e.preventDefault();
+        const num = Number(document.getElementById("number").value);
+        alert(num > 0? "Positivo ✅" : num < 0? "Negativo ❌" : "Zero 0️⃣");
+        this.reset();
+    });
 
-        const email = emailInput.value.trim();
-        const senha = senhaInput.value;
-        let formValido = true;
+    // ===================================================================
+    // CARD 3: JOGO DE ADIVINHAÇÃO
+    // ===================================================================
+    let numeroSecreto = Math.floor(Math.random() * 100) + 1;
+    let tentativas = 0;
+    let jogoEncerrado = false;
 
-        emailError.textContent = '';
-        senhaError.textContent = '';
-
-        if (email === '') {
-            emailError.textContent = 'O email é obrigatório.';
-            formValido = false;
-        } else if (!validarEmail(email)) {
-            emailError.textContent = 'Por favor, insira um formato de email válido.';
-            formValido = false;
+    window.adivinhar = function() {
+        if (jogoEncerrado) return document.getElementById('mensagem').textContent = "Clique em Reiniciar!";
+        const palpite = Number(document.getElementById('palpite').value);
+        tentativas++;
+        if (palpite < numeroSecreto) document.getElementById('mensagem').textContent = `Tente um número MAIOR ⬆️`;
+        else if (palpite > numeroSecreto) document.getElementById('mensagem').textContent = `Tente um número MENOR ⬇️`;
+        else {
+            document.getElementById('mensagem').textContent = `🎉 Acertou em ${tentativas} tentativas!`;
+            jogoEncerrado = true;
+            document.getElementById('palpite').disabled = true;
+            document.getElementById('btnAdivinhar').disabled = true;
         }
-
-        if (senha === '') {
-            senhaError.textContent = 'A senha é obrigatória.';
-            formValido = false;
-        } else if (senha.length < 6) {
-            senhaError.textContent = 'A senha deve ter no mínimo 6 caracteres.';
-            formValido = false;
-        }
-
-        if (formValido) {
-            alert(`Login bem-sucedido! Email: ${email}`);
-            loginForm.reset();
-        }
+        document.getElementById('palpite').value = "";
     }
 
-    if (loginForm) loginForm.addEventListener('submit', validarFormulario);
+    window.reiniciar = function() {
+        numeroSecreto = Math.floor(Math.random() * 100) + 1;
+        tentativas = 0; jogoEncerrado = false;
+        document.getElementById('mensagem').textContent = "";
+        document.getElementById('palpite').disabled = false;
+        document.getElementById('btnAdivinhar').disabled = false;
+    }
 
+    // ===================================================================
+    // CARD 4: SALDO ATUAL
+    // ===================================================================
+    document.getElementById("balanceForm")?.addEventListener("submit", function(e){
+        e.preventDefault();
+        const saldo = Number(document.getElementById("balance").value);
+        alert(`Seu saldo: ${formatCurrency(saldo)} 💰`);
+        this.reset();
+    });
 
-    // 15. Lista de Produtos Filtrável
-    const filtroProdutoInput = document.getElementById('filtroProduto');
-    const listaProdutosUL = document.getElementById('listaProdutos');
+    // ===================================================================
+    // CARD 5: BOAS-VINDAS
+    // ===================================================================
+    document.getElementById("nameForm")?.addEventListener("submit", function(e){
+        e.preventDefault();
+        const nome = document.getElementById("name").value.trim();
+        alert(nome? `Bem-vindo(a), ${nome}! 👋` : "Digite seu nome!");
+        this.reset();
+    });
 
+    // ===================================================================
+    // CARD 6: CALCULO DE IMC
+    // ===================================================================
+    document.getElementById("imcForm")?.addEventListener("submit", function(e) {
+        e.preventDefault();
+        const peso = parseFloat(document.getElementById("peso").value);
+        const altura = parseFloat(document.getElementById("altura").value);
+        const imc = (peso / (altura * altura)).toFixed(2);
+        let status = imc < 18.5? 'Abaixo do peso' : imc < 24.9? 'Normal ✅' : imc < 29.9? 'Sobrepeso' : 'Obesidade';
+        document.getElementById("imcResultado").innerHTML = `IMC: <strong>${imc}</strong> - ${status}`;
+        document.getElementById("btnCalcularImc").disabled = true;
+    });
+
+    window.limparImc = function() {
+        document.getElementById('peso').value = '';
+        document.getElementById('altura').value = '';
+        document.getElementById('imcResultado').innerHTML = '';
+        document.getElementById("btnCalcularImc").disabled = false;
+    }
+
+    // ===================================================================
+    // CARD 7: CONVERSOR C PARA F
+    // ===================================================================
+    document.getElementById("tempForm")?.addEventListener("submit", function(e) {
+        e.preventDefault();
+        const c = parseFloat(document.getElementById("celsius").value);
+        const f = ((c * 9/5) + 32).toFixed(1);
+        document.getElementById("tempResultado").innerHTML = `${c}°C = <strong>${f}°F</strong> 🔥`;
+    });
+
+    // ===================================================================
+    // CARD 8: CONTADOR DE CLIQUES
+    // ===================================================================
+    let contador = 0;
+    document.getElementById("btnContador")?.addEventListener('click', () => {
+        document.getElementById("contadorCliques").textContent = ++contador;
+    });
+    document.getElementById("btnResetContador")?.addEventListener('click', () => {
+        contador = 0;
+        document.getElementById("contadorCliques").textContent = 0;
+    });
+
+    // ===================================================================
+    // CARD 9: LISTA DE TAREFAS
+    // ===================================================================
+    let tarefas = [];
+    function renderizarTarefas() {
+        const lista = document.getElementById("todoList");
+        const filtro = document.getElementById("filtroTodo").value.toLowerCase();
+        lista.innerHTML = tarefas.filter(t => t.toLowerCase().includes(filtro))
+           .map((t, i) => `<li>${t} <button onclick="removerTarefa(${i})">❌</button></li>`).join('');
+    }
+    window.removerTarefa = (i) => { tarefas.splice(i,1); renderizarTarefas(); }
+    document.getElementById("todoForm")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        tarefas.push(document.getElementById("todoInput").value);
+        document.getElementById("todoInput").value = '';
+        renderizarTarefas();
+    });
+    document.getElementById("filtroTodo")?.addEventListener('input', renderizarTarefas);
+
+    // ===================================================================
+    // CARD 10: CONTADOR REGRESSIVO
+    // ===================================================================
+    let timerInterval;
+    function atualizarTimer() {
+        let min = document.getElementById('minutos').value.padStart(2,'0');
+        let seg = document.getElementById('segundos').value.padStart(2,'0');
+        document.getElementById('timerDisplay').textContent = `${min}:${seg}`;
+    }
+    document.getElementById('btnIniciarTimer')?.addEventListener('click', () => {
+        let total = (+document.getElementById('minutos').value * 60) + +document.getElementById('segundos').value;
+        timerInterval = setInterval(() => {
+            total--;
+            let m = Math.floor(total/60).toString().padStart(2,'0');
+            let s = (total%60).toString().padStart(2,'0');
+            document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+            if(total <= 0) clearInterval(timerInterval);
+        }, 1000);
+    });
+    document.getElementById('btnPararTimer')?.addEventListener('click', () => clearInterval(timerInterval));
+    document.getElementById('btnResetTimer')?.addEventListener('click', atualizarTimer);
+
+    // ===================================================================
+    // CARD 11: GERADOR DE SENHAS
+    // ===================================================================
+    document.getElementById('btnGerarSenha')?.addEventListener('click', () => {
+        const tam = +document.getElementById('tamanhoSenha').value;
+        let chars = 'abcdefghijklmnopqrstuvwxyz';
+        if(document.getElementById('incluirMaiusculas').checked) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        if(document.getElementById('incluirNumeros').checked) chars += '0123456789';
+        if(document.getElementById('incluirSimbolos').checked) chars += '!@#$%';
+        let senha = '';
+        for(let i=0; i<tam; i++) senha += chars[Math.floor(Math.random() * chars.length)];
+        document.getElementById('senhaGerada').value = senha;
+    });
+    document.getElementById('btnCopiarSenha')?.addEventListener('click', () => {
+        navigator.clipboard.writeText(document.getElementById('senhaGerada').value);
+        alert("Copiado!");
+    });
+
+    // ===================================================================
+    // CARD 12: CALCULADORA DE GORJETA
+    // ===================================================================
+    window.calcularGorjeta = function() {
+        const conta = +document.getElementById('contaValor').value;
+        const perc = +document.getElementById('gorjetaPorcentagem').value;
+        const pessoas = +document.getElementById('numPessoas').value;
+        const gorjeta = conta * (perc/100);
+        const total = conta + gorjeta;
+        document.getElementById('gorjetaResultado').innerHTML = `
+            Gorjeta: ${formatCurrency(gorjeta)}<br>
+            Total: ${formatCurrency(total)}<br>
+            Por pessoa: ${formatCurrency(total/pessoas)}
+        `;
+    }
+    calcularGorjeta();
+
+    // ===================================================================
+    // CARD 13: EDITOR DE ESTILOS
+    // ===================================================================
+    document.getElementById('corTexto')?.addEventListener('input', (e) => {
+        document.getElementById('blocoExemplo').style.color = e.target.value;
+    });
+    document.getElementById('tamanhoFonte')?.addEventListener('input', (e) => {
+        document.getElementById('blocoExemplo').style.fontSize = e.target.value + 'px';
+    });
+
+    // ===================================================================
+    // CARD 14: VALIDADOR DE LOGIN
+    // ===================================================================
+    document.getElementById('loginForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const senha = document.getElementById('loginSenha').value;
+        document.getElementById('emailError').textContent = email.includes('@')? '' : 'Email inválido';
+        document.getElementById('senhaError').textContent = senha.length >= 6? '' : 'Min 6 caracteres';
+        if(email.includes('@') && senha.length >= 6) alert('Login OK!');
+    });
+
+    // ===================================================================
+    // CARD 15: CATALOGO DE PRODUTOS
+    // ===================================================================
     const produtos = [
-        { id: 1, nome: "Notebook Gamer", categoria: "Eletrônicos" },
-        { id: 2, nome: "Mouse Óptico", categoria: "Acessórios" },
-        { id: 3, nome: "Monitor 24 polegadas", categoria: "Eletrônicos" },
-        { id: 4, nome: "Teclado Mecânico", categoria: "Acessórios" },
-        { id: 5, nome: "Headset Pro", categoria: "Áudio" },
-        { id: 6, nome: "Webcam HD", categoria: "Acessórios" }
+        {nome: "Notebook Gamer", categoria: "Eletrônicos"},
+        {nome: "Mouse Óptico", categoria: "Acessórios"},
+        {nome: "Monitor 24pol", categoria: "Eletrônicos"}
     ];
-
     function renderizarProdutos(lista) {
-        if (!listaProdutosUL) return;
-
-        listaProdutosUL.innerHTML = '';
-
-        if (lista.length === 0) {
-            listaProdutosUL.innerHTML = '<li>Nenhum produto encontrado.</li>';
-            return;
-        }
-
-        lista.forEach(produto => {
-            const li = document.createElement('li');
-            li.textContent = `${produto.nome} (${produto.categoria})`;
-            listaProdutosUL.appendChild(li);
-        });
+        document.getElementById('listaProdutos').innerHTML = lista.map(p => `<li>${p.nome} - ${p.categoria}</li>`).join('');
     }
+    document.getElementById('filtroProduto')?.addEventListener('input', (e) => {
+        renderizarProdutos(produtos.filter(p => p.nome.toLowerCase().includes(e.target.value.toLowerCase())));
+    });
+    renderizarProdutos(produtos);
 
-    function filtrarProdutos() {
-        if (!filtroProdutoInput) return;
-        const termo = filtroProdutoInput.value.toLowerCase().trim();
-
-        const produtosFiltrados = produtos.filter(produto =>
-            produto.nome.toLowerCase().includes(termo)
-        );
-
-        renderizarProdutos(produtosFiltrados);
-    }
-
-    if (filtroProdutoInput) {
-        filtroProdutoInput.addEventListener('input', filtrarProdutos);
-        renderizarProdutos(produtos);
-    }
-
-
-    // 16. Calculadora de Média (Lógica de Renderização e Remoção Aprimorada)
+    // ===================================================================
+    // CARD 16: CALCULADORA DE MEDIA
+    // ===================================================================
     let notas = [];
-    const notaForm = document.getElementById('notaForm');
-    const notaInput = document.getElementById('notaInput');
-    const listaNotasUL = document.getElementById('listaNotas');
-    const mediaResultadoStrong = document.getElementById('mediaResultado');
+    document.getElementById('notaForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        notas.push(+document.getElementById('notaInput').value);
+        const media = (notas.reduce((a,b)=>a+b,0)/notas.length).toFixed(1);
+        document.getElementById('mediaResultado').textContent = media;
+        document.getElementById('listaNotas').innerHTML += `<li>Nota: ${notas[notas.length-1]}</li>`;
+    });
 
-    function calcularMedia() {
-        if (!mediaResultadoStrong) return;
-        if (notas.length === 0) {
-            mediaResultadoStrong.textContent = '0.0';
-            return;
-        }
-        const soma = notas.reduce((acc, nota) => acc + nota, 0);
-        const media = (soma / notas.length).toFixed(1);
-        mediaResultadoStrong.textContent = media;
-    }
+    // ===================================================================
+    // CARD 17: GERADOR DE CORES RGB
+    // ===================================================================
+    document.getElementById('btnGerarCor')?.addEventListener('click', () => {
+        const r = Math.floor(Math.random()*256);
+        const g = Math.floor(Math.random()*256);
+        const b = Math.floor(Math.random()*256);
+        document.getElementById('corBox').style.backgroundColor = `rgb(${r},${g},${b})`;
+        document.getElementById('codigoCor').textContent = `RGB(${r}, ${g}, ${b})`;
+    });
 
-    function renderizarNotas() {
-        if (!listaNotasUL) return;
+    // ===================================================================
+    // CARD 18: CONVERSOR DE UNIDADES
+    // ===================================================================
+    document.getElementById('btnConverterUnidade')?.addEventListener('click', () => {
+        const valor = +document.getElementById('valorOriginal').value;
+        const tipo = document.getElementById('tipoConversao').value;
+        const resultado = tipo === 'km_mi'? (valor * 0.621371).toFixed(2) + ' Milhas' : (valor * 0.264172).toFixed(2) + ' Galões';
+        document.getElementById('conversaoResultado').innerHTML = `Resultado: <strong>${resultado}</strong>`;
+    });
 
-        listaNotasUL.innerHTML = '';
-        // Usamos forEach no array de notas para garantir que os índices correspondam ao array
-        notas.forEach((nota, index) => { 
-            const li = document.createElement('li');
-            li.style.cssText = `
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 5px 0;
-                border-bottom: 1px dotted var(--color-border);
-            `;
-            li.textContent = `Nota: ${nota}`;
+    // ===================================================================
+    // CARD 19: CONTADOR DE TEXTO
+    // ===================================================================
+    document.getElementById('textoInput')?.addEventListener('input', (e) => {
+        const texto = e.target.value;
+        document.getElementById('contadorCaracteres').textContent = texto.length;
+        document.getElementById('contadorPalavras').textContent = texto.trim().split(/\s+/).filter(w=>w).length;
+    });
 
-            const removeButton = document.createElement('button');
-            removeButton.textContent = 'Remover';
-            removeButton.style.cssText = `
-                background-color: #dc3545;
-                color: white;
-                border: none;
-                padding: 3px 8px;
-                cursor: pointer;
-                border-radius: 3px;
-                font-size: 0.8rem;
-            `;
-
-            // O listener remove a nota do array 'notas' pelo ÍNDICE
-            removeButton.addEventListener('click', () => {
-                notas.splice(index, 1); 
-                renderizarNotas(); // Re-renderiza a lista (os índices serão recalculados)
-            });
-
-            li.appendChild(removeButton);
-            listaNotasUL.appendChild(li);
-        });
-        calcularMedia();
-    }
-
-    if (notaForm) {
-        notaForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const nota = parseFloat(notaInput.value);
-
-            if (isNaN(nota) || nota < 0 || nota > 10) {
-                alert("Por favor, insira uma nota válida entre 0 e 10.");
-                return;
-            }
-
-            notas.push(nota);
-            notaInput.value = '';
-            notaInput.focus();
-
-            renderizarNotas();
-        });
-    }
-    // Renderiza a lista inicial
-    renderizarNotas();
-
-
-    // 17. Gerador de Cores Aleatórias (RGB)
-    const btnGerarCor = document.getElementById('btnGerarCor');
-    const corBox = document.getElementById('corBox');
-    const codigoCorP = document.getElementById('codigoCor');
-
-    function gerarCorAleatoria() {
-        const r = Math.floor(Math.random() * 256);
-        const g = Math.floor(Math.random() * 256);
-        const b = Math.floor(Math.random() * 256);
-
-        const corRGB = `rgb(${r}, ${g}, ${b})`;
-
-        // Cálculo de Luminância para garantir contraste de texto (0.299R + 0.587G + 0.114B)
-        const luminancia = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-        const corTexto = (luminancia > 0.5) ? '#333333' : '#ffffff';
-
-        if (corBox && codigoCorP) {
-            corBox.style.backgroundColor = corRGB;
-            codigoCorP.textContent = corRGB.toUpperCase();
-            codigoCorP.style.color = corTexto;
-        }
-    }
-
-    if (btnGerarCor) {
-        btnGerarCor.addEventListener('click', gerarCorAleatoria);
-        gerarCorAleatoria(); // Gera uma cor inicial
-    }
-
-
-    // 18. Conversor de Unidades (Dropdown/Select)
-    const btnConverterUnidade = document.getElementById('btnConverterUnidade');
-    const tipoConversaoSelect = document.getElementById('tipoConversao');
-    const valorOriginalInput = document.getElementById('valorOriginal');
-    const conversaoResultadoDiv = document.getElementById('conversaoResultado');
-
-    function converterUnidade() {
-        if (!tipoConversaoSelect || !valorOriginalInput) return;
-        const tipo = tipoConversaoSelect.value;
-        const valor = parseFloat(valorOriginalInput.value);
-
-        if (isNaN(valor)) {
-            conversaoResultadoDiv.innerHTML = "⚠️ Por favor, insira um valor numérico válido.";
-            return;
-        }
-
-        let resultado;
-        let unidadeOriginal;
-        let unidadeConvertida;
-        const fatorKmMi = 0.621371;
-        const fatorLGal = 0.264172;
-
-        switch(tipo) {
-            case 'km_mi':
-                resultado = (valor * fatorKmMi).toFixed(3);
-                unidadeOriginal = 'Km';
-                unidadeConvertida = 'Milhas';
-                break;
-            case 'l_gal':
-                resultado = (valor * fatorLGal).toFixed(3);
-                unidadeOriginal = 'Litros';
-                unidadeConvertida = 'Galões (EUA)';
-                break;
-            default:
-                conversaoResultadoDiv.innerHTML = "Erro na seleção de conversão.";
-                return;
-        }
-
-        conversaoResultadoDiv.innerHTML = `
-            ${valor} ${unidadeOriginal} é igual a: <strong style="color: var(--color-primary);">${resultado} ${unidadeConvertida}</strong>.
-        `;
-    }
-
-    if (btnConverterUnidade) {
-        btnConverterUnidade.addEventListener('click', converterUnidade);
-        tipoConversaoSelect.addEventListener('change', converterUnidade);
-        valorOriginalInput.addEventListener('input', converterUnidade);
-
-        converterUnidade();
-    }
-
-
-    // 19. Contador de Caracteres e Palavras
-    const textoInput = document.getElementById('textoInput');
-    const contadorCaracteresStrong = document.getElementById('contadorCaracteres');
-    const contadorPalavrasStrong = document.getElementById('contadorPalavras');
-
-    function contarTexto() {
-        if (!textoInput) return;
-
-        const texto = textoInput.value;
-
-        contadorCaracteresStrong.textContent = texto.length;
-
-        // Divide o texto por um ou mais espaços/quebras de linha e remove entradas vazias (filter)
-        const palavras = texto.trim().split(/\s+/).filter(word => word.length > 0);
-
-        if (texto.trim() === "") {
-            contadorPalavrasStrong.textContent = 0;
-        } else {
-            contadorPalavrasStrong.textContent = palavras.length;
-        }
-    }
-
-    if (textoInput) {
-        textoInput.addEventListener('input', contarTexto);
-        contarTexto(); // Conta ao carregar (se houver texto inicial)
-    }
-
-// 20. Calculadora de Mercado
+    // ===================================================================
+    // CARD 20: CALCULADORA DE MERCADO
+    // ===================================================================
     let itensMercado = [];
-    const mercadoForm = document.getElementById('mercadoForm');
-    const produtoNome = document.getElementById('produtoNome');
-    const produtoQtd = document.getElementById('produtoQtd');
-    const produtoValor = document.getElementById('produtoValor');
-    const listaMercado = document.getElementById('listaMercado');
-    const descontoMercado = document.getElementById('descontoMercado');
-    const totalMercadoDiv = document.getElementById('totalMercado');
-
     function renderizarMercado() {
-        if (!listaMercado) return;
-        listaMercado.innerHTML = '';
-        let subtotal = 0;
-
-        if(itensMercado.length === 0){
-            listaMercado.innerHTML = '<li>Nenhum item adicionado.</li>';
-        }
-
-        itensMercado.forEach((item, index) => {
-            const itemTotal = item.qtd * item.valor;
-            subtotal += itemTotal;
-
-            const li = document.createElement('li');
-            li.style.cssText = `
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 8px 0;
-                border-bottom: 1px dashed var(--color-border);
-            `;
-            li.innerHTML = `
-                <span>${item.nome} - ${item.qtd}x ${formatCurrency(item.valor)} = <strong>${formatCurrency(itemTotal)}</strong></span>
-                <button style="background-color: #dc3545; padding: 4px 8px; font-size: 0.8rem;" onclick="removerItemMercado(${index})">Remover</button>
-            `;
-            listaMercado.appendChild(li);
-        });
-
-        calcularTotalMercado(subtotal);
-    }
-
-    window.removerItemMercado = function(index) {
-        itensMercado.splice(index, 1);
-        renderizarMercado();
-    }
-
-    window.calcularTotalMercado = function(subtotal = 0) {
-        if(itensMercado.length > 0 && subtotal === 0){
-            subtotal = itensMercado.reduce((acc, item) => acc + (item.qtd * item.valor), 0);
-        }
-
-        const descontoPerc = parseFloat(descontoMercado.value) || 0;
-        const valorDesconto = subtotal * (descontoPerc / 100);
-        const totalFinal = subtotal - valorDesconto;
-
-        totalMercadoDiv.innerHTML = `
+        const subtotal = itensMercado.reduce((acc,i) => acc + (i.qtd * i.valor), 0);
+        const desconto = subtotal * (+document.getElementById('descontoMercado').value / 100);
+        document.getElementById('listaMercado').innerHTML = itensMercado.map((i, idx) =>
+            `<li>${i.nome} ${i.qtd}x ${formatCurrency(i.valor)} <button onclick="removerItemMercado(${idx})">X</button></li>`
+        ).join('');
+        document.getElementById('totalMercado').innerHTML = `
             Subtotal: ${formatCurrency(subtotal)}<br>
-            Desconto (${descontoPerc}%): -${formatCurrency(valorDesconto)}<br>
-            <strong>Total: ${formatCurrency(totalFinal)}</strong> 🛒
+            Desconto: -${formatCurrency(desconto)}<br>
+            <strong>Total: ${formatCurrency(subtotal - desconto)}</strong>
         `;
     }
-
-    if (mercadoForm) {
-        mercadoForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const nome = produtoNome.value.trim();
-            const qtd = parseFloat(produtoQtd.value);
-            const valor = parseFloat(produtoValor.value);
-
-            if (nome === '' || isNaN(qtd) || qtd <= 0 || isNaN(valor) || valor < 0) {
-                alert("Por favor, preencha nome, quantidade e valor válidos.");
-                return;
-            }
-
-            itensMercado.push({ nome, qtd, valor });
-
-            produtoNome.value = '';
-            produtoQtd.value = '1';
-            produtoValor.value = '';
-            produtoNome.focus();
-
-            renderizarMercado();
+    window.removerItemMercado = (i) => { itensMercado.splice(i,1); renderizarMercado(); }
+    document.getElementById('mercadoForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        itensMercado.push({
+            nome: document.getElementById('produtoNome').value,
+            qtd: +document.getElementById('produtoQtd').value,
+            valor: +document.getElementById('produtoValor').value
         });
-    }
+        renderizarMercado();
+    });
+    document.getElementById('descontoMercado')?.addEventListener('input', renderizarMercado);
 
-    // Atualiza total quando muda desconto
-    if(descontoMercado) descontoMercado.addEventListener('input', () => calcularTotalMercado());
-
-    renderizarMercado(); // Carrega inicial
-
-// 21. Calculadora de Rateio de Contas
+    // ===================================================================
+    // CARD 21: RATEIO DE CONTAS
+    // ===================================================================
     let pessoasRateio = [];
-    const rateioForm = document.getElementById('rateioForm');
-    const nomePessoa = document.getElementById('nomePessoa');
-    const porcentagemPessoa = document.getElementById('porcentagemPessoa');
-    const valorConta = document.getElementById('valorConta');
-    const listaPessoas = document.getElementById('listaPessoas');
-    const resultadoRateio = document.getElementById('resultadoRateio');
-    const avisoRateio = document.getElementById('avisoRateio');
-
     function renderizarRateio() {
-        if (!listaPessoas) return;
-        listaPessoas.innerHTML = '';
-        let totalPorcentagem = 0;
-
-        if(pessoasRateio.length === 0){
-            listaPessoas.innerHTML = '<li>Nenhuma pessoa adicionada.</li>';
-        }
-
-        pessoasRateio.forEach((pessoa, index) => {
-            totalPorcentagem += pessoa.porcentagem;
-
-            const li = document.createElement('li');
-            li.style.cssText = `
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 8px 0;
-                border-bottom: 1px dashed var(--color-border);
-            `;
-            li.innerHTML = `
-                <span><strong>${pessoa.nome}</strong> - ${pessoa.porcentagem}%</span>
-                <button style="background-color: #dc3545; padding: 4px 8px; font-size: 0.8rem;" onclick="removerPessoaRateio(${index})">Remover</button>
-            `;
-            listaPessoas.appendChild(li);
-        });
-
-        // Aviso se a soma não dá 100%
-        if(totalPorcentagem !== 100 && pessoasRateio.length > 0){
-            avisoRateio.textContent = `Atenção: A soma das % está em ${totalPorcentagem}%. O ideal é 100%.`;
-        } else {
-            avisoRateio.textContent = '';
-        }
-
-        calcularRateio();
+        const total = +document.getElementById('valorConta').value;
+        document.getElementById('listaPessoas').innerHTML = pessoasRateio.map((p,i) =>
+            `<li>${p.nome} - ${p.porcentagem}% <button onclick="removerPessoaRateio(${i})">X</button></li>`
+        ).join('');
+        document.getElementById('resultadoRateio').innerHTML = pessoasRateio.map(p =>
+            `${p.nome}: ${formatCurrency(total * p.porcentagem / 100)}`
+        ).join('<br>');
     }
-
-    window.removerPessoaRateio = function(index) {
-        pessoasRateio.splice(index, 1);
+    window.removerPessoaRateio = (i) => { pessoasRateio.splice(i,1); renderizarRateio(); }
+    document.getElementById('rateioForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        pessoasRateio.push({
+            nome: document.getElementById('nomePessoa').value,
+            porcentagem: +document.getElementById('porcentagemPessoa').value
+        });
         renderizarRateio();
-    }
+    });
+    document.getElementById('valorConta')?.addEventListener('input', renderizarRateio);
 
-    window.calcularRateio = function() {
-        const valorTotal = parseFloat(valorConta.value) || 0;
-
-        if(pessoasRateio.length === 0 || valorTotal <= 0){
-            resultadoRateio.innerHTML = "Adicione pessoas e um valor para calcular.";
-            return;
-        }
-
-        let htmlResultado = '';
-        pessoasRateio.forEach(pessoa => {
-            const valorPessoa = valorTotal * (pessoa.porcentagem / 100);
-            htmlResultado += `${pessoa.nome}: <strong>${formatCurrency(valorPessoa)}</strong> (${pessoa.porcentagem}%)<br>`;
-        });
-
-        resultadoRateio.innerHTML = htmlResultado;
-    }
-
-    if (rateioForm) {
-        rateioForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const nome = nomePessoa.value.trim();
-            const porcentagem = parseFloat(porcentagemPessoa.value);
-
-            if (nome === '' || isNaN(porcentagem) || porcentagem <= 0) {
-                alert("Por favor, preencha nome e % válida.");
-                return;
-            }
-
-            pessoasRateio.push({ nome, porcentagem });
-
-            nomePessoa.value = '';
-            porcentagemPessoa.value = '25';
-            nomePessoa.focus();
-
-            renderizarRateio();
-        });
-    }
-
-    if(valorConta) valorConta.addEventListener('input', calcularRateio);
-
-    renderizarRateio();
-
-
-// 22. Jogo da Memória
-    const emojis = ['🍎', '🍌', '🍇', '🍓', '🍊', '🍉', '🍍', '🥝'];
-    let cartas = [...emojis, ...emojis]; // Duplica pra fazer os pares
-    let primeiraCarta = null;
-    let segundaCarta = null;
-    let travarTabuleiro = false;
-    let paresEncontrados = 0;
-    let clicksMemoria = 0;
-
-    const tabuleiroMemoria = document.getElementById('tabuleiroMemoria');
-    const clicksDisplay = document.getElementById('clicksMemoria');
-    const resultadoMemoria = document.getElementById('resultadoMemoria');
-
-    function embaralhar(array) {
-        return array.sort(() => Math.random() - 0.5);
-    }
+    // ===================================================================
+    // CARD 22: JOGO DA MEMORIA
+    // ===================================================================
+    const emojis = ['🍎','🍌','🍇','🍓','🍊','🍉','🍍','🥝'];
+    let cartasMemoria = [...emojis,...emojis].sort(() => Math.random() - 0.5);
+    let carta1 = null; let paresMemoria = 0; let clicksMemoria = 0;
 
     window.iniciarJogoMemoria = function() {
-        cartas = embaralhar([...emojis, ...emojis]);
-        tabuleiroMemoria.innerHTML = '';
-        primeiraCarta = null;
-        segundaCarta = null;
-        travarTabuleiro = false;
-        paresEncontrados = 0;
-        clicksMemoria = 0;
-        clicksDisplay.textContent = 0;
-        resultadoMemoria.innerHTML = 'Clique nas cartas para começar!';
-
-        cartas.forEach((emoji, index) => {
-            const cartaDiv = document.createElement('div');
-            cartaDiv.classList.add('carta');
-            cartaDiv.dataset.emoji = emoji;
-            cartaDiv.dataset.index = index;
-            cartaDiv.innerHTML = '?'; // Verso da carta
-
-            cartaDiv.addEventListener('click', virarCarta);
-            tabuleiroMemoria.appendChild(cartaDiv);
+        cartasMemoria = [...emojis,...emojis].sort(() => Math.random() - 0.5);
+        document.getElementById('tabuleiroMemoria').innerHTML = '';
+        carta1 = null; paresMemoria = 0; clicksMemoria = 0;
+        document.getElementById('clicksMemoria').textContent = 0;
+        cartasMemoria.forEach(emoji => {
+            const div = document.createElement('div');
+            div.className = 'carta';
+            div.dataset.emoji = emoji;
+            div.textContent = '?';
+            div.onclick = function() {
+                if(this.classList.contains('virada')) return;
+                this.textContent = emoji; this.classList.add('virada');
+                clicksMemoria++; document.getElementById('clicksMemoria').textContent = clicksMemoria;
+                if(!carta1) carta1 = this;
+                else {
+                    if(carta1.dataset.emoji === emoji) {
+                        paresMemoria++; if(paresMemoria === 8) document.getElementById('resultadoMemoria').textContent = 'Venceu! 🎉';
+                        carta1 = null;
+                    } else {
+                        setTimeout(() => {
+                            this.textContent = '?'; carta1.textContent = '?';
+                            this.classList.remove('virada'); carta1.classList.remove('virada');
+                            carta1 = null;
+                        }, 800);
+                    }
+                }
+            }
+            document.getElementById('tabuleiroMemoria').appendChild(div);
         });
     }
+    iniciarJogoMemoria();
 
-    function virarCarta() {
-        if (travarTabuleiro) return;
-        if (this === primeiraCarta) return;
-        if (this.classList.contains('virada')) return;
-
-        this.classList.add('virada');
-        this.innerHTML = this.dataset.emoji;
-        clicksMemoria++;
-        clicksDisplay.textContent = clicksMemoria;
-
-        if (!primeiraCarta) {
-            primeiraCarta = this;
-            return;
-        }
-
-        segundaCarta = this;
-        travarTabuleiro = true;
-        checarPar();
-    }
-
-    function checarPar() {
-        let acertou = primeiraCarta.dataset.emoji === segundaCarta.dataset.emoji;
-
-        if (acertou) {
-            desativarCartas();
-        } else {
-            desvirarCartas();
-        }
-    }
-
-    function desativarCartas() {
-        primeiraCarta.classList.add('acertou');
-        segundaCarta.classList.add('acertou');
-        primeiraCarta.removeEventListener('click', virarCarta);
-        segundaCarta.removeEventListener('click', virarCarta);
-        resetarTurno();
-        paresEncontrados++;
-
-        if (paresEncontrados === emojis.length) {
-            resultadoMemoria.innerHTML = `🎉 Parabéns! Você venceu em ${clicksMemoria} cliques!`;
-        }
-    }
-
-    function desvirarCartas() {
-        setTimeout(() => {
-            primeiraCarta.classList.remove('virada');
-            segundaCarta.classList.remove('virada');
-            primeiraCarta.innerHTML = '?';
-            segundaCarta.innerHTML = '?';
-            resetarTurno();
-        }, 1000);
-    }
-
-    function resetarTurno() {
-        [primeiraCarta, segundaCarta, travarTabuleiro] = [null, null, false];
-    }
-
-    iniciarJogoMemoria(); // Inicia quando carrega a página
-
-// 23. Pedra Papel Tesoura
-    let placarVoce = 0;
-    let placarPc = 0;
-    const opcoes = ['pedra', 'papel', 'tesoura'];
-    const emojisPPT = { pedra: '✊', papel: '✋', tesoura: '✌️' };
-
-    window.jogar = function(escolhaVoce) {
-        const escolhaPc = opcoes[Math.floor(Math.random() * 3)];
-        let resultado = '';
-
-        if (escolhaVoce === escolhaPc) {
-            resultado = 'Empate! 🤝';
-        } else if (
-            (escolhaVoce === 'pedra' && escolhaPc === 'tesoura') ||
-            (escolhaVoce === 'papel' && escolhaPc === 'pedra') ||
-            (escolhaVoce === 'tesoura' && escolhaPc === 'papel')
-        ) {
-            resultado = 'Você Ganhou! 🎉';
-            placarVoce++;
-        } else {
-            resultado = 'PC Ganhou! 🤖';
-            placarPc++;
-        }
-
+    // ===================================================================
+    // CARD 23: PEDRA PAPEL TESOURA
+    // ===================================================================
+    let placarVoce = 0, placarPc = 0;
+    window.jogarPPT = function(escolha) {
+        const opcoes = ['pedra','papel','tesoura'];
+        const pc = opcoes[Math.floor(Math.random()*3)];
+        let resultado = escolha === pc? 'Empate 🤝' :
+            ((escolha==='pedra'&&pc==='tesoura')||(escolha==='papel'&&pc==='pedra')||(escolha==='tesoura'&&pc==='papel'))
+           ? (++placarVoce, 'Você Ganhou! 🎉') : (++placarPc, 'PC Ganhou! 🤖');
         document.getElementById('placarVoce').textContent = placarVoce;
         document.getElementById('placarPc').textContent = placarPc;
-        document.getElementById('resultadoPPT').innerHTML = `
-            Você: ${emojisPPT[escolhaVoce]} ${escolhaVoce.toUpperCase()}<br>
-            PC: ${emojisPPT[escolhaPc]} ${escolhaPc.toUpperCase()}<br>
-            <strong>${resultado}</strong>
-        `;
+        document.getElementById('resultadoPPT').innerHTML = `Você: ${escolha}<br>PC: ${pc}<br><strong>${resultado}</strong>`;
     }
+    window.resetarPlacarPPT = () => { placarVoce=0; placarPc=0; document.getElementById('placarVoce').textContent=0; document.getElementById('placarPc').textContent=0; }
 
-    window.resetarPlacarPPT = function() {
-        placarVoce = 0;
-        placarPc = 0;
-        document.getElementById('placarVoce').textContent = 0;
-        document.getElementById('placarPc').textContent = 0;
-        document.getElementById('resultadoPPT').innerHTML = 'Placar zerado! Vamos jogar!';
-    }
-
-// 24. Clique Rápido
-    let tempoRestante = 10;
-    let totalCliques = 0;
-    let jogoRodando = false;
-    let intervaloClique;
-
-    const btnIniciarClique = document.getElementById('btnIniciarClique');
-    const btnClicar = document.getElementById('btnClicar');
-    const tempoDisplay = document.getElementById('tempoClique');
-    const totalDisplay = document.getElementById('totalCliques');
-    const resultadoClique = document.getElementById('resultadoClique');
-
-    btnIniciarClique.addEventListener('click', function() {
-        tempoRestante = 10;
-        totalCliques = 0;
-        jogoRodando = true;
-        totalDisplay.textContent = 0;
-        tempoDisplay.textContent = 10;
-        resultadoClique.innerHTML = 'VALENDO! CLICA! CLICA!';
-
-        btnIniciarClique.disabled = true;
-        btnClicar.disabled = false;
-
-        intervaloClique = setInterval(() => {
-            tempoRestante--;
-            tempoDisplay.textContent = tempoRestante;
-            if (tempoRestante <= 0) {
-                clearInterval(intervaloClique);
-                jogoRodando = false;
-                btnIniciarClique.disabled = false;
-                btnClicar.disabled = true;
-
-                let nivel = totalCliques < 20 ? 'Iniciante 🐢' : totalCliques < 40 ? 'Rápido ⚡' : 'Lenda! 🔥';
-                resultadoClique.innerHTML = `Tempo Esgotado!<br>Total: <strong>${totalCliques} cliques</strong><br>Nível: ${nivel}`;
+    // ===================================================================
+    // CARD 24: CLIQUE RAPIDO
+    // ===================================================================
+    let tempoClique = 10, totalClicks = 0, rodandoClique = false;
+    document.getElementById('btnIniciarClique')?.addEventListener('click', () => {
+        tempoClique = 10; totalClicks = 0; rodandoClique = true;
+        document.getElementById('btnIniciarClique').disabled = true;
+        document.getElementById('btnClicar').disabled = false;
+        const interval = setInterval(() => {
+            document.getElementById('tempoClique').textContent = --tempoClique;
+            if(tempoClique <= 0) {
+                clearInterval(interval); rodandoClique = false;
+                document.getElementById('btnIniciarClique').disabled = false;
+                document.getElementById('btnClicar').disabled = true;
+                document.getElementById('resultadoClique').innerHTML = `Total: ${totalClicks} cliques`;
             }
         }, 1000);
     });
-
-    btnClicar.addEventListener('click', function() {
-        if (jogoRodando) {
-            totalCliques++;
-            totalDisplay.textContent = totalCliques;
-        }
+    document.getElementById('btnClicar')?.addEventListener('click', () => {
+        if(rodandoClique) document.getElementById('totalCliques').textContent = ++totalClicks;
     });
 
-// 25. Quiz Relâmpago
-    const perguntas = [
-        { pergunta: "Qual a capital do Brasil?", opcoes: ["São Paulo", "Brasília", "Rio de Janeiro"], correta: 1 },
-        { pergunta: "2 + 2 * 2 é igual a?", opcoes: ["6", "8", "4"], correta: 0 },
-        { pergunta: "Qual linguagem roda no navegador?", opcoes: ["Python", "JavaScript", "C++"], correta: 1 },
-        { pergunta: "Quantos bits tem 1 Byte?", opcoes: ["4", "8", "16"], correta: 1 },
-        { pergunta: "CSS significa?", opcoes: ["Cascading Style Sheets", "Computer Style System", "Colorful Style Sheet"], correta: 0 }
+    // ===================================================================
+    // CARD 25: QUIZ RELAMPAGO
+    // ===================================================================
+    const perguntasQuiz = [
+        {p:"Capital do Brasil?", o:["SP","Brasília","RJ"], r:1},
+        {p:"2 + 2 * 2?", o:["6","8","4"], r:0},
+        {p:"Linguagem Web?", o:["Python","JavaScript","C++"], r:1}
     ];
-    let indiceAtual = 0;
-    let pontos = 0;
-
-    function iniciarQuiz() {
-        indiceAtual = 0;
-        pontos = 0;
-        document.getElementById('pontosQuiz').textContent = 0;
-        document.getElementById('resultadoQuiz').style.display = 'none';
-        document.getElementById('areaPergunta').style.display = 'block';
-        mostrarPergunta();
+    let idxQuiz = 0, pontosQuiz = 0;
+    window.iniciarQuiz = function() {
+        idxQuiz = 0; pontosQuiz = 0; document.getElementById('pontosQuiz').textContent = 0;
+        mostrarPerguntaQuiz();
     }
-
-    function mostrarPergunta() {
-        if (indiceAtual >= perguntas.length) {
-            finalizarQuiz();
+    function mostrarPerguntaQuiz() {
+        if(idxQuiz >= perguntasQuiz.length) {
+            document.getElementById('areaPergunta').style.display = 'none';
+            document.getElementById('resultadoQuiz').style.display = 'block';
+            document.getElementById('resultadoQuiz').innerHTML = `Fim! Você fez ${pontosQuiz}/${perguntasQuiz.length}`;
             return;
         }
-
-        const p = perguntas[indiceAtual];
-        document.getElementById('numPergunta').textContent = indiceAtual + 1;
-        document.getElementById('textoPergunta').textContent = p.pergunta;
-
-        const divOpcoes = document.getElementById('opcoesQuiz');
-        divOpcoes.innerHTML = '';
-
-        p.opcoes.forEach((opcao, index) => {
-            const btn = document.createElement('button');
-            btn.textContent = opcao;
-            btn.onclick = () => verificarResposta(index);
-            divOpcoes.appendChild(btn);
-        });
+        const q = perguntasQuiz[idxQuiz];
+        document.getElementById('numPergunta').textContent = idxQuiz + 1;
+        document.getElementById('textoPergunta').textContent = q.p;
+        document.getElementById('opcoesQuiz').innerHTML = q.o.map((op,i) => `<button onclick="verificarRespostaQuiz(${i})">${op}</button>`).join('');
     }
-
-    function verificarResposta(escolha) {
-        const correta = perguntas[indiceAtual].correta;
-        if (escolha === correta) {
-            pontos++;
-            document.getElementById('pontosQuiz').textContent = pontos;
-        }
-        indiceAtual++;
-        mostrarPergunta();
+    window.verificarRespostaQuiz = function(i) {
+        if(i === perguntasQuiz[idxQuiz].r) { pontosQuiz++; document.getElementById('pontosQuiz').textContent = pontosQuiz; }
+        idxQuiz++; mostrarPerguntaQuiz();
     }
+    iniciarQuiz();
 
-    function finalizarQuiz() {
-        document.getElementById('areaPergunta').style.display = 'none';
-        const resultadoDiv = document.getElementById('resultadoQuiz');
-        resultadoDiv.style.display = 'block';
-        let msg = pontos === 5 ? 'Perfeito! 🏆' : pontos >= 3 ? 'Mandou bem! 👏' : 'Treina mais! 💪';
-        resultadoDiv.innerHTML = `Fim de Jogo!<br>Você acertou <strong>${pontos}/5</strong><br>${msg}`;
-    }
+    // ===================================================================
+    // CARD 26: JOGO DA VELHA VS PC
+    // ===================================================================
+    let tabuleiroVelha = [];
+    let jogadorVelha = 'X';
+    let tamanhoVelha = 3;
 
-    iniciarQuiz(); // Carrega na primeira vez
-
-// 26. Jogo da Velha vs PC
-    let tabuleiro = [];
-    let jogadorAtual = 'X'; // X = Você, O = PC
-    let tamanho = 3;
-    let qtdParaGanhar = 3;
-    let jogoAtivo = true;
-    let celulasVitoria = [];
-
-    const tabuleiroVelha = document.getElementById('tabuleiroVelha');
-    const vezJogador = document.getElementById('vezJogador');
-    const resultadoVelha = document.getElementById('resultadoVelha');
-    const selectTamanho = document.getElementById('tamanhoTabuleiro');
-    const selectQtdGanhar = document.getElementById('qtdParaGanhar');
-
-    // Atualiza a opção "Pra Ganhar" quando muda o tamanho
-    selectTamanho.addEventListener('change', () => {
-        tamanho = parseInt(selectTamanho.value);
-        selectQtdGanhar.innerHTML = '';
-        for(let i = 3; i <= tamanho; i++){
-            const option = document.createElement('option');
-            option.value = i;
-            option.textContent = i;
-            selectQtdGanhar.appendChild(option);
-        }
+    document.getElementById('tamanhoTabuleiro')?.addEventListener('change', (e) => {
+        tamanhoVelha = +e.target.value;
+        document.getElementById('qtdParaGanhar').innerHTML = Array.from({length: tamanhoVelha-2}, (_,i) => `<option>${i+3}</option>`).join('');
     });
 
     window.iniciarJogoVelha = function() {
-        tamanho = parseInt(selectTamanho.value);
-        qtdParaGanhar = parseInt(selectQtdGanhar.value);
-        tabuleiro = Array(tamanho).fill(null).map(() => Array(tamanho).fill(''));
-        jogadorAtual = 'X';
-        jogoAtivo = true;
-        celulasVitoria = [];
-
-        vezJogador.textContent = 'X - Você';
-        resultadoVelha.innerHTML = `Tabuleiro ${tamanho}x${tamanho}. Faça ${qtdParaGanhar} em sequência para ganhar!`;
-
-        renderizarTabuleiro();
+        tamanhoVelha = +document.getElementById('tamanhoTabuleiro').value;
+        tabuleiroVelha = Array(tamanhoVelha).fill().map(() => Array(tamanhoVelha).fill(''));
+        jogadorVelha = 'X';
+        renderizarTabuleiroVelha();
     }
 
-    function renderizarTabuleiro() {
-        tabuleiroVelha.innerHTML = '';
-        tabuleiroVelha.style.gridTemplateColumns = `repeat(${tamanho}, 1fr)`;
-        const tamanhoMax = `${Math.min(400, tamanho * 50)}px`;
-        tabuleiroVelha.style.maxWidth = tamanhoMax;
-
-        for (let i = 0; i < tamanho; i++) {
-            for (let j = 0; j < tamanho; j++) {
+    function renderizarTabuleiroVelha() {
+        const tab = document.getElementById('tabuleiroVelha');
+        tab.innerHTML = ''; tab.style.gridTemplateColumns = `repeat(${tamanhoVelha}, 1fr)`;
+        for(let i=0; i<tamanhoVelha; i++) {
+            for(let j=0; j<tamanhoVelha; j++) {
                 const celula = document.createElement('div');
-                celula.classList.add('celula-velha');
-                celula.dataset.linha = i;
-                celula.dataset.coluna = j;
-                celula.textContent = tabuleiro[i][j];
-
-                if (tabuleiro[i][j]!== '') {
-                    celula.classList.add('jogada', tabuleiro[i][j].toLowerCase(), 'bloqueada');
-                }
-                if (celulasVitoria.some(c => c.l === i && c.c === j)) {
-                    celula.classList.add('vitoria');
-                }
-
-                celula.addEventListener('click', fazerJogada);
-                tabuleiroVelha.appendChild(celula);
+                celula.className = 'celula-velha';
+                celula.textContent = tabuleiroVelha[i][j];
+                celula.onclick = () => jogarVelha(i,j);
+                tab.appendChild(celula);
             }
         }
     }
 
-    function fazerJogada(e) {
-        if (!jogoAtivo || jogadorAtual!== 'X') return;
-
-        const linha = parseInt(e.target.dataset.linha);
-        const coluna = parseInt(e.target.dataset.coluna);
-
-        if (tabuleiro[linha][coluna]!== '') return;
-
-        jogar(linha, coluna, 'X');
-
-        if(jogoAtivo) {
-            setTimeout(jogadaPC, 500); // Delay pra parecer que o PC pensa
-        }
+    function jogarVelha(l,c) {
+        if(tabuleiroVelha[l][c]) return;
+        tabuleiroVelha[l][c] = 'X';
+        renderizarTabuleiroVelha();
+        setTimeout(jogadaPCVelha, 500);
     }
 
-    function jogadaPC() {
-        if (!jogoAtivo) return;
-        jogadorAtual = 'O';
-        vezJogador.textContent = 'O - PC Pensando...';
-
-        // IA Simples: 1. Tenta ganhar 2. Bloqueia você 3. Joga aleatório
-        let jogada = encontrarMelhorJogada('O') || encontrarMelhorJogada('X') || jogadaAleatoria();
-
-        setTimeout(() => {
-            jogar(jogada.l, jogada.c, 'O');
-        }, 500);
-    }
-
-    function jogar(l, c, jogador) {
-        tabuleiro[l][c] = jogador;
-
-        if (verificarVitoria(l, c, jogador)) {
-            jogoAtivo = false;
-            const vencedor = jogador === 'X'? 'Você venceu!' : 'PC venceu!';
-            resultadoVelha.innerHTML = `🎉 ${vencedor}`;
-            marcarVitoria();
-        } else if (verificarEmpate()) {
-            jogoAtivo = false;
-            resultadoVelha.innerHTML = `🤝 Deu Empate!`;
-        } else {
-            jogadorAtual = jogador === 'X'? 'O' : 'X';
-            vezJogador.textContent = jogadorAtual === 'X'? 'X - Você' : 'O - PC';
-        }
-        renderizarTabuleiro();
-    }
-
-    function encontrarMelhorJogada(jogador) {
-        for(let i = 0; i < tamanho; i++){
-            for(let j = 0; j < tamanho; j++){
-                if(tabuleiro[i][j] === ''){
-                    tabuleiro[i][j] = jogador;
-                    if(verificarVitoria(i, j, jogador)){
-                        tabuleiro[i][j] = '';
-                        return {l: i, c: j};
-                    }
-                    tabuleiro[i][j] = '';
-                }
-            }
-        }
-        return null;
-    }
-
-    function jogadaAleatoria() {
+    function jogadaPCVelha() {
         let vazias = [];
-        for(let i = 0; i < tamanho; i++){
-            for(let j = 0; j < tamanho; j++){
-                if(tabuleiro[i][j] === '') vazias.push({l: i, c: j});
-            }
-        }
-        return vazias[Math.floor(Math.random() * vazias.length)];
+        for(let i=0; i<tamanhoVelha; i++) for(let j=0; j<tamanhoVelha; j++) if(!tabuleiroVelha[i][j]) vazias.push([i,j]);
+        const [l,c] = vazias[Math.floor(Math.random()*vazias.length)];
+        tabuleiroVelha[l][c] = 'O';
+        renderizarTabuleiroVelha();
     }
 
-    function verificarVitoria(linha, coluna, simbolo) {
-        celulasVitoria = [];
-        const direcoes = [
-            [0, 1], // Horizontal
-            [1, 0], // Vertical
-            [1, 1], // Diagonal \
-            [1, -1] // Diagonal /
-        ];
-
-        for (const [dl, dc] of direcoes) {
-            let count = 1;
-            let linhaAtual = linha;
-            let colunaAtual = coluna;
-            let sequencia = [{l: linha, c: coluna}];
-
-            // Verifica pra frente
-            for(let i = 1; i < qtdParaGanhar; i++){
-                linhaAtual += dl; colunaAtual += dc;
-                if(linhaAtual < 0 || linhaAtual >= tamanho || colunaAtual < 0 || colunaAtual >= tamanho || tabuleiro[linhaAtual][colunaAtual]!== simbolo) break;
-                count++;
-                sequencia.push({l: linhaAtual, c: colunaAtual});
-            }
-
-            // Verifica pra trás
-            linhaAtual = linha; colunaAtual = coluna;
-            for(let i = 1; i < qtdParaGanhar; i++){
-                linhaAtual -= dl; colunaAtual -= dc;
-                if(linhaAtual < 0 || linhaAtual >= tamanho || colunaAtual < 0 || colunaAtual >= tamanho || tabuleiro[linhaAtual][colunaAtual]!== simbolo) break;
-                count++;
-                sequencia.push({l: linhaAtual, c: colunaAtual});
-            }
-
-            if(count >= qtdParaGanhar){
-                celulasVitoria = sequencia.slice(0, qtdParaGanhar);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    function marcarVitoria() {
-        renderizarTabuleiro();
-    }
-
-    function verificarEmpate() {
-        return tabuleiro.flat().every(celula => celula!== '');
-    }
-
-    // Inicia e popula o select de "Pra Ganhar"
-    selectTamanho.dispatchEvent(new Event('change'));
     iniciarJogoVelha();
+
+}); // FIM DOM
