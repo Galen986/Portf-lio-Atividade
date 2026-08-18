@@ -1322,4 +1322,128 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     iniciarQuiz(); // Carrega na primeira vez
+
+// 26. Jogo da Velha
+    let tabuleiro = [];
+    let jogadorAtual = 'X';
+    let tamanho = 3;
+    let jogoAtivo = true;
+    let celulasVitoria = [];
+
+    const tabuleiroVelha = document.getElementById('tabuleiroVelha');
+    const vezJogador = document.getElementById('vezJogador');
+    const resultadoVelha = document.getElementById('resultadoVelha');
+    const selectTamanho = document.getElementById('tamanhoTabuleiro');
+
+    window.iniciarJogoVelha = function() {
+        tamanho = parseInt(selectTamanho.value);
+        tabuleiro = Array(tamanho).fill(null).map(() => Array(tamanho).fill(''));
+        jogadorAtual = 'X';
+        jogoAtivo = true;
+        celulasVitoria = [];
+
+        vezJogador.textContent = 'X';
+        resultadoVelha.innerHTML = 'Jogo iniciado! Boa sorte!';
+
+        renderizarTabuleiro();
+    }
+
+    function renderizarTabuleiro() {
+        tabuleiroVelha.innerHTML = '';
+        tabuleiroVelha.style.gridTemplateColumns = `repeat(${tamanho}, 1fr)`;
+        // Ajusta o tamanho máximo do tabuleiro
+        const tamanhoMax = tamanho === 3? '300px' : tamanho === 4? '350px' : '400px';
+        tabuleiroVelha.style.maxWidth = tamanhoMax;
+
+        for (let i = 0; i < tamanho; i++) {
+            for (let j = 0; j < tamanho; j++) {
+                const celula = document.createElement('div');
+                celula.classList.add('celula-velha');
+                celula.dataset.linha = i;
+                celula.dataset.coluna = j;
+                celula.textContent = tabuleiro[i][j];
+
+                if (tabuleiro[i][j]!== '') {
+                    celula.classList.add('jogada', tabuleiro[i][j].toLowerCase());
+                }
+                if (celulasVitoria.some(c => c.l === i && c.c === j)) {
+                    celula.classList.add('vitoria');
+                }
+
+                celula.addEventListener('click', fazerJogada);
+                tabuleiroVelha.appendChild(celula);
+            }
+        }
+    }
+
+    function fazerJogada(e) {
+        if (!jogoAtivo) return;
+
+        const linha = parseInt(e.target.dataset.linha);
+        const coluna = parseInt(e.target.dataset.coluna);
+
+        if (tabuleiro[linha][coluna]!== '') return; // Já foi jogada
+
+        tabuleiro[linha][coluna] = jogadorAtual;
+
+        if (verificarVitoria(linha, coluna)) {
+            jogoAtivo = false;
+            resultadoVelha.innerHTML = `🎉 Jogador <strong>${jogadorAtual}</strong> venceu!`;
+            marcarVitoria();
+        } else if (verificarEmpate()) {
+            jogoAtivo = false;
+            resultadoVelha.innerHTML = `🤝 Deu Empate!`;
+        } else {
+            jogadorAtual = jogadorAtual === 'X'? 'O' : 'X';
+            vezJogador.textContent = jogadorAtual;
+        }
+
+        renderizarTabuleiro();
+    }
+
+    function verificarVitoria(linha, coluna) {
+        const simbolo = tabuleiro[linha][coluna];
+        celulasVitoria = [];
+
+        // 1. Verifica Linha
+        if (tabuleiro[linha].every(cel => cel === simbolo)) {
+            for(let c = 0; c < tamanho; c++) celulasVitoria.push({l: linha, c: c});
+            return true;
+        }
+
+        // 2. Verifica Coluna
+        if (tabuleiro.every(linhaArr => linhaArr[coluna] === simbolo)) {
+            for(let l = 0; l < tamanho; l++) celulasVitoria.push({l: l, c: coluna});
+            return true;
+        }
+
+        // 3. Verifica Diagonal Principal
+        if (linha === coluna) {
+            if (tabuleiro.every((linhaArr, i) => linhaArr[i] === simbolo)) {
+                for(let i = 0; i < tamanho; i++) celulasVitoria.push({l: i, c: i});
+                return true;
+            }
+        }
+
+        // 4. Verifica Diagonal Secundária
+        if (linha + coluna === tamanho - 1) {
+            if (tabuleiro.every((linhaArr, i) => linhaArr[tamanho - 1 - i] === simbolo)) {
+                for(let i = 0; i < tamanho; i++) celulasVitoria.push({l: i, c: tamanho - 1 - i});
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function marcarVitoria() {
+        // A classe 'vitoria' é adicionada no renderizarTabuleiro
+        renderizarTabuleiro();
+    }
+
+    function verificarEmpate() {
+        return tabuleiro.flat().every(celula => celula!== '');
+    }
+
+    iniciarJogoVelha(); // Inicia com 3x3
 }); // Fim do DOMContentLoaded
