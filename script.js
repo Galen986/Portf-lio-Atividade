@@ -890,4 +890,95 @@ document.addEventListener('DOMContentLoaded', () => {
         contarTexto(); // Conta ao carregar (se houver texto inicial)
     }
 
+// 20. Calculadora de Mercado
+    let itensMercado = [];
+    const mercadoForm = document.getElementById('mercadoForm');
+    const produtoNome = document.getElementById('produtoNome');
+    const produtoQtd = document.getElementById('produtoQtd');
+    const produtoValor = document.getElementById('produtoValor');
+    const listaMercado = document.getElementById('listaMercado');
+    const descontoMercado = document.getElementById('descontoMercado');
+    const totalMercadoDiv = document.getElementById('totalMercado');
+
+    function renderizarMercado() {
+        if (!listaMercado) return;
+        listaMercado.innerHTML = '';
+        let subtotal = 0;
+
+        if(itensMercado.length === 0){
+            listaMercado.innerHTML = '<li>Nenhum item adicionado.</li>';
+        }
+
+        itensMercado.forEach((item, index) => {
+            const itemTotal = item.qtd * item.valor;
+            subtotal += itemTotal;
+
+            const li = document.createElement('li');
+            li.style.cssText = `
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 0;
+                border-bottom: 1px dashed var(--color-border);
+            `;
+            li.innerHTML = `
+                <span>${item.nome} - ${item.qtd}x ${formatCurrency(item.valor)} = <strong>${formatCurrency(itemTotal)}</strong></span>
+                <button style="background-color: #dc3545; padding: 4px 8px; font-size: 0.8rem;" onclick="removerItemMercado(${index})">Remover</button>
+            `;
+            listaMercado.appendChild(li);
+        });
+
+        calcularTotalMercado(subtotal);
+    }
+
+    window.removerItemMercado = function(index) {
+        itensMercado.splice(index, 1);
+        renderizarMercado();
+    }
+
+    window.calcularTotalMercado = function(subtotal = 0) {
+        if(itensMercado.length > 0 && subtotal === 0){
+            subtotal = itensMercado.reduce((acc, item) => acc + (item.qtd * item.valor), 0);
+        }
+        
+        const descontoPerc = parseFloat(descontoMercado.value) || 0;
+        const valorDesconto = subtotal * (descontoPerc / 100);
+        const totalFinal = subtotal - valorDesconto;
+
+        totalMercadoDiv.innerHTML = `
+            Subtotal: ${formatCurrency(subtotal)}<br>
+            Desconto (${descontoPerc}%): -${formatCurrency(valorDesconto)}<br>
+            <strong>Total: ${formatCurrency(totalFinal)}</strong> 🛒
+        `;
+    }
+
+    if (mercadoForm) {
+        mercadoForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nome = produtoNome.value.trim();
+            const qtd = parseFloat(produtoQtd.value);
+            const valor = parseFloat(produtoValor.value);
+
+            if (nome === '' || isNaN(qtd) || qtd <= 0 || isNaN(valor) || valor < 0) {
+                alert("Por favor, preencha nome, quantidade e valor válidos.");
+                return;
+            }
+
+            itensMercado.push({ nome, qtd, valor });
+
+            produtoNome.value = '';
+            produtoQtd.value = '1';
+            produtoValor.value = '';
+            produtoNome.focus();
+
+            renderizarMercado();
+        });
+    }
+
+    // Atualiza total quando muda desconto
+    if(descontoMercado) descontoMercado.addEventListener('input', () => calcularTotalMercado());
+
+    renderizarMercado(); // Carrega inicial
+
 }); // Fim do DOMContentLoaded
