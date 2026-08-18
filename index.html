@@ -372,39 +372,113 @@
     <div id="resultadoQuiz" class="message-area" style="margin-top: 15px; display: none;"></div>
     <button onclick="iniciarQuiz()" id="btnNovoQuiz" style="margin-top: 10px;">Novo Quiz</button>
 </div>
-
 <div class="card game-card">
-    <h3>26. Jogo da Velha vs PC</h3>
+    <h3>26. Jogo da Velha</h3>
 
-    <div class="game-buttons" style="margin-bottom: 10px; flex-wrap: wrap;">
+    <div class="config-velha">
+
         <div>
-            <label>Tamanho:</label>
+            <label for="modoJogo">
+                Modo de Jogo:
+            </label>
+
+            <select id="modoJogo">
+                <option value="pc">🤖 Contra PC</option>
+                <option value="pessoa">👥 Contra Pessoa</option>
+            </select>
+        </div>
+
+        <div id="areaDificuldade">
+            <label for="dificuldadeVelha">
+                Dificuldade:
+            </label>
+
+            <select id="dificuldadeVelha">
+                <option value="facil">🟢 Fácil</option>
+                <option value="medio">🟡 Médio</option>
+                <option value="dificil">🔴 Difícil</option>
+                <option value="impossivel">💀 Impossível</option>
+            </select>
+        </div>
+
+        <div id="areaSimbolo">
+            <label for="simboloJogador">
+                Você será:
+            </label>
+
+            <select id="simboloJogador">
+                <option value="X">❌ X</option>
+                <option value="O">⭕ O</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="tamanhoTabuleiro">
+                Tamanho:
+            </label>
+
             <select id="tamanhoTabuleiro">
-                <option value="3">3 x 3</option>
-                <option value="4">4 x 4</option>
-                <option value="5">5 x 5</option>
-                <option value="6">6 x 6</option>
-                <option value="7">7 x 7</option>
-                <option value="8">8 x 8</option>
+                <option value="3">3 × 3</option>
+                <option value="4">4 × 4</option>
+                <option value="5">5 × 5</option>
+                <option value="6">6 × 6</option>
+                <option value="7">7 × 7</option>
+                <option value="8">8 × 8</option>
             </select>
         </div>
+
         <div>
-            <label>Pra Ganhar:</label>
+            <label for="qtdParaGanhar">
+                Para ganhar:
+            </label>
+
             <select id="qtdParaGanhar">
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+                <option value="3">3 em sequência</option>
+                <option value="4">4 em sequência</option>
+                <option value="5">5 em sequência</option>
             </select>
         </div>
-        <button onclick="iniciarJogoVelha()">Novo Jogo</button>
+
+        <button
+            type="button"
+            onclick="iniciarJogoVelha()">
+            🎮 Novo Jogo
+        </button>
+
     </div>
 
-    <p>Vez de: <strong id="vezJogador">X - Você</strong></p>
+    <div class="status-velha">
+
+        <p>
+            Vez de:
+            <strong id="vezJogador">
+                X - Você
+            </strong>
+        </p>
+
+        <p>
+            Você:
+            <strong id="simboloExibido">
+                X
+            </strong>
+            |
+            PC/Pessoa:
+            <strong id="simboloAdversario">
+                O
+            </strong>
+        </p>
+
+    </div>
+
     <div id="tabuleiroVelha"></div>
 
-    <div id="resultadoVelha" class="message-area" style="margin-top: 15px;"></div>
-</div>
+    <div
+        id="resultadoVelha"
+        class="message-area"
+        style="margin-top: 15px;">
+    </div>
 
+</div>
     </main>
 
     <script src="script.js"></script>
