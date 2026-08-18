@@ -1,4 +1,4 @@
-8<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -373,20 +373,33 @@
     <button onclick="iniciarQuiz()" id="btnNovoQuiz" style="margin-top: 10px;">Novo Quiz</button>
 </div>
 
-<div class="card game-card">
-    <h3>26. Jogo da Velha</h3>
+<<div class="card game-card">
+    <h3>26. Jogo da Velha vs PC</h3>
 
-    <div class="game-buttons" style="margin-bottom: 15px;">
-        <label>Tamanho:</label>
-        <select id="tamanhoTabuleiro">
-            <option value="3">3 x 3</option>
-            <option value="4">4 x 4</option>
-            <option value="5">5 x 5</option>
-        </select>
+    <div class="game-buttons" style="margin-bottom: 10px; flex-wrap: wrap;">
+        <div>
+            <label>Tamanho:</label>
+            <select id="tamanhoTabuleiro">
+                <option value="3">3 x 3</option>
+                <option value="4">4 x 4</option>
+                <option value="5">5 x 5</option>
+                <option value="6">6 x 6</option>
+                <option value="7">7 x 7</option>
+                <option value="8">8 x 8</option>
+            </select>
+        </div>
+        <div>
+            <label>Pra Ganhar:</label>
+            <select id="qtdParaGanhar">
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </div>
         <button onclick="iniciarJogoVelha()">Novo Jogo</button>
     </div>
 
-    <p>Vez de: <strong id="vezJogador">X</strong></p>
+    <p>Vez de: <strong id="vezJogador">X - Você</strong></p>
     <div id="tabuleiroVelha"></div>
 
     <div id="resultadoVelha" class="message-area" style="margin-top: 15px;"></div>
