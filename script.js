@@ -1,64 +1,50 @@
 /* =========================================================
    DESAFIOS JS INTERATIVOS
-   GUILHERME - Mini-Aplicações JS
+   GUILHERME - MINI-APLICAÇÕES JS
+   27 DESAFIOS
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
     /* =====================================================
-       FUNÇÕES AUXILIARES
-       ===================================================== */
-
-    const $ = (id) => document.getElementById(id);
-
-    const formatarMoeda = (valor) => {
-        return Number(valor || 0).toLocaleString("pt-BR", {
-            style: "currency",
-            currency: "BRL"
-        });
-    };
-
-
-    /* =====================================================
        1. DIA DA SEMANA
        ===================================================== */
 
-    const formDia = $("form");
+    const formDia = document.getElementById("form");
 
     if (formDia) {
-        formDia.addEventListener("submit", function (e) {
+        formDia.addEventListener("submit", (e) => {
             e.preventDefault();
 
-            const campo = $("day");
+            const campo = document.getElementById("day");
             const dia = campo.value.trim().toLowerCase();
 
-            if (!dia) {
-                alert("Digite um dia da semana.");
-                return;
-            }
+            let mensagem = "";
 
             const dias = {
-                domingo: "Domingo",
-                segunda: "Segunda-feira",
-                "segunda-feira": "Segunda-feira",
-                terca: "Terça-feira",
-                terça: "Terça-feira",
-                "terça-feira": "Terça-feira",
-                quarta: "Quarta-feira",
-                "quarta-feira": "Quarta-feira",
-                quinta: "Quinta-feira",
-                "quinta-feira": "Quinta-feira",
-                sexta: "Sexta-feira",
-                "sexta-feira": "Sexta-feira",
-                sabado: "Sábado",
-                sábado: "Sábado"
+                domingo: "Hoje é Domingo! ☀️",
+                segunda: "Hoje é Segunda-feira! 📅",
+                "segunda-feira": "Hoje é Segunda-feira! 📅",
+                terca: "Hoje é Terça-feira! 📅",
+                terça: "Hoje é Terça-feira! 📅",
+                "terça-feira": "Hoje é Terça-feira! 📅",
+                quarta: "Hoje é Quarta-feira! 📅",
+                "quarta-feira": "Hoje é Quarta-feira! 📅",
+                quinta: "Hoje é Quinta-feira! 📅",
+                "quinta-feira": "Hoje é Quinta-feira! 📅",
+                sexta: "Hoje é Sexta-feira! 📅",
+                "sexta-feira": "Hoje é Sexta-feira! 📅",
+                sabado: "Hoje é Sábado! 🎉",
+                sábado: "Hoje é Sábado! 🎉"
             };
 
             if (dias[dia]) {
-                alert(`Você informou: ${dias[dia]}`);
+                mensagem = dias[dia];
             } else {
-                alert("Dia da semana inválido.");
+                mensagem = "Digite um dia da semana válido.";
             }
+
+            mostrarResultado(formDia, mensagem);
         });
     }
 
@@ -67,25 +53,25 @@ document.addEventListener("DOMContentLoaded", () => {
        2. POSITIVO OU NEGATIVO
        ===================================================== */
 
-    const numberForm = $("numberForm");
+    const numberForm = document.getElementById("numberForm");
 
     if (numberForm) {
-        numberForm.addEventListener("submit", function (e) {
+        numberForm.addEventListener("submit", (e) => {
             e.preventDefault();
 
-            const valor = Number($("number").value);
+            const valor = Number(document.getElementById("number").value);
 
-            if ($("number").value === "") {
-                alert("Digite um número.");
+            if (document.getElementById("number").value === "") {
+                mostrarResultado(numberForm, "Digite um número.");
                 return;
             }
 
             if (valor > 0) {
-                alert("O número é POSITIVO.");
+                mostrarResultado(numberForm, "O número é positivo. 🟢");
             } else if (valor < 0) {
-                alert("O número é NEGATIVO.");
+                mostrarResultado(numberForm, "O número é negativo. 🔴");
             } else {
-                alert("O número é ZERO.");
+                mostrarResultado(numberForm, "O número é zero. ⚪");
             }
         });
     }
@@ -96,67 +82,43 @@ document.addEventListener("DOMContentLoaded", () => {
        ===================================================== */
 
     let numeroSecreto = Math.floor(Math.random() * 100) + 1;
-    let tentativasAdivinhacao = 0;
+    let tentativas = 0;
 
     window.adivinhar = function () {
 
-        const campo = $("palpite");
-        const mensagem = $("mensagem");
+        const campo = document.getElementById("palpite");
+        const mensagem = document.getElementById("mensagem");
 
         if (!campo || !mensagem) return;
 
         const palpite = Number(campo.value);
 
-        if (!Number.isInteger(palpite) || palpite < 1 || palpite > 100) {
-            mensagem.innerHTML =
-                '<span class="erro">Digite um número inteiro entre 1 e 100.</span>';
+        if (!palpite || palpite < 1 || palpite > 100) {
+            mensagem.textContent = "Digite um número entre 1 e 100.";
             return;
         }
 
-        tentativasAdivinhacao++;
+        tentativas++;
 
         if (palpite === numeroSecreto) {
-
-            mensagem.innerHTML =
-                `<span class="sucesso">
-                    🎉 Parabéns! Você acertou o número ${numeroSecreto}
-                    em ${tentativasAdivinhacao} tentativa(s)!
-                </span>`;
-
-            $("btnAdivinhar").disabled = true;
-
+            mensagem.textContent =
+                `🎉 Acertou! O número era ${numeroSecreto}. Tentativas: ${tentativas}`;
         } else if (palpite < numeroSecreto) {
-
-            mensagem.innerHTML =
-                `<span class="aviso">⬆️ Tente um número MAIOR.</span>`;
-
+            mensagem.textContent = "⬆️ Tente um número maior!";
         } else {
-
-            mensagem.innerHTML =
-                `<span class="aviso">⬇️ Tente um número MENOR.</span>`;
+            mensagem.textContent = "⬇️ Tente um número menor!";
         }
-
-        campo.value = "";
-        campo.focus();
     };
 
     window.reiniciar = function () {
-
         numeroSecreto = Math.floor(Math.random() * 100) + 1;
-        tentativasAdivinhacao = 0;
+        tentativas = 0;
 
-        if ($("mensagem")) {
-            $("mensagem").textContent = "Novo jogo iniciado! Boa sorte!";
-        }
+        const campo = document.getElementById("palpite");
+        const mensagem = document.getElementById("mensagem");
 
-        if ($("btnAdivinhar")) {
-            $("btnAdivinhar").disabled = false;
-        }
-
-        if ($("palpite")) {
-            $("palpite").value = "";
-            $("palpite").focus();
-        }
+        if (campo) campo.value = "";
+        if (mensagem) mensagem.textContent = "Novo jogo iniciado! 🎮";
     };
 
 
@@ -164,22 +126,24 @@ document.addEventListener("DOMContentLoaded", () => {
        4. SALDO ATUAL
        ===================================================== */
 
-    const balanceForm = $("balanceForm");
+    const balanceForm = document.getElementById("balanceForm");
 
     if (balanceForm) {
-        balanceForm.addEventListener("submit", function (e) {
+        balanceForm.addEventListener("submit", (e) => {
             e.preventDefault();
 
-            const campo = $("balance");
+            const campo = document.getElementById("balance");
+            const valor = Number(campo.value);
 
             if (campo.value === "") {
-                alert("Digite seu saldo.");
+                mostrarResultado(balanceForm, "Digite seu saldo.");
                 return;
             }
 
-            const saldo = Number(campo.value);
-
-            alert(`Seu saldo atual é: ${formatarMoeda(saldo)}`);
+            mostrarResultado(
+                balanceForm,
+                `💰 Seu saldo atual é ${formatarMoeda(valor)}`
+            );
         });
     }
 
@@ -188,41 +152,43 @@ document.addEventListener("DOMContentLoaded", () => {
        5. BOAS-VINDAS
        ===================================================== */
 
-    const nameForm = $("nameForm");
+    const nameForm = document.getElementById("nameForm");
 
     if (nameForm) {
-        nameForm.addEventListener("submit", function (e) {
+        nameForm.addEventListener("submit", (e) => {
             e.preventDefault();
 
-            const nome = $("name").value.trim();
+            const nome = document.getElementById("name").value.trim();
 
             if (!nome) {
-                alert("Digite seu nome.");
+                mostrarResultado(nameForm, "Digite seu nome.");
                 return;
             }
 
-            alert(`Olá, ${nome}! Seja muito bem-vindo(a)! 👋`);
+            mostrarResultado(
+                nameForm,
+                `👋 Olá, ${nome}! Seja bem-vindo(a)!`
+            );
         });
     }
 
 
     /* =====================================================
-       6. CÁLCULO DE IMC
+       6. IMC
        ===================================================== */
 
-    const imcForm = $("imcForm");
+    const imcForm = document.getElementById("imcForm");
 
     if (imcForm) {
-        imcForm.addEventListener("submit", function (e) {
+        imcForm.addEventListener("submit", (e) => {
             e.preventDefault();
 
-            const peso = Number($("peso").value);
-            const altura = Number($("altura").value);
-            const resultado = $("imcResultado");
+            const peso = Number(document.getElementById("peso").value);
+            const altura = Number(document.getElementById("altura").value);
+            const resultado = document.getElementById("imcResultado");
 
-            if (!peso || !altura || peso <= 0 || altura <= 0) {
-                resultado.innerHTML =
-                    '<span class="erro">Informe peso e altura corretamente.</span>';
+            if (peso <= 0 || altura <= 0) {
+                resultado.textContent = "Digite peso e altura válidos.";
                 return;
             }
 
@@ -245,15 +211,19 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             resultado.innerHTML =
-                `Seu IMC é <strong>${imc.toFixed(2)}</strong><br>
+                `📊 IMC: <strong>${imc.toFixed(2)}</strong><br>
                  Classificação: <strong>${classificacao}</strong>`;
         });
     }
 
     window.limparImc = function () {
-        if ($("peso")) $("peso").value = "";
-        if ($("altura")) $("altura").value = "";
-        if ($("imcResultado")) $("imcResultado").innerHTML = "";
+        const peso = document.getElementById("peso");
+        const altura = document.getElementById("altura");
+        const resultado = document.getElementById("imcResultado");
+
+        if (peso) peso.value = "";
+        if (altura) altura.value = "";
+        if (resultado) resultado.innerHTML = "";
     };
 
 
@@ -261,27 +231,26 @@ document.addEventListener("DOMContentLoaded", () => {
        7. CONVERSOR CELSIUS / FAHRENHEIT
        ===================================================== */
 
-    const tempForm = $("tempForm");
+    const tempForm = document.getElementById("tempForm");
 
     if (tempForm) {
-        tempForm.addEventListener("submit", function (e) {
+        tempForm.addEventListener("submit", (e) => {
             e.preventDefault();
 
-            const campo = $("celsius");
-            const resultado = $("tempResultado");
+            const campo = document.getElementById("celsius");
+            const resultado = document.getElementById("tempResultado");
+
+            const celsius = Number(campo.value);
 
             if (campo.value === "") {
-                resultado.innerHTML =
-                    '<span class="erro">Digite uma temperatura.</span>';
+                resultado.textContent = "Digite uma temperatura.";
                 return;
             }
 
-            const celsius = Number(campo.value);
             const fahrenheit = (celsius * 9 / 5) + 32;
 
-            resultado.innerHTML =
-                `<strong>${celsius.toFixed(1)} °C</strong> =
-                 <strong>${fahrenheit.toFixed(1)} °F</strong>`;
+            resultado.textContent =
+                `${celsius}°C = ${fahrenheit.toFixed(2)}°F`;
         });
     }
 
@@ -292,24 +261,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let contadorCliques = 0;
 
-    const btnContador = $("btnContador");
-    const btnResetContador = $("btnResetContador");
+    const btnContador = document.getElementById("btnContador");
+    const btnResetContador = document.getElementById("btnResetContador");
+    const contadorElemento = document.getElementById("contadorCliques");
 
     if (btnContador) {
         btnContador.addEventListener("click", () => {
-
             contadorCliques++;
-
-            $("contadorCliques").textContent = contadorCliques;
+            contadorElemento.textContent = contadorCliques;
         });
     }
 
     if (btnResetContador) {
         btnResetContador.addEventListener("click", () => {
-
             contadorCliques = 0;
-
-            $("contadorCliques").textContent = "0";
+            contadorElemento.textContent = contadorCliques;
         });
     }
 
@@ -318,18 +284,19 @@ document.addEventListener("DOMContentLoaded", () => {
        9. LISTA DE TAREFAS
        ===================================================== */
 
-    let tarefas = [];
+    const todoForm = document.getElementById("todoForm");
+    const todoInput = document.getElementById("todoInput");
+    const todoList = document.getElementById("todoList");
+    const filtroTodo = document.getElementById("filtroTodo");
 
-    const todoForm = $("todoForm");
-    const todoList = $("todoList");
-    const filtroTodo = $("filtroTodo");
+    let tarefas = [];
 
     function renderizarTarefas() {
 
         if (!todoList) return;
 
         const filtro = filtroTodo
-            ? filtroTodo.value.toLowerCase().trim()
+            ? filtroTodo.value.toLowerCase()
             : "";
 
         todoList.innerHTML = "";
@@ -342,69 +309,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const li = document.createElement("li");
 
-                if (tarefa.concluida) {
-                    li.classList.add("concluida");
-                }
+                li.style.marginBottom = "8px";
 
-                const texto = document.createElement("span");
-                texto.textContent = tarefa.texto;
-
-                texto.style.cursor = "pointer";
-
-                texto.addEventListener("click", () => {
-                    tarefa.concluida = !tarefa.concluida;
-                    renderizarTarefas();
-                });
-
-                const botoes = document.createElement("div");
-
-                const concluir = document.createElement("button");
-                concluir.textContent = tarefa.concluida
-                    ? "Desfazer"
-                    : "Concluir";
-
-                concluir.addEventListener("click", () => {
-                    tarefa.concluida = !tarefa.concluida;
-                    renderizarTarefas();
-                });
-
-                const remover = document.createElement("button");
-                remover.textContent = "Excluir";
-                remover.style.backgroundColor = "var(--color-error)";
-
-                remover.addEventListener("click", () => {
-                    tarefas.splice(index, 1);
-                    renderizarTarefas();
-                });
-
-                botoes.append(concluir, remover);
-                li.append(texto, botoes);
+                li.innerHTML = `
+                    <span style="text-decoration:${tarefa.feita ? "line-through" : "none"}">
+                        ${escapeHTML(tarefa.texto)}
+                    </span>
+                    <button type="button" data-index="${index}">
+                        ${tarefa.feita ? "↩️" : "✅"}
+                    </button>
+                    <button type="button" data-delete="${index}">
+                        🗑️
+                    </button>
+                `;
 
                 todoList.appendChild(li);
             });
     }
 
     if (todoForm) {
-        todoForm.addEventListener("submit", function (e) {
-
+        todoForm.addEventListener("submit", (e) => {
             e.preventDefault();
 
-            const input = $("todoInput");
-            const texto = input.value.trim();
+            const texto = todoInput.value.trim();
 
-            if (!texto) {
-                alert("Digite uma tarefa.");
-                return;
-            }
+            if (!texto) return;
 
             tarefas.push({
                 texto,
-                concluida: false
+                feita: false
             });
 
-            input.value = "";
+            todoInput.value = "";
 
             renderizarTarefas();
+        });
+    }
+
+    if (todoList) {
+        todoList.addEventListener("click", (e) => {
+
+            const index = e.target.dataset.index;
+            const apagar = e.target.dataset.delete;
+
+            if (index !== undefined) {
+                tarefas[index].feita = !tarefas[index].feita;
+                renderizarTarefas();
+            }
+
+            if (apagar !== undefined) {
+                tarefas.splice(apagar, 1);
+                renderizarTarefas();
+            }
         });
     }
 
@@ -420,96 +376,86 @@ document.addEventListener("DOMContentLoaded", () => {
     let timerInterval = null;
     let tempoRestante = 60;
 
+    const btnIniciarTimer = document.getElementById("btnIniciarTimer");
+    const btnPararTimer = document.getElementById("btnPararTimer");
+    const btnResetTimer = document.getElementById("btnResetTimer");
+    const timerDisplay = document.getElementById("timerDisplay");
+
     function atualizarTimer() {
 
         const minutos = Math.floor(tempoRestante / 60);
         const segundos = tempoRestante % 60;
 
-        if ($("timerDisplay")) {
-            $("timerDisplay").textContent =
+        if (timerDisplay) {
+            timerDisplay.textContent =
                 `${String(minutos).padStart(2, "0")}:${String(segundos).padStart(2, "0")}`;
         }
     }
 
-    function obterTempoInputs() {
+    if (btnIniciarTimer) {
+        btnIniciarTimer.addEventListener("click", () => {
 
-        const minutos = Number($("minutos").value) || 0;
-        const segundos = Number($("segundos").value) || 0;
+            if (timerInterval) return;
 
-        return Math.max(0, minutos * 60 + segundos);
-    }
-
-    $("btnIniciarTimer")?.addEventListener("click", () => {
-
-        if (timerInterval) return;
-
-        if (tempoRestante <= 0) {
-            tempoRestante = obterTempoInputs();
-        }
-
-        if (tempoRestante <= 0) {
-            alert("Informe um tempo maior que zero.");
-            return;
-        }
-
-        $("btnIniciarTimer").disabled = true;
-        $("btnPararTimer").disabled = false;
-
-        timerInterval = setInterval(() => {
-
-            tempoRestante--;
-
-            atualizarTimer();
+            const minutos = Number(document.getElementById("minutos").value);
+            const segundos = Number(document.getElementById("segundos").value);
 
             if (tempoRestante <= 0) {
-
-                clearInterval(timerInterval);
-                timerInterval = null;
-
-                $("btnIniciarTimer").disabled = false;
-                $("btnPararTimer").disabled = true;
-
-                alert("⏰ Tempo encerrado!");
+                tempoRestante = minutos * 60 + segundos;
             }
 
-        }, 1000);
-    });
+            if (tempoRestante <= 0) return;
 
-    $("btnPararTimer")?.addEventListener("click", () => {
+            btnPararTimer.disabled = false;
 
-        clearInterval(timerInterval);
-        timerInterval = null;
+            timerInterval = setInterval(() => {
 
-        $("btnIniciarTimer").disabled = false;
-        $("btnPararTimer").disabled = true;
-    });
+                tempoRestante--;
 
-    $("btnResetTimer")?.addEventListener("click", () => {
+                atualizarTimer();
 
-        clearInterval(timerInterval);
-        timerInterval = null;
+                if (tempoRestante <= 0) {
 
-        tempoRestante = obterTempoInputs();
+                    clearInterval(timerInterval);
+                    timerInterval = null;
 
-        atualizarTimer();
+                    btnPararTimer.disabled = true;
 
-        $("btnIniciarTimer").disabled = false;
-        $("btnPararTimer").disabled = true;
-    });
+                    alert("⏰ Tempo encerrado!");
+                }
 
-    $("minutos")?.addEventListener("input", () => {
-        if (!timerInterval) {
-            tempoRestante = obterTempoInputs();
+            }, 1000);
+        });
+    }
+
+    if (btnPararTimer) {
+        btnPararTimer.addEventListener("click", () => {
+
+            clearInterval(timerInterval);
+            timerInterval = null;
+
+            btnPararTimer.disabled = true;
+        });
+    }
+
+    if (btnResetTimer) {
+        btnResetTimer.addEventListener("click", () => {
+
+            clearInterval(timerInterval);
+            timerInterval = null;
+
+            const minutos = Number(document.getElementById("minutos").value) || 0;
+            const segundos = Number(document.getElementById("segundos").value) || 0;
+
+            tempoRestante = minutos * 60 + segundos;
+
             atualizarTimer();
-        }
-    });
 
-    $("segundos")?.addEventListener("input", () => {
-        if (!timerInterval) {
-            tempoRestante = obterTempoInputs();
-            atualizarTimer();
-        }
-    });
+            if (btnPararTimer) {
+                btnPararTimer.disabled = true;
+            }
+        });
+    }
 
     atualizarTimer();
 
@@ -518,84 +464,67 @@ document.addEventListener("DOMContentLoaded", () => {
        11. GERADOR DE SENHAS
        ===================================================== */
 
-    const btnGerarSenha = $("btnGerarSenha");
+    const btnGerarSenha = document.getElementById("btnGerarSenha");
+    const btnCopiarSenha = document.getElementById("btnCopiarSenha");
+
+    if (btnGerarSenha) {
+        btnGerarSenha.addEventListener("click", gerarSenha);
+    }
 
     function gerarSenha() {
 
-        const tamanho = Number($("tamanhoSenha").value);
+        const tamanho = Number(document.getElementById("tamanhoSenha").value);
+        const maiusculas = document.getElementById("incluirMaiusculas").checked;
+        const numeros = document.getElementById("incluirNumeros").checked;
+        const simbolos = document.getElementById("incluirSimbolos").checked;
 
-        const minusculas = "abcdefghijklmnopqrstuvwxyz";
-        const maiusculas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        const numeros = "0123456789";
-        const simbolos = "!@#$%&*+-=?";
+        let caracteres = "abcdefghijklmnopqrstuvwxyz";
 
-        let caracteres = minusculas;
-        let obrigatorios = "";
-
-        if ($("incluirMaiusculas").checked) {
-            caracteres += maiusculas;
-            obrigatorios +=
-                maiusculas[Math.floor(Math.random() * maiusculas.length)];
-        }
-
-        if ($("incluirNumeros").checked) {
-            caracteres += numeros;
-            obrigatorios +=
-                numeros[Math.floor(Math.random() * numeros.length)];
-        }
-
-        if ($("incluirSimbolos").checked) {
-            caracteres += simbolos;
-            obrigatorios +=
-                simbolos[Math.floor(Math.random() * simbolos.length)];
-        }
+        if (maiusculas) caracteres += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        if (numeros) caracteres += "0123456789";
+        if (simbolos) caracteres += "!@#$%&*+-=?";
 
         if (tamanho < 4 || tamanho > 20) {
-            alert("O tamanho deve estar entre 4 e 20.");
+            alert("Escolha um tamanho entre 4 e 20.");
             return;
         }
 
-        if (obrigatorios.length > tamanho) {
-            alert("Escolha um tamanho maior para a senha.");
+        if (!caracteres) {
+            alert("Escolha pelo menos uma opção.");
             return;
         }
 
-        let senha = obrigatorios;
+        let senha = "";
 
-        while (senha.length < tamanho) {
+        for (let i = 0; i < tamanho; i++) {
             senha += caracteres[
                 Math.floor(Math.random() * caracteres.length)
             ];
         }
 
-        senha = senha
-            .split("")
-            .sort(() => Math.random() - 0.5)
-            .join("");
-
-        $("senhaGerada").value = senha;
+        document.getElementById("senhaGerada").value = senha;
     }
 
-    btnGerarSenha?.addEventListener("click", gerarSenha);
+    if (btnCopiarSenha) {
+        btnCopiarSenha.addEventListener("click", async () => {
 
-    $("btnCopiarSenha")?.addEventListener("click", async () => {
+            const campo = document.getElementById("senhaGerada");
 
-        const senha = $("senhaGerada").value;
+            if (!campo.value) {
+                alert("Gere uma senha primeiro.");
+                return;
+            }
 
-        if (!senha) {
-            alert("Gere uma senha primeiro.");
-            return;
-        }
-
-        try {
-            await navigator.clipboard.writeText(senha);
-            alert("Senha copiada!");
-        } catch {
-            $("senhaGerada").select();
-            document.execCommand("copy");
-            alert("Senha copiada!");
-        }
-    });
+            try {
+                await navigator.clipboard.writeText(campo.value);
+                alert("Senha copiada! 📋");
+            } catch {
+                campo.select();
+                document.execCommand("copy");
+                alert("Senha copiada! 📋");
+            }
+        });
+    }
 
 
     /* =====================================================
@@ -604,143 +533,149 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.calcularGorjeta = function () {
 
-        const conta = Number($("contaValor")?.value) || 0;
-        const porcentagem = Number($("gorjetaPorcentagem")?.value) || 0;
-        const pessoas = Number($("numPessoas")?.value) || 1;
+        const conta = Number(document.getElementById("contaValor").value) || 0;
+        const porcentagem = Number(document.getElementById("gorjetaPorcentagem").value) || 0;
+        const pessoas = Number(document.getElementById("numPessoas").value) || 1;
 
-        if (!$("gorjetaResultado")) return;
+        const resultado = document.getElementById("gorjetaResultado");
 
-        if (conta < 0 || pessoas < 1) {
-            $("gorjetaResultado").innerHTML =
-                '<span class="erro">Informe valores válidos.</span>';
-            return;
-        }
+        if (!resultado) return;
 
-        const gorjeta = conta * porcentagem / 100;
-        const total = conta + gorjeta;
-        const porPessoa = total / pessoas;
+        const valorGorjeta = conta * porcentagem / 100;
+        const total = conta + valorGorjeta;
+        const porPessoa = total / Math.max(1, pessoas);
 
-        $("gorjetaResultado").innerHTML =
-            `Gorjeta: <strong>${formatarMoeda(gorjeta)}</strong><br>
-             Total: <strong>${formatarMoeda(total)}</strong><br>
-             Por pessoa: <strong>${formatarMoeda(porPessoa)}</strong>`;
+        resultado.innerHTML = `
+            Gorjeta: <strong>${formatarMoeda(valorGorjeta)}</strong><br>
+            Total: <strong>${formatarMoeda(total)}</strong><br>
+            Por pessoa: <strong>${formatarMoeda(porPessoa)}</strong>
+        `;
     };
 
-    $("btnCalcularGorjeta")?.addEventListener(
-        "click",
-        window.calcularGorjeta
-    );
+    const btnGorjeta = document.getElementById("btnCalcularGorjeta");
 
-    window.calcularGorjeta();
+    if (btnGorjeta) {
+        btnGorjeta.addEventListener("click", calcularGorjeta);
+    }
+
+    calcularGorjeta();
 
 
     /* =====================================================
        13. EDITOR DE ESTILOS
        ===================================================== */
 
-    $("corTexto")?.addEventListener("input", function () {
+    const corTexto = document.getElementById("corTexto");
+    const tamanhoFonte = document.getElementById("tamanhoFonte");
+    const blocoExemplo = document.getElementById("blocoExemplo");
 
-        $("blocoExemplo").style.color = this.value;
-    });
+    if (corTexto && blocoExemplo) {
+        corTexto.addEventListener("input", () => {
+            blocoExemplo.style.color = corTexto.value;
+        });
+    }
 
-    $("tamanhoFonte")?.addEventListener("input", function () {
-
-        $("blocoExemplo").style.fontSize = `${this.value}px`;
-
-        const output = this.nextElementSibling;
-
-        if (output) {
-            output.value = `${this.value}px`;
-        }
-    });
+    if (tamanhoFonte && blocoExemplo) {
+        tamanhoFonte.addEventListener("input", () => {
+            blocoExemplo.style.fontSize = `${tamanhoFonte.value}px`;
+        });
+    }
 
 
     /* =====================================================
        14. VALIDADOR DE LOGIN
        ===================================================== */
 
-    $("loginForm")?.addEventListener("submit", function (e) {
+    const loginForm = document.getElementById("loginForm");
 
-        e.preventDefault();
+    if (loginForm) {
 
-        const email = $("loginEmail").value.trim();
-        const senha = $("loginSenha").value;
+        loginForm.addEventListener("submit", (e) => {
 
-        $("emailError").textContent = "";
-        $("senhaError").textContent = "";
+            e.preventDefault();
 
-        let valido = true;
+            const email = document.getElementById("loginEmail").value.trim();
+            const senha = document.getElementById("loginSenha").value;
 
-        const emailValido =
-            /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            const emailError = document.getElementById("emailError");
+            const senhaError = document.getElementById("senhaError");
 
-        if (!emailValido) {
-            $("emailError").textContent =
-                "Digite um email válido.";
+            emailError.textContent = "";
+            senhaError.textContent = "";
 
-            valido = false;
-        }
+            let valido = true;
 
-        if (senha.length < 6) {
-            $("senhaError").textContent =
-                "A senha precisa ter pelo menos 6 caracteres.";
+            const emailValido =
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-            valido = false;
-        }
+            if (!emailValido) {
+                emailError.textContent = "Digite um e-mail válido.";
+                valido = false;
+            }
 
-        if (valido) {
-            alert("Login validado com sucesso! ✅");
-        }
-    });
+            if (senha.length < 6) {
+                senhaError.textContent =
+                    "A senha deve ter pelo menos 6 caracteres.";
+                valido = false;
+            }
+
+            if (valido) {
+                alert("✅ Login validado com sucesso!");
+            }
+        });
+    }
 
 
     /* =====================================================
        15. CATÁLOGO DE PRODUTOS
        ===================================================== */
 
+    const listaProdutos = document.getElementById("listaProdutos");
+    const filtroProduto = document.getElementById("filtroProduto");
+
     const produtos = [
-        { nome: "Notebook", preco: 3500 },
-        { nome: "Mouse", preco: 80 },
-        { nome: "Teclado Mecânico", preco: 250 },
-        { nome: "Monitor", preco: 900 },
-        { nome: "Headset", preco: 180 },
-        { nome: "Webcam", preco: 220 },
-        { nome: "Celular", preco: 1800 },
-        { nome: "Tablet", preco: 1200 },
-        { nome: "Fone Bluetooth", preco: 150 },
-        { nome: "Pen Drive", preco: 50 }
+        "Arroz",
+        "Feijão",
+        "Macarrão",
+        "Leite",
+        "Café",
+        "Açúcar",
+        "Bolacha",
+        "Pão",
+        "Queijo",
+        "Carne",
+        "Frango",
+        "Sabonete",
+        "Shampoo",
+        "Detergente"
     ];
 
     function renderizarProdutos() {
 
-        if (!$("listaProdutos")) return;
+        if (!listaProdutos) return;
 
-        const filtro = $("filtroProduto").value
-            .toLowerCase()
-            .trim();
+        const filtro = filtroProduto
+            ? filtroProduto.value.toLowerCase()
+            : "";
 
-        $("listaProdutos").innerHTML = "";
+        listaProdutos.innerHTML = "";
 
         produtos
             .filter(produto =>
-                produto.nome.toLowerCase().includes(filtro)
+                produto.toLowerCase().includes(filtro)
             )
             .forEach(produto => {
 
                 const li = document.createElement("li");
+                li.textContent = produto;
 
-                li.innerHTML =
-                    `<strong>${produto.nome}</strong>
-                     — ${formatarMoeda(produto.preco)}`;
-
-                $("listaProdutos").appendChild(li);
+                listaProdutos.appendChild(li);
             });
     }
 
-    $("filtroProduto")?.addEventListener(
-        "input",
-        renderizarProdutos
-    );
+    if (filtroProduto) {
+        filtroProduto.addEventListener("input", renderizarProdutos);
+    }
 
     renderizarProdutos();
 
@@ -749,61 +684,74 @@ document.addEventListener("DOMContentLoaded", () => {
        16. CALCULADORA DE MÉDIA
        ===================================================== */
 
+    const notaForm = document.getElementById("notaForm");
+    const notaInput = document.getElementById("notaInput");
+
     let notas = [];
 
-    $("notaForm")?.addEventListener("submit", function (e) {
+    function atualizarMedia() {
 
-        e.preventDefault();
+        const listaNotas = document.getElementById("listaNotas");
+        const mediaResultado = document.getElementById("mediaResultado");
 
-        const input = $("notaInput");
-        const nota = Number(input.value);
+        if (!listaNotas || !mediaResultado) return;
 
-        if (
-            input.value === "" ||
-            nota < 0 ||
-            nota > 10
-        ) {
-            alert("Digite uma nota entre 0 e 10.");
-            return;
-        }
-
-        notas.push(nota);
-
-        input.value = "";
-
-        renderizarNotas();
-    });
-
-    function renderizarNotas() {
-
-        $("listaNotas").innerHTML = "";
+        listaNotas.innerHTML = "";
 
         notas.forEach((nota, index) => {
 
             const li = document.createElement("li");
 
-            li.textContent = nota.toFixed(1);
+            li.innerHTML = `
+                Nota ${index + 1}: <strong>${nota.toFixed(1)}</strong>
+                <button type="button" data-nota="${index}">🗑️</button>
+            `;
 
-            li.title = "Clique para remover";
-
-            li.style.cursor = "pointer";
-
-            li.addEventListener("click", () => {
-
-                notas.splice(index, 1);
-
-                renderizarNotas();
-            });
-
-            $("listaNotas").appendChild(li);
+            listaNotas.appendChild(li);
         });
 
-        const media = notas.length
-            ? notas.reduce((soma, nota) => soma + nota, 0) / notas.length
-            : 0;
+        if (notas.length === 0) {
+            mediaResultado.textContent = "0.0";
+            return;
+        }
 
-        $("mediaResultado").textContent =
-            media.toFixed(1);
+        const soma = notas.reduce((total, nota) => total + nota, 0);
+        const media = soma / notas.length;
+
+        mediaResultado.textContent = media.toFixed(1);
+    }
+
+    if (notaForm) {
+        notaForm.addEventListener("submit", (e) => {
+
+            e.preventDefault();
+
+            const valor = Number(notaInput.value);
+
+            if (Number.isNaN(valor) || valor < 0 || valor > 10) {
+                alert("Digite uma nota entre 0 e 10.");
+                return;
+            }
+
+            notas.push(valor);
+            notaInput.value = "";
+
+            atualizarMedia();
+        });
+    }
+
+    const listaNotasElemento = document.getElementById("listaNotas");
+
+    if (listaNotasElemento) {
+        listaNotasElemento.addEventListener("click", (e) => {
+
+            const index = e.target.dataset.nota;
+
+            if (index !== undefined) {
+                notas.splice(index, 1);
+                atualizarMedia();
+            }
+        });
     }
 
 
@@ -811,308 +759,354 @@ document.addEventListener("DOMContentLoaded", () => {
        17. GERADOR DE CORES RGB
        ===================================================== */
 
-    $("btnGerarCor")?.addEventListener("click", () => {
+    const btnGerarCor = document.getElementById("btnGerarCor");
 
-        const r = Math.floor(Math.random() * 256);
-        const g = Math.floor(Math.random() * 256);
-        const b = Math.floor(Math.random() * 256);
+    if (btnGerarCor) {
 
-        const rgb = `rgb(${r}, ${g}, ${b})`;
+        btnGerarCor.addEventListener("click", () => {
 
-        $("corBox").style.backgroundColor = rgb;
+            const r = Math.floor(Math.random() * 256);
+            const g = Math.floor(Math.random() * 256);
+            const b = Math.floor(Math.random() * 256);
 
-        $("codigoCor").textContent =
-            `RGB(${r}, ${g}, ${b})`;
+            const rgb = `rgb(${r}, ${g}, ${b})`;
 
-        const brilho =
-            (r * 299 + g * 587 + b * 114) / 1000;
+            const corBox = document.getElementById("corBox");
+            const codigoCor = document.getElementById("codigoCor");
 
-        $("codigoCor").style.color =
-            brilho > 128 ? "#000000" : "#ffffff";
-    });
+            corBox.style.backgroundColor = rgb;
+
+            codigoCor.textContent =
+                `RGB(${r}, ${g}, ${b})`;
+
+            const brilho = (r * 299 + g * 587 + b * 114) / 1000;
+
+            codigoCor.style.color =
+                brilho > 128 ? "#000000" : "#ffffff";
+        });
+    }
 
 
     /* =====================================================
        18. CONVERSOR DE UNIDADES
        ===================================================== */
 
-    $("btnConverterUnidade")?.addEventListener("click", () => {
+    const btnConverterUnidade =
+        document.getElementById("btnConverterUnidade");
 
-        const tipo = $("tipoConversao").value;
-        const valor = Number($("valorOriginal").value);
+    if (btnConverterUnidade) {
 
-        if (!Number.isFinite(valor)) {
-            $("conversaoResultado").innerHTML =
-                '<span class="erro">Digite um valor válido.</span>';
-            return;
-        }
+        btnConverterUnidade.addEventListener("click", () => {
 
-        let resultado;
-        let unidade;
+            const tipo =
+                document.getElementById("tipoConversao").value;
 
-        if (tipo === "km_mi") {
+            const valor =
+                Number(document.getElementById("valorOriginal").value);
 
-            resultado = valor * 0.621371;
-            unidade = "milhas";
+            const resultado =
+                document.getElementById("conversaoResultado");
 
-        } else {
+            if (Number.isNaN(valor)) {
+                resultado.textContent = "Digite um valor válido.";
+                return;
+            }
 
-            resultado = valor * 0.264172;
-            unidade = "galões";
-        }
+            if (tipo === "km_mi") {
 
-        $("conversaoResultado").innerHTML =
-            `<strong>${valor}</strong> =
-             <strong>${resultado.toFixed(2)} ${unidade}</strong>`;
-    });
+                const milhas = valor * 0.621371;
+
+                resultado.textContent =
+                    `${valor} km = ${milhas.toFixed(2)} milhas`;
+
+            } else if (tipo === "l_gal") {
+
+                const galoes = valor * 0.264172;
+
+                resultado.textContent =
+                    `${valor} L = ${galoes.toFixed(2)} galões`;
+            }
+        });
+    }
 
 
     /* =====================================================
        19. CONTADOR DE TEXTO
        ===================================================== */
 
-    $("textoInput")?.addEventListener("input", function () {
+    const textoInput = document.getElementById("textoInput");
 
-        const texto = this.value;
+    if (textoInput) {
 
-        const caracteres = texto.length;
+        textoInput.addEventListener("input", () => {
 
-        const palavras = texto.trim()
-            ? texto.trim().split(/\s+/).length
-            : 0;
+            const texto = textoInput.value;
 
-        $("contadorCaracteres").textContent = caracteres;
-        $("contadorPalavras").textContent = palavras;
-    });
+            const caracteres =
+                document.getElementById("contadorCaracteres");
+
+            const palavras =
+                document.getElementById("contadorPalavras");
+
+            caracteres.textContent = texto.length;
+
+            const listaPalavras =
+                texto.trim()
+                    ? texto.trim().split(/\s+/)
+                    : [];
+
+            palavras.textContent = listaPalavras.length;
+        });
+    }
 
 
     /* =====================================================
        20. CALCULADORA DE MERCADO
        ===================================================== */
 
+    const mercadoForm = document.getElementById("mercadoForm");
+
     let produtosMercado = [];
 
-    $("mercadoForm")?.addEventListener("submit", function (e) {
+    function calcularTotalMercadoInterno() {
 
-        e.preventDefault();
+        const desconto =
+            Number(document.getElementById("descontoMercado").value) || 0;
 
-        const nome = $("produtoNome").value.trim();
-        const quantidade = Number($("produtoQtd").value);
-        const valor = Number($("produtoValor").value);
+        const lista =
+            document.getElementById("listaMercado");
 
-        if (!nome) {
-            alert("Digite o nome do produto.");
-            return;
+        const totalElemento =
+            document.getElementById("totalMercado");
+
+        let subtotal = 0;
+
+        if (lista) {
+            lista.innerHTML = "";
+
+            produtosMercado.forEach((produto, index) => {
+
+                const totalProduto =
+                    produto.quantidade * produto.valor;
+
+                subtotal += totalProduto;
+
+                const li = document.createElement("li");
+
+                li.innerHTML = `
+                    ${escapeHTML(produto.nome)}
+                    — ${produto.quantidade} × ${formatarMoeda(produto.valor)}
+                    = <strong>${formatarMoeda(totalProduto)}</strong>
+                    <button type="button" data-mercado="${index}">
+                        🗑️
+                    </button>
+                `;
+
+                lista.appendChild(li);
+            });
         }
 
-        if (quantidade <= 0 || valor < 0 || !Number.isFinite(valor)) {
-            alert("Informe quantidade e valor corretamente.");
-            return;
+        const valorDesconto =
+            subtotal * Math.min(100, Math.max(0, desconto)) / 100;
+
+        const total = subtotal - valorDesconto;
+
+        if (totalElemento) {
+            totalElemento.innerHTML = `
+                Subtotal: ${formatarMoeda(subtotal)}<br>
+                Desconto: ${formatarMoeda(valorDesconto)}<br>
+                <strong>Total: ${formatarMoeda(total)}</strong>
+            `;
         }
+    }
 
-        produtosMercado.push({
-            nome,
-            quantidade,
-            valor
-        });
+    window.calcularTotalMercado = calcularTotalMercadoInterno;
 
-        $("produtoNome").value = "";
-        $("produtoQtd").value = 1;
-        $("produtoValor").value = "";
+    if (mercadoForm) {
 
-        renderizarMercado();
-        calcularTotalMercado();
-    });
+        mercadoForm.addEventListener("submit", (e) => {
 
-    function renderizarMercado() {
+            e.preventDefault();
 
-        $("listaMercado").innerHTML = "";
+            const nome =
+                document.getElementById("produtoNome").value.trim();
 
-        produtosMercado.forEach((produto, index) => {
+            const quantidade =
+                Number(document.getElementById("produtoQtd").value);
 
-            const li = document.createElement("li");
+            const valor =
+                Number(document.getElementById("produtoValor").value);
 
-            const subtotal =
-                produto.quantidade * produto.valor;
+            if (!nome || quantidade <= 0 || valor < 0) {
+                alert("Preencha os dados do produto corretamente.");
+                return;
+            }
 
-            li.innerHTML =
-                `<strong>${produto.nome}</strong>
-                 — ${produto.quantidade} × ${formatarMoeda(produto.valor)}
-                 = ${formatarMoeda(subtotal)}
-                 <button type="button"
-                         style="float:right; background:var(--color-error); margin:0;">
-                    Excluir
-                 </button>`;
+            produtosMercado.push({
+                nome,
+                quantidade,
+                valor
+            });
 
-            li.querySelector("button").addEventListener(
-                "click",
-                () => {
+            document.getElementById("produtoNome").value = "";
+            document.getElementById("produtoQtd").value = "1";
+            document.getElementById("produtoValor").value = "";
 
-                    produtosMercado.splice(index, 1);
-
-                    renderizarMercado();
-                    calcularTotalMercado();
-                }
-            );
-
-            $("listaMercado").appendChild(li);
+            calcularTotalMercadoInterno();
         });
     }
 
-    window.calcularTotalMercado = function () {
+    const listaMercado =
+        document.getElementById("listaMercado");
 
-        if (!$("totalMercado")) return;
+    if (listaMercado) {
 
-        const subtotal = produtosMercado.reduce(
-            (total, produto) =>
-                total + produto.quantidade * produto.valor,
-            0
-        );
+        listaMercado.addEventListener("click", (e) => {
 
-        const desconto =
-            Number($("descontoMercado").value) || 0;
+            const index = e.target.dataset.mercado;
 
-        const valorDesconto =
-            subtotal * desconto / 100;
-
-        const total =
-            subtotal - valorDesconto;
-
-        $("totalMercado").innerHTML =
-            `Subtotal: ${formatarMoeda(subtotal)}<br>
-             Desconto: ${formatarMoeda(valorDesconto)}<br>
-             <strong>Total: ${formatarMoeda(total)}</strong>`;
-    };
-
-    calcularTotalMercado();
+            if (index !== undefined) {
+                produtosMercado.splice(index, 1);
+                calcularTotalMercadoInterno();
+            }
+        });
+    }
 
 
     /* =====================================================
        21. RATEIO DE CONTAS
        ===================================================== */
 
+    const rateioForm = document.getElementById("rateioForm");
+
     let pessoasRateio = [];
 
-    $("rateioForm")?.addEventListener("submit", function (e) {
+    function calcularRateioInterno() {
 
-        e.preventDefault();
+        const valorConta =
+            Number(document.getElementById("valorConta").value) || 0;
 
-        const nome = $("nomePessoa").value.trim();
-        const porcentagem = Number(
-            $("porcentagemPessoa").value
-        );
+        const lista =
+            document.getElementById("listaPessoas");
 
-        if (!nome) {
-            alert("Digite o nome da pessoa.");
-            return;
-        }
+        const resultado =
+            document.getElementById("resultadoRateio");
 
-        if (
-            !Number.isFinite(porcentagem) ||
-            porcentagem <= 0 ||
-            porcentagem > 100
-        ) {
-            alert("Digite uma porcentagem entre 0 e 100.");
-            return;
-        }
+        const aviso =
+            document.getElementById("avisoRateio");
 
-        pessoasRateio.push({
-            nome,
-            porcentagem
-        });
+        if (!lista || !resultado) return;
 
-        $("nomePessoa").value = "";
+        lista.innerHTML = "";
 
-        renderizarRateio();
-        calcularRateio();
-    });
-
-    function renderizarRateio() {
-
-        $("listaPessoas").innerHTML = "";
+        let porcentagemTotal = 0;
 
         pessoasRateio.forEach((pessoa, index) => {
 
+            porcentagemTotal += pessoa.porcentagem;
+
+            const valorPessoa =
+                valorConta * pessoa.porcentagem / 100;
+
             const li = document.createElement("li");
 
-            li.innerHTML =
-                `<strong>${pessoa.nome}</strong>
-                 — ${pessoa.porcentagem}%
-                 <button type="button"
-                         style="float:right; background:var(--color-error); margin:0;">
-                    Excluir
-                 </button>`;
+            li.innerHTML = `
+                ${escapeHTML(pessoa.nome)}
+                — ${pessoa.porcentagem}%
+                = <strong>${formatarMoeda(valorPessoa)}</strong>
+                <button type="button" data-rateio="${index}">
+                    🗑️
+                </button>
+            `;
 
-            li.querySelector("button").addEventListener(
-                "click",
-                () => {
+            lista.appendChild(li);
+        });
 
-                    pessoasRateio.splice(index, 1);
+        const valorDistribuido =
+            valorConta * porcentagemTotal / 100;
 
-                    renderizarRateio();
-                    calcularRateio();
-                }
-            );
+        resultado.innerHTML = `
+            Porcentagem distribuída:
+            <strong>${porcentagemTotal}%</strong><br>
+            Total distribuído:
+            <strong>${formatarMoeda(valorDistribuido)}</strong>
+        `;
 
-            $("listaPessoas").appendChild(li);
+        if (aviso) {
+
+            if (porcentagemTotal > 100) {
+                aviso.textContent =
+                    "⚠️ A porcentagem ultrapassou 100%.";
+            } else if (porcentagemTotal < 100) {
+                aviso.textContent =
+                    `Faltam ${100 - porcentagemTotal}% para completar 100%.`;
+            } else {
+                aviso.textContent =
+                    "✅ Rateio completo: 100%.";
+            }
+        }
+    }
+
+    window.calcularRateio = calcularRateioInterno;
+
+    if (rateioForm) {
+
+        rateioForm.addEventListener("submit", (e) => {
+
+            e.preventDefault();
+
+            const nome =
+                document.getElementById("nomePessoa").value.trim();
+
+            const porcentagem =
+                Number(document.getElementById("porcentagemPessoa").value);
+
+            if (!nome || porcentagem <= 0 || porcentagem > 100) {
+                alert("Digite nome e porcentagem válida.");
+                return;
+            }
+
+            const atual =
+                pessoasRateio.reduce(
+                    (total, pessoa) => total + pessoa.porcentagem,
+                    0
+                );
+
+            if (atual + porcentagem > 100) {
+                alert("A porcentagem total não pode ultrapassar 100%.");
+                return;
+            }
+
+            pessoasRateio.push({
+                nome,
+                porcentagem
+            });
+
+            document.getElementById("nomePessoa").value = "";
+
+            calcularRateioInterno();
         });
     }
 
-    window.calcularRateio = function () {
+    const listaPessoas =
+        document.getElementById("listaPessoas");
 
-        if (!$("resultadoRateio")) return;
+    if (listaPessoas) {
 
-        const valorConta =
-            Number($("valorConta").value) || 0;
+        listaPessoas.addEventListener("click", (e) => {
 
-        const somaPorcentagens =
-            pessoasRateio.reduce(
-                (total, pessoa) =>
-                    total + pessoa.porcentagem,
-                0
-            );
+            const index = e.target.dataset.rateio;
 
-        if (pessoasRateio.length === 0) {
+            if (index !== undefined) {
 
-            $("resultadoRateio").textContent =
-                "Adicione pessoas para calcular o rateio.";
+                pessoasRateio.splice(index, 1);
 
-            $("avisoRateio").textContent = "";
+                calcularRateioInterno();
+            }
+        });
+    }
 
-            return;
-        }
-
-        $("resultadoRateio").innerHTML =
-            pessoasRateio.map(pessoa => {
-
-                const valor =
-                    valorConta *
-                    pessoa.porcentagem /
-                    100;
-
-                return `
-                    <div>
-                        <strong>${pessoa.nome}</strong>:
-                        ${formatarMoeda(valor)}
-                    </div>
-                `;
-
-            }).join("");
-
-        $("avisoRateio").textContent =
-            `Total das porcentagens: ${somaPorcentagens}%`;
-
-        if (somaPorcentagens > 100) {
-            $("avisoRateio").textContent +=
-                " ⚠️ A soma ultrapassou 100%.";
-        } else if (somaPorcentagens < 100) {
-            $("avisoRateio").textContent +=
-                " ⚠️ A soma ainda não chegou a 100%.";
-        } else {
-            $("avisoRateio").textContent +=
-                " ✅ Rateio completo.";
-        }
-    };
+    calcularRateioInterno();
 
 
     /* =====================================================
@@ -1123,33 +1117,43 @@ document.addEventListener("DOMContentLoaded", () => {
     let primeiraCarta = null;
     let segundaCarta = null;
     let bloqueadoMemoria = false;
-    let cliquesMemoria = 0;
     let paresEncontrados = 0;
-
-    const simbolosMemoria = [
-        "🍎", "🍌", "🍇", "🍉",
-        "🍓", "🍒", "🥝", "🍍"
-    ];
+    let cliquesMemoria = 0;
 
     window.iniciarJogoMemoria = function () {
 
-        const tabuleiro = $("tabuleiroMemoria");
+        const tabuleiro =
+            document.getElementById("tabuleiroMemoria");
+
+        const resultado =
+            document.getElementById("resultadoMemoria");
+
+        const contador =
+            document.getElementById("clicksMemoria");
 
         if (!tabuleiro) return;
 
-        cartasMemoria = [
-            ...simbolosMemoria,
-            ...simbolosMemoria
-        ].sort(() => Math.random() - 0.5);
+        const simbolos = [
+            "🍎", "🍎",
+            "🍕", "🍕",
+            "🚀", "🚀",
+            "🐱", "🐱",
+            "⚽", "⚽",
+            "🎮", "🎮",
+            "⭐", "⭐",
+            "🔥", "🔥"
+        ];
+
+        cartasMemoria = embaralhar(simbolos);
 
         primeiraCarta = null;
         segundaCarta = null;
         bloqueadoMemoria = false;
-        cliquesMemoria = 0;
         paresEncontrados = 0;
+        cliquesMemoria = 0;
 
-        $("clicksMemoria").textContent = "0";
-        $("resultadoMemoria").textContent = "";
+        contador.textContent = "0";
+        resultado.textContent = "";
 
         tabuleiro.innerHTML = "";
 
@@ -1157,93 +1161,88 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const carta = document.createElement("button");
 
-            carta.className = "memoria-carta";
             carta.type = "button";
+            carta.textContent = "❓";
             carta.dataset.index = index;
-            carta.dataset.simbolo = simbolo;
-            carta.textContent = "?";
 
-            carta.addEventListener(
-                "click",
-                () => virarCartaMemoria(carta)
-            );
+            carta.style.fontSize = "2rem";
+            carta.style.minHeight = "70px";
+
+            carta.addEventListener("click", () => virarCarta(carta));
 
             tabuleiro.appendChild(carta);
         });
     };
 
-    function virarCartaMemoria(carta) {
+    function virarCarta(carta) {
 
         if (
             bloqueadoMemoria ||
-            carta.classList.contains("revelada") ||
-            carta.classList.contains("encontrada")
+            carta === primeiraCarta ||
+            carta.dataset.aberta === "true"
         ) {
             return;
         }
 
-        carta.classList.add("revelada");
-        carta.textContent = carta.dataset.simbolo;
+        const index = Number(carta.dataset.index);
+
+        carta.textContent = cartasMemoria[index];
+        carta.dataset.aberta = "true";
 
         cliquesMemoria++;
 
-        $("clicksMemoria").textContent =
+        document.getElementById("clicksMemoria").textContent =
             cliquesMemoria;
 
         if (!primeiraCarta) {
 
             primeiraCarta = carta;
 
-            return;
+        } else {
+
+            segundaCarta = carta;
+            verificarParMemoria();
         }
+    }
 
-        segundaCarta = carta;
-        bloqueadoMemoria = true;
+    function verificarParMemoria() {
 
-        if (
-            primeiraCarta.dataset.simbolo ===
-            segundaCarta.dataset.simbolo
-        ) {
+        const index1 = Number(primeiraCarta.dataset.index);
+        const index2 = Number(segundaCarta.dataset.index);
 
-            primeiraCarta.classList.add("encontrada");
-            segundaCarta.classList.add("encontrada");
+        if (cartasMemoria[index1] === cartasMemoria[index2]) {
 
             paresEncontrados++;
 
-            resetarSelecaoMemoria();
+            primeiraCarta = null;
+            segundaCarta = null;
 
-            if (paresEncontrados === simbolosMemoria.length) {
+            if (paresEncontrados === 8) {
 
-                $("resultadoMemoria").innerHTML =
-                    `<span class="sucesso">
-                        🎉 Parabéns! Você encontrou todos os pares!
-                    </span>`;
+                document.getElementById("resultadoMemoria").textContent =
+                    `🎉 Você encontrou todos os pares em ${cliquesMemoria} cliques!`;
             }
 
         } else {
 
+            bloqueadoMemoria = true;
+
             setTimeout(() => {
 
-                primeiraCarta.classList.remove("revelada");
-                segundaCarta.classList.remove("revelada");
+                primeiraCarta.textContent = "❓";
+                segundaCarta.textContent = "❓";
 
-                primeiraCarta.textContent = "?";
-                segundaCarta.textContent = "?";
+                primeiraCarta.dataset.aberta = "false";
+                segundaCarta.dataset.aberta = "false";
 
-                resetarSelecaoMemoria();
+                primeiraCarta = null;
+                segundaCarta = null;
+
+                bloqueadoMemoria = false;
 
             }, 800);
         }
     }
-
-    function resetarSelecaoMemoria() {
-
-        primeiraCarta = null;
-        segundaCarta = null;
-        bloqueadoMemoria = false;
-    }
-
-    iniciarJogoMemoria();
 
 
     /* =====================================================
@@ -1253,7 +1252,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let placarVoce = 0;
     let placarPc = 0;
 
-    window.jogar = function (jogadaUsuario) {
+    window.jogar = function (jogada) {
 
         const opcoes = [
             "pedra",
@@ -1261,39 +1260,43 @@ document.addEventListener("DOMContentLoaded", () => {
             "tesoura"
         ];
 
-        const jogadaPc =
-            opcoes[Math.floor(Math.random() * 3)];
+        const pc =
+            opcoes[Math.floor(Math.random() * opcoes.length)];
 
-        let resultado;
+        const resultado =
+            document.getElementById("resultadoPPT");
 
-        if (jogadaUsuario === jogadaPc) {
+        if (!resultado) return;
 
-            resultado = "Empate! 🤝";
+        if (jogada === pc) {
+
+            resultado.textContent =
+                `🤝 Empate! Ambos escolheram ${pc}.`;
 
         } else if (
-            (jogadaUsuario === "pedra" && jogadaPc === "tesoura") ||
-            (jogadaUsuario === "papel" && jogadaPc === "pedra") ||
-            (jogadaUsuario === "tesoura" && jogadaPc === "papel")
+            (jogada === "pedra" && pc === "tesoura") ||
+            (jogada === "papel" && pc === "pedra") ||
+            (jogada === "tesoura" && pc === "papel")
         ) {
 
             placarVoce++;
 
-            resultado = "Você venceu! 🎉";
+            resultado.textContent =
+                `🎉 Você ganhou! Você: ${jogada} | PC: ${pc}`;
 
         } else {
 
             placarPc++;
 
-            resultado = "O PC venceu! 🤖";
+            resultado.textContent =
+                `😢 PC ganhou! Você: ${jogada} | PC: ${pc}`;
         }
 
-        $("placarVoce").textContent = placarVoce;
-        $("placarPc").textContent = placarPc;
+        document.getElementById("placarVoce").textContent =
+            placarVoce;
 
-        $("resultadoPPT").innerHTML =
-            `${resultado}<br>
-             Você: <strong>${jogadaUsuario}</strong>
-             | PC: <strong>${jogadaPc}</strong>`;
+        document.getElementById("placarPc").textContent =
+            placarPc;
     };
 
     window.resetarPlacarPPT = function () {
@@ -1301,10 +1304,10 @@ document.addEventListener("DOMContentLoaded", () => {
         placarVoce = 0;
         placarPc = 0;
 
-        $("placarVoce").textContent = "0";
-        $("placarPc").textContent = "0";
+        document.getElementById("placarVoce").textContent = "0";
+        document.getElementById("placarPc").textContent = "0";
 
-        $("resultadoPPT").textContent =
+        document.getElementById("resultadoPPT").textContent =
             "Placar zerado! Escolha uma opção para jogar.";
     };
 
@@ -1313,57 +1316,71 @@ document.addEventListener("DOMContentLoaded", () => {
        24. CLIQUE RÁPIDO
        ===================================================== */
 
+    let intervaloClique = null;
     let tempoClique = 10;
     let totalCliques = 0;
-    let intervaloClique = null;
 
-    $("btnIniciarClique")?.addEventListener("click", () => {
+    const btnIniciarClique =
+        document.getElementById("btnIniciarClique");
 
-        if (intervaloClique) return;
+    const btnClicar =
+        document.getElementById("btnClicar");
 
-        tempoClique = 10;
-        totalCliques = 0;
+    if (btnIniciarClique) {
 
-        $("tempoClique").textContent = tempoClique;
-        $("totalCliques").textContent = totalCliques;
+        btnIniciarClique.addEventListener("click", () => {
 
-        $("btnIniciarClique").disabled = true;
-        $("btnClicar").disabled = false;
+            tempoClique = 10;
+            totalCliques = 0;
 
-        $("resultadoClique").textContent =
-            "VALENDO! Clique o mais rápido possível! 🔥";
+            document.getElementById("tempoClique").textContent =
+                tempoClique;
 
-        intervaloClique = setInterval(() => {
+            document.getElementById("totalCliques").textContent =
+                totalCliques;
 
-            tempoClique--;
+            btnClicar.disabled = false;
+            btnIniciarClique.disabled = true;
 
-            $("tempoClique").textContent = tempoClique;
+            document.getElementById("resultadoClique").textContent =
+                "🔥 Clique o mais rápido que puder!";
 
-            if (tempoClique <= 0) {
+            clearInterval(intervaloClique);
 
-                clearInterval(intervaloClique);
-                intervaloClique = null;
+            intervaloClique = setInterval(() => {
 
-                $("btnClicar").disabled = true;
-                $("btnIniciarClique").disabled = false;
+                tempoClique--;
 
-                $("resultadoClique").innerHTML =
-                    `<strong>⏰ Acabou!</strong>
-                     Você fez <strong>${totalCliques}</strong> cliques!`;
-            }
+                document.getElementById("tempoClique").textContent =
+                    tempoClique;
 
-        }, 1000);
-    });
+                if (tempoClique <= 0) {
 
-    $("btnClicar")?.addEventListener("click", () => {
+                    clearInterval(intervaloClique);
 
-        if (!intervaloClique) return;
+                    btnClicar.disabled = true;
+                    btnIniciarClique.disabled = false;
 
-        totalCliques++;
+                    document.getElementById("resultadoClique").textContent =
+                        `⏰ Fim! Você conseguiu ${totalCliques} cliques.`;
+                }
 
-        $("totalCliques").textContent =
-            totalCliques;
-    });
+            }, 1000);
+        });
+    }
+
+    if (btnClicar) {
+
+        btnClicar.addEventListener("click", () => {
+
+            if (btnClicar.disabled) return;
+
+            totalCliques++;
+
+            document.getElementById("totalCliques").textContent =
+                totalCliques;
+        });
+    }
 
 
     /* =====================================================
@@ -1372,53 +1389,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const perguntasQuiz = [
         {
-            pergunta: "Qual linguagem é executada diretamente no navegador?",
-            opcoes: ["JavaScript", "Python", "C++", "Java"],
+            pergunta: "Qual linguagem é usada para tornar páginas web interativas?",
+            opcoes: ["HTML", "CSS", "JavaScript", "SQL"],
+            correta: 2
+        },
+        {
+            pergunta: "Qual comando mostra uma mensagem no console?",
+            opcoes: ["console.log()", "print()", "echo()", "write()"],
             correta: 0
         },
         {
-            pergunta: "Qual comando mostra algo no console?",
-            opcoes: ["print()", "console.log()", "echo()", "write()"],
-            correta: 1
+            pergunta: "Qual palavra declara uma constante em JavaScript?",
+            opcoes: ["var", "let", "const", "constant"],
+            correta: 2
         },
         {
-            pergunta: "Qual símbolo representa uma constante em JavaScript?",
-            opcoes: ["const", "let", "var", "fixed"],
-            correta: 0
+            pergunta: "Qual símbolo representa igualdade estrita?",
+            opcoes: ["=", "==", "===", "!="],
+            correta: 2
         },
         {
             pergunta: "Qual método adiciona um item ao final de um array?",
-            opcoes: ["push()", "pop()", "shift()", "join()"],
-            correta: 0
-        },
-        {
-            pergunta: "Qual propriedade altera o conteúdo HTML de um elemento?",
-            opcoes: [
-                "innerHTML",
-                "htmlText",
-                "contentHTML",
-                "changeHTML"
-            ],
+            opcoes: ["push()", "add()", "insert()", "append()"],
             correta: 0
         }
     ];
 
-    let perguntaAtualQuiz = 0;
+    let perguntaAtual = 0;
     let pontosQuiz = 0;
-    let quizFinalizado = false;
 
     window.iniciarQuiz = function () {
 
-        perguntaAtualQuiz = 0;
+        perguntaAtual = 0;
         pontosQuiz = 0;
-        quizFinalizado = false;
 
-        $("pontosQuiz").textContent = "0";
-        $("numPergunta").textContent = "1";
+        document.getElementById("pontosQuiz").textContent =
+            "0";
 
-        $("resultadoQuiz").style.display = "none";
-
-        $("areaPergunta").style.display = "block";
+        document.getElementById("resultadoQuiz").style.display =
+            "none";
 
         mostrarPerguntaQuiz();
     };
@@ -1426,113 +1435,57 @@ document.addEventListener("DOMContentLoaded", () => {
     function mostrarPerguntaQuiz() {
 
         const pergunta =
-            perguntasQuiz[perguntaAtualQuiz];
+            perguntasQuiz[perguntaAtual];
 
-        if (!pergunta) {
-            finalizarQuiz();
-            return;
-        }
+        document.getElementById("numPergunta").textContent =
+            perguntaAtual + 1;
 
-        $("textoPergunta").textContent =
+        document.getElementById("textoPergunta").textContent =
             pergunta.pergunta;
 
-        $("opcoesQuiz").innerHTML = "";
+        const opcoes =
+            document.getElementById("opcoesQuiz");
+
+        opcoes.innerHTML = "";
 
         pergunta.opcoes.forEach((opcao, index) => {
 
-            const button = document.createElement("button");
+            const botao = document.createElement("button");
 
-            button.type = "button";
-            button.textContent = opcao;
+            botao.type = "button";
+            botao.textContent = opcao;
 
-            button.addEventListener(
-                "click",
-                () => responderQuiz(index)
-            );
+            botao.addEventListener("click", () => {
 
-            $("opcoesQuiz").appendChild(button);
+                if (index === pergunta.correta) {
+                    pontosQuiz++;
+                }
+
+                document.getElementById("pontosQuiz").textContent =
+                    pontosQuiz;
+
+                perguntaAtual++;
+
+                if (perguntaAtual >= perguntasQuiz.length) {
+
+                    const resultado =
+                        document.getElementById("resultadoQuiz");
+
+                    resultado.style.display = "block";
+
+                    resultado.textContent =
+                        `🎉 Quiz terminado! Você fez ${pontosQuiz}/5 pontos.`;
+
+                    opcoes.innerHTML = "";
+
+                } else {
+
+                    mostrarPerguntaQuiz();
+                }
+            });
+
+            opcoes.appendChild(botao);
         });
-    }
-
-    function responderQuiz(indice) {
-
-        if (quizFinalizado) return;
-
-        const pergunta =
-            perguntasQuiz[perguntaAtualQuiz];
-
-        const botoes =
-            $("opcoesQuiz").querySelectorAll("button");
-
-        botoes.forEach(button => {
-            button.disabled = true;
-        });
-
-        if (indice === pergunta.correta) {
-
-            pontosQuiz++;
-
-            botoes[indice].classList.add(
-                "quiz-correta"
-            );
-
-        } else {
-
-            botoes[indice].classList.add(
-                "quiz-errada"
-            );
-
-            botoes[pergunta.correta].classList.add(
-                "quiz-correta"
-            );
-        }
-
-        $("pontosQuiz").textContent =
-            pontosQuiz;
-
-        setTimeout(() => {
-
-            perguntaAtualQuiz++;
-
-            if (
-                perguntaAtualQuiz >=
-                perguntasQuiz.length
-            ) {
-
-                finalizarQuiz();
-
-            } else {
-
-                $("numPergunta").textContent =
-                    perguntaAtualQuiz + 1;
-
-                mostrarPerguntaQuiz();
-            }
-
-        }, 700);
-    }
-
-    function finalizarQuiz() {
-
-        quizFinalizado = true;
-
-        $("areaPergunta").style.display = "none";
-
-        $("resultadoQuiz").style.display = "block";
-
-        let mensagem;
-
-        if (pontosQuiz === 5) {
-            mensagem = "🏆 Perfeito! Você acertou tudo!";
-        } else if (pontosQuiz >= 3) {
-            mensagem = "👏 Muito bem! Bom resultado!";
-        } else {
-            mensagem = "💪 Continue estudando e tente novamente!";
-        }
-
-        $("resultadoQuiz").innerHTML =
-            `${mensagem}<br>
-             Você fez <strong>${pontosQuiz}/5</strong> pontos.`;
     }
 
     iniciarQuiz();
@@ -1543,244 +1496,234 @@ document.addEventListener("DOMContentLoaded", () => {
        ===================================================== */
 
     let tamanhoVelha = 3;
-    let vencerVelha = 3;
     let tabuleiroVelha = [];
-    let jogadorAtualVelha = "X";
-    let jogoVelhaAtivo = false;
-    let modoVelha = "pc";
+    let jogadorAtual = "X";
+    let jogoAtivo = false;
     let simboloJogador = "X";
-    let simboloAdversario = "O";
-    let dificuldadeVelha = "facil";
-
-
-    function configurarVelha() {
-
-        tamanhoVelha =
-            Number($("tamanhoTabuleiro").value);
-
-        vencerVelha =
-            Number($("qtdParaGanhar").value);
-
-        modoVelha =
-            $("modoJogo").value;
-
-        simboloJogador =
-            $("simboloJogador").value;
-
-        simboloAdversario =
-            simboloJogador === "X" ? "O" : "X";
-
-        dificuldadeVelha =
-            $("dificuldadeVelha").value;
-
-        /*
-         * Evita uma configuração impossível.
-         * Exemplo: tabuleiro 3x3 não pode exigir 5.
-         */
-
-        if (vencerVelha > tamanhoVelha) {
-            vencerVelha = tamanhoVelha;
-        }
-
-        $("simboloExibido").textContent =
-            simboloJogador;
-
-        $("simboloAdversario").textContent =
-            simboloAdversario;
-    }
-
+    let modoJogo = "pc";
+    let dificuldade = "facil";
+    let qtdGanhar = 3;
 
     window.iniciarJogoVelha = function () {
 
-        configurarVelha();
+        tamanhoVelha =
+            Number(document.getElementById("tamanhoTabuleiro").value);
+
+        qtdGanhar =
+            Number(document.getElementById("qtdParaGanhar").value);
+
+        modoJogo =
+            document.getElementById("modoJogo").value;
+
+        simboloJogador =
+            document.getElementById("simboloJogador").value;
+
+        dificuldade =
+            document.getElementById("dificuldadeVelha").value;
+
+        if (qtdGanhar > tamanhoVelha) {
+            alert(
+                "A quantidade para ganhar não pode ser maior que o tamanho do tabuleiro."
+            );
+            return;
+        }
+
+        jogadorAtual = "X";
+        jogoAtivo = true;
 
         tabuleiroVelha =
             Array(tamanhoVelha * tamanhoVelha).fill("");
 
-        jogoVelhaAtivo = true;
-
-        jogadorAtualVelha = "X";
-
+        atualizarInformacoesVelha();
         renderizarVelha();
 
-        atualizarStatusVelha();
-
-        $("resultadoVelha").textContent = "";
-
-        /*
-         * Se o jogador escolheu O contra PC,
-         * o computador começa.
-         */
-
-        if (
-            modoVelha === "pc" &&
-            simboloJogador !== "X"
-        ) {
-            setTimeout(jogadaPCVelha, 300);
-        }
+        document.getElementById("resultadoVelha").textContent =
+            "🎮 Jogo iniciado!";
     };
-
 
     function renderizarVelha() {
 
-        const tabuleiro = $("tabuleiroVelha");
+        const tabuleiro =
+            document.getElementById("tabuleiroVelha");
 
         if (!tabuleiro) return;
 
         tabuleiro.innerHTML = "";
 
+        tabuleiro.style.display = "grid";
         tabuleiro.style.gridTemplateColumns =
             `repeat(${tamanhoVelha}, 1fr)`;
 
-        tabuleiro.style.gridTemplateRows =
-            `repeat(${tamanhoVelha}, 1fr)`;
+        tabuleiro.style.gap = "5px";
 
         tabuleiroVelha.forEach((valor, index) => {
 
-            const celula =
-                document.createElement("button");
+            const botao = document.createElement("button");
 
-            celula.type = "button";
+            botao.type = "button";
+            botao.textContent = valor;
 
-            celula.className = "velha-celula";
+            botao.style.aspectRatio = "1";
+            botao.style.fontSize =
+                tamanhoVelha >= 6 ? "1rem" : "1.8rem";
 
-            celula.textContent = valor;
+            botao.addEventListener("click", () => {
+                jogarVelha(index);
+            });
 
-            celula.disabled =
-                !jogoVelhaAtivo ||
-                valor !== "" ||
-                (
-                    modoVelha === "pc" &&
-                    jogadorAtualVelha !== simboloJogador
-                );
-
-            celula.addEventListener(
-                "click",
-                () => jogarVelha(index)
-            );
-
-            tabuleiro.appendChild(celula);
+            tabuleiro.appendChild(botao);
         });
     }
 
-
     function jogarVelha(index) {
 
-        if (!jogoVelhaAtivo) return;
+        if (!jogoAtivo || tabuleiroVelha[index]) return;
 
-        if (tabuleiroVelha[index] !== "") return;
-
-        if (
-            modoVelha === "pc" &&
-            jogadorAtualVelha !== simboloJogador
-        ) {
+        if (modoJogo === "pc" && jogadorAtual !== simboloJogador) {
             return;
         }
 
-        tabuleiroVelha[index] =
-            jogadorAtualVelha;
-
-        verificarFimVelha();
-
-        if (!jogoVelhaAtivo) return;
-
-        trocarJogadorVelha();
+        tabuleiroVelha[index] = jogadorAtual;
 
         renderizarVelha();
 
-        atualizarStatusVelha();
+        if (verificarVitoriaVelha(jogadorAtual)) {
 
-        if (
-            modoVelha === "pc" &&
-            jogadorAtualVelha === simboloAdversario
-        ) {
-
-            setTimeout(jogadaPCVelha, 300);
-        }
-    }
-
-
-    function trocarJogadorVelha() {
-
-        jogadorAtualVelha =
-            jogadorAtualVelha === "X"
-                ? "O"
-                : "X";
-    }
-
-
-    function atualizarStatusVelha() {
-
-        if (!$("vezJogador")) return;
-
-        if (modoVelha === "pessoa") {
-
-            $("vezJogador").textContent =
-                `${jogadorAtualVelha} - Jogador`;
+            finalizarVelha(
+                `${jogadorAtual} venceu! 🎉`
+            );
 
             return;
         }
 
-        $("vezJogador").textContent =
-            jogadorAtualVelha === simboloJogador
-                ? `${jogadorAtualVelha} - Você`
-                : `${jogadorAtualVelha} - PC 🤖`;
+        if (tabuleiroVelha.every(casa => casa !== "")) {
+
+            finalizarVelha("🤝 Empate!");
+
+            return;
+        }
+
+        jogadorAtual =
+            jogadorAtual === "X" ? "O" : "X";
+
+        atualizarInformacoesVelha();
+
+        if (
+            modoJogo === "pc" &&
+            jogadorAtual !== simboloJogador &&
+            jogoAtivo
+        ) {
+
+            setTimeout(jogadaPC, 300);
+        }
     }
 
+    function jogadaPC() {
 
-    function verificarFimVelha() {
+        if (!jogoAtivo) return;
 
-        const vencedor =
-            verificarVencedorVelha(
-                jogadorAtualVelha
+        let movimentosDisponiveis =
+            tabuleiroVelha
+                .map((valor, index) => valor === "" ? index : null)
+                .filter(index => index !== null);
+
+        if (!movimentosDisponiveis.length) return;
+
+        let escolha;
+
+        if (dificuldade === "facil") {
+
+            escolha =
+                movimentosDisponiveis[
+                    Math.floor(
+                        Math.random() *
+                        movimentosDisponiveis.length
+                    )
+                ];
+
+        } else {
+
+            escolha =
+                encontrarMelhorMovimento(
+                    movimentosDisponiveis
+                );
+        }
+
+        tabuleiroVelha[escolha] = jogadorAtual;
+
+        renderizarVelha();
+
+        if (verificarVitoriaVelha(jogadorAtual)) {
+
+            finalizarVelha(
+                "🤖 O PC venceu!"
             );
 
-        if (vencedor) {
-
-            jogoVelhaAtivo = false;
-
-            renderizarVelha();
-
-            if (modoVelha === "pessoa") {
-
-                $("resultadoVelha").innerHTML =
-                    `<span class="sucesso">
-                        🎉 Jogador ${vencedor} venceu!
-                    </span>`;
-
-            } else {
-
-                const mensagem =
-                    vencedor === simboloJogador
-                        ? "🎉 Você venceu!"
-                        : "🤖 O PC venceu!";
-
-                $("resultadoVelha").innerHTML =
-                    `<span class="sucesso">${mensagem}</span>`;
-            }
-
-            return true;
+            return;
         }
 
-        if (!tabuleiroVelha.includes("")) {
+        if (tabuleiroVelha.every(casa => casa !== "")) {
 
-            jogoVelhaAtivo = false;
+            finalizarVelha("🤝 Empate!");
 
-            renderizarVelha();
-
-            $("resultadoVelha").innerHTML =
-                `<span class="aviso">
-                    🤝 Empate!
-                </span>`;
-
-            return true;
+            return;
         }
 
-        return false;
+        jogadorAtual =
+            jogadorAtual === "X" ? "O" : "X";
+
+        atualizarInformacoesVelha();
     }
 
+    function encontrarMelhorMovimento(movimentos) {
 
-    function verificarVencedorVelha(simbolo) {
+        const adversario =
+            simboloJogador === "X" ? "O" : "X";
+
+        for (const movimento of movimentos) {
+
+            tabuleiroVelha[movimento] = jogadorAtual;
+
+            if (verificarVitoriaVelha(jogadorAtual)) {
+
+                tabuleiroVelha[movimento] = "";
+
+                return movimento;
+            }
+
+            tabuleiroVelha[movimento] = "";
+        }
+
+        for (const movimento of movimentos) {
+
+            tabuleiroVelha[movimento] = adversario;
+
+            if (verificarVitoriaVelha(adversario)) {
+
+                tabuleiroVelha[movimento] = "";
+
+                return movimento;
+            }
+
+            tabuleiroVelha[movimento] = "";
+        }
+
+        if (dificuldade === "impossivel") {
+
+            const centro =
+                Math.floor(tabuleiroVelha.length / 2);
+
+            if (tabuleiroVelha[centro] === "") {
+                return centro;
+            }
+        }
+
+        return movimentos[
+            Math.floor(Math.random() * movimentos.length)
+        ];
+    }
+
+    function verificarVitoriaVelha(simbolo) {
 
         const direcoes = [
             [0, 1],
@@ -1793,46 +1736,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
             for (let coluna = 0; coluna < tamanhoVelha; coluna++) {
 
-                const indice =
-                    linha * tamanhoVelha + coluna;
-
-                if (tabuleiroVelha[indice] !== simbolo) {
-                    continue;
-                }
-
                 for (const [dl, dc] of direcoes) {
 
-                    let quantidade = 1;
+                    let contador = 0;
 
-                    let novaLinha = linha + dl;
-                    let novaColuna = coluna + dc;
+                    for (let i = 0; i < qtdGanhar; i++) {
 
-                    while (
-                        novaLinha >= 0 &&
-                        novaLinha < tamanhoVelha &&
-                        novaColuna >= 0 &&
-                        novaColuna < tamanhoVelha
-                    ) {
+                        const novaLinha =
+                            linha + dl * i;
 
-                        const novoIndice =
-                            novaLinha * tamanhoVelha +
-                            novaColuna;
+                        const novaColuna =
+                            coluna + dc * i;
 
                         if (
-                            tabuleiroVelha[novoIndice] !==
-                            simbolo
+                            novaLinha < 0 ||
+                            novaLinha >= tamanhoVelha ||
+                            novaColuna < 0 ||
+                            novaColuna >= tamanhoVelha
                         ) {
                             break;
                         }
 
-                        quantidade++;
+                        const index =
+                            novaLinha * tamanhoVelha +
+                            novaColuna;
 
-                        if (quantidade >= vencerVelha) {
-                            return true;
+                        if (tabuleiroVelha[index] === simbolo) {
+                            contador++;
+                        } else {
+                            break;
                         }
+                    }
 
-                        novaLinha += dl;
-                        novaColuna += dc;
+                    if (contador === qtdGanhar) {
+                        return true;
                     }
                 }
             }
@@ -1841,288 +1778,418 @@ document.addEventListener("DOMContentLoaded", () => {
         return false;
     }
 
+    function finalizarVelha(mensagem) {
 
-    /* =====================================================
-       IA DO JOGO DA VELHA
-       ===================================================== */
+        jogoAtivo = false;
 
-    function jogadaPCVelha() {
+        document.getElementById("resultadoVelha").textContent =
+            mensagem;
 
-        if (!jogoVelhaAtivo) return;
+        atualizarInformacoesVelha();
+    }
 
-        if (
-            modoVelha !== "pc" ||
-            jogadorAtualVelha !== simboloAdversario
-        ) {
-            return;
-        }
+    function atualizarInformacoesVelha() {
 
-        let indice;
+        const vez =
+            document.getElementById("vezJogador");
 
-        if (dificuldadeVelha === "facil") {
+        const exibido =
+            document.getElementById("simboloExibido");
 
-            indice = jogadaAleatoriaVelha();
+        const adversario =
+            document.getElementById("simboloAdversario");
 
-        } else if (dificuldadeVelha === "medio") {
+        if (!vez) return;
 
-            indice =
-                jogadaDefensivaVelha() ??
-                jogadaAleatoriaVelha();
+        if (!jogoAtivo) {
 
-        } else if (dificuldadeVelha === "dificil") {
-
-            indice =
-                jogadaVencedoraVelha() ??
-                jogadaDefensivaVelha() ??
-                jogadaAleatoriaVelha();
+            vez.textContent = "Jogo encerrado";
 
         } else {
 
-            /*
-             * No modo impossível:
-             * primeiro tenta vencer,
-             * depois bloquear,
-             * depois usa estratégia de posição.
-             */
-
-            indice =
-                jogadaVencedoraVelha() ??
-                jogadaDefensivaVelha() ??
-                jogadaEstrategicaVelha();
+            if (
+                modoJogo === "pc" &&
+                jogadorAtual !== simboloJogador
+            ) {
+                vez.textContent =
+                    `${jogadorAtual} - PC 🤖`;
+            } else {
+                vez.textContent =
+                    `${jogadorAtual} - Você`;
+            }
         }
 
-        if (indice === undefined || indice === null) {
-            return;
+        if (exibido) {
+            exibido.textContent = simboloJogador;
         }
 
-        tabuleiroVelha[indice] =
-            simboloAdversario;
-
-        verificarFimVelha();
-
-        if (!jogoVelhaAtivo) return;
-
-        trocarJogadorVelha();
-
-        renderizarVelha();
-
-        atualizarStatusVelha();
+        if (adversario) {
+            adversario.textContent =
+                simboloJogador === "X" ? "O" : "X";
+        }
     }
 
+    const modoJogoElemento =
+        document.getElementById("modoJogo");
 
-    function obterVaziosVelha() {
+    if (modoJogoElemento) {
 
-        const vazios = [];
+        modoJogoElemento.addEventListener("change", () => {
 
-        tabuleiroVelha.forEach((valor, index) => {
+            const area =
+                document.getElementById("areaDificuldade");
 
-            if (valor === "") {
-                vazios.push(index);
+            if (area) {
+                area.style.display =
+                    modoJogoElemento.value === "pc"
+                        ? "block"
+                        : "none";
             }
         });
-
-        return vazios;
     }
-
-
-    function jogadaAleatoriaVelha() {
-
-        const vazios =
-            obterVaziosVelha();
-
-        if (!vazios.length) return null;
-
-        return vazios[
-            Math.floor(Math.random() * vazios.length)
-        ];
-    }
-
-
-    function simularVitoriaVelha(indice, simbolo) {
-
-        const anterior =
-            tabuleiroVelha[indice];
-
-        tabuleiroVelha[indice] = simbolo;
-
-        const venceu =
-            verificarVencedorVelha(simbolo);
-
-        tabuleiroVelha[indice] = anterior;
-
-        return venceu;
-    }
-
-
-    function jogadaVencedoraVelha() {
-
-        const vazios =
-            obterVaziosVelha();
-
-        for (const indice of vazios) {
-
-            if (
-                simularVitoriaVelha(
-                    indice,
-                    simboloAdversario
-                )
-            ) {
-                return indice;
-            }
-        }
-
-        return null;
-    }
-
-
-    function jogadaDefensivaVelha() {
-
-        const vazios =
-            obterVaziosVelha();
-
-        for (const indice of vazios) {
-
-            if (
-                simularVitoriaVelha(
-                    indice,
-                    simboloJogador
-                )
-            ) {
-                return indice;
-            }
-        }
-
-        return null;
-    }
-
-
-    function jogadaEstrategicaVelha() {
-
-        const vazios =
-            obterVaziosVelha();
-
-        if (!vazios.length) return null;
-
-        /*
-         * Centro
-         */
-
-        const centro =
-            Math.floor(
-                (tamanhoVelha * tamanhoVelha) / 2
-            );
-
-        if (tabuleiroVelha[centro] === "") {
-            return centro;
-        }
-
-        /*
-         * Cantos
-         */
-
-        const cantos = [
-            0,
-            tamanhoVelha - 1,
-            tamanhoVelha * (tamanhoVelha - 1),
-            tamanhoVelha * tamanhoVelha - 1
-        ];
-
-        const cantosDisponiveis =
-            cantos.filter(
-                indice =>
-                    indice >= 0 &&
-                    indice < tabuleiroVelha.length &&
-                    tabuleiroVelha[indice] === ""
-            );
-
-        if (cantosDisponiveis.length) {
-
-            return cantosDisponiveis[
-                Math.floor(
-                    Math.random() *
-                    cantosDisponiveis.length
-                )
-            ];
-        }
-
-        return jogadaAleatoriaVelha();
-    }
-
-
-    /*
-     * Atualiza a área de dificuldade quando
-     * o jogador escolhe "Contra Pessoa".
-     */
-
-    $("modoJogo")?.addEventListener("change", () => {
-
-        const contraPC =
-            $("modoJogo").value === "pc";
-
-        $("areaDificuldade").style.display =
-            contraPC ? "block" : "none";
-    });
-
-    /*
-     * Ajusta automaticamente as opções de vitória
-     * de acordo com o tamanho do tabuleiro.
-     */
-
-    $("tamanhoTabuleiro")?.addEventListener(
-        "change",
-        () => {
-
-            const tamanho =
-                Number($("tamanhoTabuleiro").value);
-
-            const select =
-                $("qtdParaGanhar");
-
-            [...select.options].forEach(option => {
-
-                option.disabled =
-                    Number(option.value) > tamanho;
-            });
-
-            if (
-                Number(select.value) > tamanho
-            ) {
-                select.value =
-                    String(tamanho);
-            }
-        }
-    );
-
-    /*
-     * Configuração inicial.
-     */
-
-    $("modoJogo")?.dispatchEvent(
-        new Event("change")
-    );
-
-    $("tamanhoTabuleiro")?.dispatchEvent(
-        new Event("change")
-    );
 
     iniciarJogoVelha();
 
 
     /* =====================================================
-       BUSCA GERAL DOS DESAFIOS
+       27. GERADOR DE QR CODE
        ===================================================== */
 
-    $("busca-listas")?.addEventListener(
-        "input",
-        function () {
+    let qrAtual = null;
 
-            const termo =
-                this.value.toLowerCase().trim();
+    const btnGerarQR =
+        document.getElementById("btnGerarQR");
+
+    const btnBaixarQR =
+        document.getElementById("btnBaixarQR");
+
+    const btnLimparQR =
+        document.getElementById("btnLimparQR");
+
+    const tipoQr =
+        document.getElementById("tipoQr");
+
+    const qrConteudo =
+        document.getElementById("qrConteudo");
+
+    const qrCor =
+        document.getElementById("qrCor");
+
+    const qrFundo =
+        document.getElementById("qrFundo");
+
+    const qrTamanho =
+        document.getElementById("qrTamanho");
+
+    const qrTamanhoValor =
+        document.getElementById("qrTamanhoValor");
+
+    const qrLogo =
+        document.getElementById("qrLogo");
+
+    const qrResultado =
+        document.getElementById("qrResultado");
+
+    if (qrTamanho && qrTamanhoValor) {
+
+        qrTamanho.addEventListener("input", () => {
+
+            qrTamanhoValor.textContent =
+                `${qrTamanho.value}px`;
+        });
+    }
+
+    if (tipoQr && qrConteudo) {
+
+        tipoQr.addEventListener("change", () => {
+
+            switch (tipoQr.value) {
+
+                case "link":
+                    qrConteudo.placeholder =
+                        "https://exemplo.com";
+                    break;
+
+                case "whatsapp":
+                    qrConteudo.placeholder =
+                        "5511999999999";
+                    break;
+
+                case "email":
+                    qrConteudo.placeholder =
+                        "exemplo@email.com";
+                    break;
+
+                case "wifi":
+                    qrConteudo.placeholder =
+                        "SSID:MinhaRede | Senha:12345678";
+                    break;
+
+                case "imagem":
+                    qrConteudo.placeholder =
+                        "https://exemplo.com/imagem.jpg";
+                    break;
+
+                default:
+                    qrConteudo.placeholder =
+                        "Digite qualquer texto ou cole um link...";
+            }
+        });
+    }
+
+    function prepararConteudoQR() {
+
+        const tipo = tipoQr.value;
+        const valor = qrConteudo.value.trim();
+
+        if (!valor) return "";
+
+        switch (tipo) {
+
+            case "link":
+
+                if (
+                    !valor.startsWith("http://") &&
+                    !valor.startsWith("https://")
+                ) {
+                    return `https://${valor}`;
+                }
+
+                return valor;
+
+            case "whatsapp": {
+
+                const numero =
+                    valor.replace(/\D/g, "");
+
+                return `https://wa.me/${numero}`;
+            }
+
+            case "email":
+
+                return `mailto:${valor}`;
+
+            case "imagem":
+
+                return valor;
+
+            case "wifi": {
+
+                const partes =
+                    valor.split("|");
+
+                let ssid = "";
+                let senha = "";
+
+                partes.forEach(parte => {
+
+                    const [chave, ...resto] =
+                        parte.split(":");
+
+                    const valorParte =
+                        resto.join(":");
+
+                    if (
+                        chave &&
+                        chave.trim().toLowerCase() === "ssid"
+                    ) {
+                        ssid = valorParte;
+                    }
+
+                    if (
+                        chave &&
+                        chave.trim().toLowerCase() === "senha"
+                    ) {
+                        senha = valorParte;
+                    }
+                });
+
+                if (ssid) {
+                    return `WIFI:T:WPA;S:${ssid};P:${senha};;`;
+                }
+
+                return valor;
+            }
+
+            default:
+                return valor;
+        }
+    }
+
+    if (btnGerarQR) {
+
+        btnGerarQR.addEventListener("click", () => {
+
+            if (typeof QRCode === "undefined") {
+
+                alert(
+                    "A biblioteca do QR Code não foi carregada."
+                );
+
+                return;
+            }
+
+            const conteudo =
+                prepararConteudoQR();
+
+            if (!conteudo) {
+
+                alert(
+                    "Digite algum conteúdo para gerar o QR Code."
+                );
+
+                return;
+            }
+
+            qrResultado.innerHTML = "";
+
+            const tamanho =
+                Number(qrTamanho.value);
+
+            const logoArquivo =
+                qrLogo.files[0];
+
+            function criarQR(logoData = null) {
+
+                const opcoes = {
+
+                    text: conteudo,
+
+                    width: tamanho,
+                    height: tamanho,
+
+                    colorDark: qrCor.value,
+                    colorLight: qrFundo.value,
+
+                    correctLevel:
+                        QRCode.CorrectLevel.H,
+
+                    quietZone: 10,
+
+                    quietZoneColor: qrFundo.value
+                };
+
+                if (logoData) {
+
+                    opcoes.logo =
+                        logoData;
+
+                    opcoes.logoWidth =
+                        Math.round(tamanho * 0.18);
+
+                    opcoes.logoHeight =
+                        Math.round(tamanho * 0.18);
+
+                    opcoes.logoBackgroundTransparent =
+                        false;
+
+                    opcoes.logoBackgroundColor =
+                        qrFundo.value;
+                }
+
+                qrAtual =
+                    new QRCode(
+                        qrResultado,
+                        opcoes
+                    );
+            }
+
+            if (logoArquivo) {
+
+                const reader =
+                    new FileReader();
+
+                reader.onload = (event) => {
+                    criarQR(event.target.result);
+                };
+
+                reader.readAsDataURL(logoArquivo);
+
+            } else {
+
+                criarQR();
+            }
+        });
+    }
+
+    if (btnBaixarQR) {
+
+        btnBaixarQR.addEventListener("click", () => {
+
+            const canvas =
+                qrResultado.querySelector("canvas");
+
+            const imagem =
+                qrResultado.querySelector("img");
+
+            let url = "";
+
+            if (canvas) {
+                url = canvas.toDataURL("image/png");
+            } else if (imagem) {
+                url = imagem.src;
+            }
+
+            if (!url) {
+
+                alert(
+                    "Gere um QR Code primeiro."
+                );
+
+                return;
+            }
+
+            const link =
+                document.createElement("a");
+
+            link.download =
+                "qrcode-guilherme.png";
+
+            link.href = url;
+
+            document.body.appendChild(link);
+
+            link.click();
+
+            link.remove();
+        });
+    }
+
+    if (btnLimparQR) {
+
+        btnLimparQR.addEventListener("click", () => {
+
+            qrResultado.innerHTML = "";
+
+            if (qrConteudo) {
+                qrConteudo.value = "";
+            }
+
+            if (qrLogo) {
+                qrLogo.value = "";
+            }
+
+            qrAtual = null;
+        });
+    }
+
+
+    /* =====================================================
+       BUSCA DOS 27 DESAFIOS
+       ===================================================== */
+
+    const buscaListas =
+        document.getElementById("busca-listas");
+
+    if (buscaListas) {
+
+        buscaListas.addEventListener("input", () => {
+
+            const busca =
+                buscaListas.value.trim().toLowerCase();
 
             const cards =
-                document.querySelectorAll(
-                    ".main-content > .card"
-                );
+                document.querySelectorAll(".main-content > .card");
 
             cards.forEach(card => {
 
@@ -2135,80 +2202,159 @@ document.addEventListener("DOMContentLoaded", () => {
                     titulo.textContent.toLowerCase();
 
                 card.style.display =
-                    texto.includes(termo)
+                    texto.includes(busca)
                         ? ""
                         : "none";
             });
-        }
-    );
+        });
+    }
 
 
     /* =====================================================
        TEMA CLARO / ESCURO
        ===================================================== */
 
-    const themeToggle = $("theme-toggle");
-    const body = $("body-principal");
-    const themeMeta = $("theme-color-meta");
+    const themeToggle =
+        document.getElementById("theme-toggle");
+
+    const body =
+        document.getElementById("body-principal");
+
+    const themeMeta =
+        document.getElementById("theme-color-meta");
+
+    if (themeToggle && body) {
+
+        let tema =
+            localStorage.getItem("tema") || "escuro";
+
+        aplicarTema(tema);
+
+        themeToggle.addEventListener("click", () => {
+
+            tema =
+                tema === "escuro"
+                    ? "claro"
+                    : "escuro";
+
+            aplicarTema(tema);
+
+            localStorage.setItem(
+                "tema",
+                tema
+            );
+        });
+    }
 
     function aplicarTema(tema) {
 
-        const claro =
-            tema === "light";
+        if (tema === "claro") {
 
-        body.classList.toggle(
-            "light-theme",
-            claro
-        );
+            body.classList.add("tema-claro");
 
-        if (themeMeta) {
+            themeToggle.textContent = "☀️";
 
-            themeMeta.setAttribute(
-                "content",
-                claro ? "#f3f4f6" : "#111827"
-            );
-        }
+            if (themeMeta) {
+                themeMeta.setAttribute(
+                    "content",
+                    "#ffffff"
+                );
+            }
 
-        if (themeToggle) {
+        } else {
 
-            themeToggle.textContent =
-                claro ? "☀️" : "🌙";
+            body.classList.remove("tema-claro");
 
-            themeToggle.setAttribute(
-                "aria-label",
-                claro
-                    ? "Ativar tema escuro"
-                    : "Ativar tema claro"
-            );
+            themeToggle.textContent = "🌙";
+
+            if (themeMeta) {
+                themeMeta.setAttribute(
+                    "content",
+                    "#1a1a1a"
+                );
+            }
         }
     }
 
-    const temaSalvo =
-        localStorage.getItem("tema");
 
-    if (temaSalvo) {
+    /* =====================================================
+       FUNÇÕES AUXILIARES
+       ===================================================== */
 
-        aplicarTema(temaSalvo);
+    function mostrarResultado(elemento, mensagem) {
 
-    } else {
+        let resultado =
+            elemento.parentElement.querySelector(
+                ".resultado-js"
+            );
 
-        aplicarTema("dark");
+        if (!resultado) {
+
+            resultado =
+                document.createElement("div");
+
+            resultado.className =
+                "resultado-js message-area";
+
+            resultado.style.marginTop =
+                "10px";
+
+            elemento.appendChild(resultado);
+        }
+
+        resultado.textContent =
+            mensagem;
     }
 
-    themeToggle?.addEventListener("click", () => {
+    function formatarMoeda(valor) {
 
-        const novoTema =
-            body.classList.contains("light-theme")
-                ? "dark"
-                : "light";
-
-        localStorage.setItem(
-            "tema",
-            novoTema
+        return Number(valor).toLocaleString(
+            "pt-BR",
+            {
+                style: "currency",
+                currency: "BRL"
+            }
         );
+    }
 
-        aplicarTema(novoTema);
-    });
+    function embaralhar(array) {
+
+        const novoArray =
+            [...array];
+
+        for (
+            let i = novoArray.length - 1;
+            i > 0;
+            i--
+        ) {
+
+            const j =
+                Math.floor(
+                    Math.random() * (i + 1)
+                );
+
+            [
+                novoArray[i],
+                novoArray[j]
+            ] = [
+                novoArray[j],
+                novoArray[i]
+            ];
+        }
+
+        return novoArray;
+    }
+
+    function escapeHTML(texto) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent =
+            texto;
+
+        return div.innerHTML;
+    }
 
 
     /* =====================================================
