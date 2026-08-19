@@ -1,608 +1,1852 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#1a1a1a" id="theme-color-meta"> 
-    <title>Desafios JS Interativos</title>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#1a1a1a"
+        id="theme-color-meta"
+    >
+
+    <meta
+        name="description"
+        content="Guilherme - Mini-Aplicações JavaScript Interativas"
+    >
+
+    <title>Guilherme - Mini-Aplicações JS</title>
+
+    <!-- CSS PRINCIPAL -->
     <link rel="stylesheet" href="estilo.css">
-    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
-    
+
+    <!-- FONTES -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lobster&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- ESTILO DOS ERROS -->
     <style>
         .error-message {
-            color: #dc3545; 
+            color: #dc3545;
             font-size: 0.9em;
             margin-top: -5px;
             margin-bottom: 5px;
-            display: block; 
+            display: block;
         }
     </style>
+
 </head>
+
+
 <body id="body-principal">
+
+
+    <!-- =====================================================
+         CABEÇALHO
+         ===================================================== -->
+
     <header class="header-container">
-        <button id="theme-toggle" aria-label="Alternar Tema Claro/Escuro" class="theme-toggle-btn">
+
+        <button
+            id="theme-toggle"
+            aria-label="Alternar Tema Claro/Escuro"
+            class="theme-toggle-btn"
+            type="button"
+        >
             🌙
         </button>
-        <h1 class="imagem">GUILHERME - Mini-Aplicações JS</h1>
+
+        <h1 class="imagem">
+            GUILHERME - Mini-Aplicações JS
+        </h1>
+
     </header>
+
+
+    <!-- =====================================================
+         CONTEÚDO PRINCIPAL
+         ===================================================== -->
 
     <main class="main-content">
 
-        <input type="text" id="busca-listas" placeholder="Buscar desafios por título (Ex: IMC, Senha, Média)..." style="width: 95%; margin: 10px auto; display: block; padding: 10px; border-radius: 5px; border: 1px solid var(--color-border); box-sizing: border-box;"> 
-        
-        <div class="card">
-            <h3>1. Dia da Semana</h3>
-            <form id="form">
-                <label for="day">Qual é o dia da semana?</label>
-                <input type="text" id="day" name="day" placeholder="Ex: Sábado">
-                <button type="submit">Verificar</button>
-            </form>
-        </div>
+
+        <!-- BUSCA -->
+        <input
+            type="text"
+            id="busca-listas"
+            placeholder="Buscar desafios por título (Ex: IMC, Senha, Média)..."
+            style="
+                width: 95%;
+                margin: 10px auto;
+                display: block;
+                padding: 10px;
+                border-radius: 5px;
+                border: 1px solid var(--color-border);
+                box-sizing: border-box;
+            "
+        >
+
+
+        <!-- =================================================
+             1. DIA DA SEMANA
+             ================================================= -->
 
         <div class="card">
-            <h3>2. Positivo ou Negativo</h3>
-            <form id="numberForm">
-                <label for="number">Digite um número:</label>
-                <input type="number" id="number" name="number" placeholder="Ex: -5 ou 10">
-                <button type="submit">Verificar</button>
+
+            <h3>1. Dia da Semana</h3>
+
+            <form id="form">
+
+                <label for="day">
+                    Qual é o dia da semana?
+                </label>
+
+                <input
+                    type="text"
+                    id="day"
+                    name="day"
+                    placeholder="Ex: Sábado"
+                >
+
+                <button type="submit">
+                    Verificar
+                </button>
+
             </form>
+
         </div>
+
+
+        <!-- =================================================
+             2. POSITIVO OU NEGATIVO
+             ================================================= -->
+
+        <div class="card">
+
+            <h3>2. Positivo ou Negativo</h3>
+
+            <form id="numberForm">
+
+                <label for="number">
+                    Digite um número:
+                </label>
+
+                <input
+                    type="number"
+                    id="number"
+                    name="number"
+                    placeholder="Ex: -5 ou 10"
+                >
+
+                <button type="submit">
+                    Verificar
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- =================================================
+             3. JOGO DE ADIVINHAÇÃO
+             ================================================= -->
 
         <div class="card game-card">
+
             <h3>3. Jogo de Adivinhação</h3>
-            <p>Tente adivinhar o número entre 1 a 100</p>
-            <input type="number" id="palpite" min="1" max="100" placeholder="Seu palpite" />
+
+            <p>
+                Tente adivinhar o número entre 1 a 100.
+            </p>
+
+            <input
+                type="number"
+                id="palpite"
+                min="1"
+                max="100"
+                placeholder="Seu palpite"
+            >
+
             <div class="game-buttons">
-                <button onclick="adivinhar()" id="btnAdivinhar">Adivinhar</button>
-                <button onclick="reiniciar()">Reiniciar</button>
+
+                <button
+                    type="button"
+                    id="btnAdivinhar"
+                >
+                    Adivinhar
+                </button>
+
+                <button
+                    type="button"
+                    id="btnReiniciarAdivinhacao"
+                >
+                    Reiniciar
+                </button>
+
             </div>
-            <p id="mensagem" class="message-area"></p>
+
+            <p
+                id="mensagem"
+                class="message-area"
+            ></p>
+
         </div>
 
+
+        <!-- =================================================
+             4. SALDO ATUAL
+             ================================================= -->
+
         <div class="card">
+
             <h3>4. Saldo Atual</h3>
+
             <form id="balanceForm">
-                <label for="balance">Digite seu saldo:</label>
-                <input type="number" id="balance" name="balance" step="0.01" placeholder="Ex: 1500.50">
-                <button type="submit">Mostrar Saldo</button>
+
+                <label for="balance">
+                    Digite seu saldo:
+                </label>
+
+                <input
+                    type="number"
+                    id="balance"
+                    name="balance"
+                    step="0.01"
+                    placeholder="Ex: 1500.50"
+                >
+
+                <button type="submit">
+                    Mostrar Saldo
+                </button>
+
             </form>
+
         </div>
 
+
+        <!-- =================================================
+             5. BOAS-VINDAS
+             ================================================= -->
+
         <div class="card">
+
             <h3>5. Boas-vindas</h3>
+
             <form id="nameForm">
-                <label for="name">Digite seu nome:</label>
-                <input type="text" id="name" name="name" placeholder="Seu nome aqui">
-                <button type="submit">Saudar</button>
+
+                <label for="name">
+                    Digite seu nome:
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Seu nome aqui"
+                >
+
+                <button type="submit">
+                    Saudar
+                </button>
+
             </form>
+
         </div>
+
+
+        <!-- =================================================
+             6. IMC
+             ================================================= -->
 
         <div class="card imc-card">
+
             <h3>6. Cálculo de IMC</h3>
+
             <form id="imcForm">
-                <label for="peso">Peso (kg):</label>
-                <input type="number" id="peso" required step="0.1" placeholder="Ex: 70.5">
 
-                <label for="altura">Altura (m):</label>
-                <input type="number" id="altura" required step="0.01" placeholder="Ex: 1.75">
+                <label for="peso">
+                    Peso (kg):
+                </label>
 
-                <div class="game-buttons" style="margin-top: 5px;">
-                    <button type="submit" id="btnCalcularImc">Calcular IMC</button>
-                    <button type="button" onclick="limparImc()">Limpar</button> 
+                <input
+                    type="number"
+                    id="peso"
+                    required
+                    step="0.1"
+                    min="0"
+                    placeholder="Ex: 70.5"
+                >
+
+                <label for="altura">
+                    Altura (m):
+                </label>
+
+                <input
+                    type="number"
+                    id="altura"
+                    required
+                    step="0.01"
+                    min="0"
+                    placeholder="Ex: 1.75"
+                >
+
+                <div
+                    class="game-buttons"
+                    style="margin-top: 5px;"
+                >
+
+                    <button
+                        type="submit"
+                        id="btnCalcularImc"
+                    >
+                        Calcular IMC
+                    </button>
+
+                    <button
+                        type="button"
+                        id="btnLimparImc"
+                    >
+                        Limpar
+                    </button>
+
                 </div>
+
             </form>
 
-            <div id="imcResultado" class="message-area" style="margin-top: 15px;">
-            </div>
+            <div
+                id="imcResultado"
+                class="message-area"
+                style="margin-top: 15px;"
+            ></div>
+
         </div>
 
+
+        <!-- =================================================
+             7. CONVERSOR C/F
+             ================================================= -->
+
         <div class="card">
+
             <h3>7. Conversor C/F</h3>
+
             <form id="tempForm">
-                <label for="celsius">Temperatura em Celsius (°C):</label>
-                <input type="number" id="celsius" step="0.1" placeholder="Ex: 25">
-                <button type="submit">Converter para °F</button>
+
+                <label for="celsius">
+                    Temperatura em Celsius (°C):
+                </label>
+
+                <input
+                    type="number"
+                    id="celsius"
+                    step="0.1"
+                    placeholder="Ex: 25"
+                >
+
+                <button type="submit">
+                    Converter para °F
+                </button>
+
             </form>
-            <div id="tempResultado" class="message-area" style="margin-top: 15px;"></div>
+
+            <div
+                id="tempResultado"
+                class="message-area"
+                style="margin-top: 15px;"
+            ></div>
+
         </div>
 
+
+        <!-- =================================================
+             8. CONTADOR DE CLIQUES
+             ================================================= -->
+
         <div class="card">
+
             <h3>8. Contador de Cliques</h3>
-            <p>Cliques: <strong id="contadorCliques">0</strong></p>
-            <div class="game-buttons">
-                <button id="btnContador">Contar Clique</button>
-                <button id="btnResetContador" style="background-color: #dc3545;">Zerar</button>
-            </div>
-        </div>
 
-        <div class="card">
-            <h3>9. Lista de Tarefas Filtrável</h3>
-            
-            <input type="text" id="filtroTodo" placeholder="Pesquisar tarefas..." style="margin-bottom: 10px;">
-
-            <form id="todoForm" class="game-buttons">
-                <input type="text" id="todoInput" placeholder="Nova tarefa..." style="flex-grow: 1;">
-                <button type="submit">Adicionar</button>
-            </form>
-            <ul id="todoList" style="list-style: none; padding: 0; margin-top: 20px;">
-                </ul>
-        </div>
-        
-        <div class="card">
-            <h3>10. Contador Regressivo</h3>
-            <label for="minutos">Minutos:</label>
-            <input type="number" id="minutos" value="1" min="0" max="60" style="width: 50px; display: inline-block;">
-            <label for="segundos" style="margin-left: 10px;">Segundos:</label>
-            <input type="number" id="segundos" value="0" min="0" max="59" style="width: 50px; display: inline-block;">
-            
-            <div class="game-buttons" style="margin-top: 10px;">
-                <button id="btnIniciarTimer">Iniciar</button>
-                <button id="btnPararTimer" disabled>Parar</button>
-                <button id="btnResetTimer" style="background-color: #dc3545;">Resetar</button>
-            </div>
-            <h4 id="timerDisplay" style="margin-top: 15px; font-size: 1.5rem; text-align: center;">01:00</h4>
-        </div>
-
-        <div class="card">
-            <h3>11. Gerador de Senhas</h3>
-            <div style="margin-bottom: 10px;">
-                <label for="tamanhoSenha">Tamanho da Senha (4-20):</label>
-                <input type="number" id="tamanhoSenha" value="12" min="4" max="20" style="width: 60px;">
-            </div>
-            <div style="margin-bottom: 15px;">
-                <input type="checkbox" id="incluirMaiusculas" checked>
-                <label for="incluirMaiusculas">Maiúsculas (A-Z)</label><br>
-                <input type="checkbox" id="incluirNumeros" checked>
-                <label for="incluirNumeros">Números (0-9)</label><br>
-                <input type="checkbox" id="incluirSimbolos">
-                <label for="incluirSimbolos">Símbolos (!@#$)</label>
-            </div>
-            <button id="btnGerarSenha">Gerar Senha</button>
-            <input type="text" id="senhaGerada" readonly placeholder="Senha aparecerá aqui" style="margin-top: 10px;">
-            <button id="btnCopiarSenha" style="background-color: var(--color-text-secondary);">Copiar</button>
-        </div>
-
-        <div class="card">
-            <h3>12. Calculadora de Gorjeta</h3>
-            <label for="contaValor">Valor da Conta (R$):</label>
-            <input type="number" id="contaValor" step="0.01" value="50.00" min="0" oninput="calcularGorjeta()">
-
-            <label for="gorjetaPorcentagem" style="margin-top: 10px;">Gorjeta (%):</label>
-            <input type="range" id="gorjetaPorcentagem" min="0" max="30" value="10" oninput="this.nextElementSibling.value=this.value+'%'; calcularGorjeta();">
-            <output style="font-weight: bold; margin-bottom: 10px;">10%</output>
-
-            <label for="numPessoas" style="margin-top: 10px;">Número de Pessoas:</label>
-            <input type="number" id="numPessoas" value="1" min="1" oninput="calcularGorjeta()">
-            
-            <button id="btnCalcularGorjeta" style="margin-top: 15px;">Calcular (Automático)</button>
-
-            <div id="gorjetaResultado" class="message-area" style="margin-top: 15px;">
-                </div>
-        </div>
-        
-        <div class="card">
-            <h3>13. Editor de Estilos</h3>
-            <label for="corTexto">Cor do Texto:</label>
-            <input type="color" id="corTexto" value="#333333" style="width: 100%;">
-
-            <label for="tamanhoFonte" style="margin-top: 10px;">Tamanho da Fonte:</label>
-            <input type="range" id="tamanhoFonte" min="12" max="48" value="18" oninput="this.nextElementSibling.value=this.value+'px'">
-            <output style="font-weight: bold; margin-bottom: 15px;">18px</output>
-
-            <p id="blocoExemplo" style="margin-top: 15px; font-size: 18px; color: #333333; padding: 10px; border: 1px dashed var(--color-border);">
-                Este é o texto de exemplo que você pode editar.
+            <p>
+                Cliques:
+                <strong id="contadorCliques">0</strong>
             </p>
+
+            <div class="game-buttons">
+
+                <button
+                    type="button"
+                    id="btnContador"
+                >
+                    Contar Clique
+                </button>
+
+                <button
+                    type="button"
+                    id="btnResetContador"
+                    style="background-color: #dc3545;"
+                >
+                    Zerar
+                </button>
+
+            </div>
+
         </div>
-        
+
+
+        <!-- =================================================
+             9. LISTA DE TAREFAS
+             ================================================= -->
+
         <div class="card">
-            <h3>14. Validador de Login</h3>
-            <form id="loginForm">
-                <label for="loginEmail">Email:</label>
-                <input type="email" id="loginEmail" placeholder="seuemail@exemplo.com">
-                <span id="emailError" class="error-message"></span>
 
-                <label for="loginSenha">Senha (min. 6 caracteres):</label>
-                <input type="password" id="loginSenha" placeholder="********">
-                <span id="senhaError" class="error-message"></span>
+            <h3>9. Lista de Tarefas Filtrável</h3>
 
-                <button type="submit" style="margin-top: 15px;">Entrar</button>
+            <input
+                type="text"
+                id="filtroTodo"
+                placeholder="Pesquisar tarefas..."
+                style="margin-bottom: 10px;"
+            >
+
+            <form
+                id="todoForm"
+                class="game-buttons"
+            >
+
+                <input
+                    type="text"
+                    id="todoInput"
+                    placeholder="Nova tarefa..."
+                    style="flex-grow: 1;"
+                >
+
+                <button type="submit">
+                    Adicionar
+                </button>
+
             </form>
+
+            <ul
+                id="todoList"
+                style="
+                    list-style: none;
+                    padding: 0;
+                    margin-top: 20px;
+                "
+            ></ul>
+
         </div>
+
+
+        <!-- =================================================
+             10. CONTADOR REGRESSIVO
+             ================================================= -->
 
         <div class="card">
-            <h3>15. Catálogo de Produtos Filtrável</h3>
-            <input type="text" id="filtroProduto" placeholder="Pesquisar produto por nome..." style="margin-bottom: 15px;">
-            <ul id="listaProdutos" style="list-style: disc; padding-left: 20px;">
-                </ul>
-        </div>
-        
-        <div class="card">
-            <h3>16. Calculadora de Média</h3>
-            <form id="notaForm" class="game-buttons">
-                <input type="number" id="notaInput" placeholder="Digite uma nota (0-10)" min="0" max="10" step="0.5" style="flex-grow: 1;">
-                <button type="submit">Adicionar Nota</button>
-            </form>
-            
-            <div style="margin-top: 15px;">
-                <p>Notas Inseridas:</p>
-                <ul id="listaNotas" style="list-style: none; padding: 0;">
-                    </ul>
-                <h4 style="margin-top: 10px;">Média Atual: <strong id="mediaResultado">0.0</strong></h4>
-            </div>
-        </div>
 
-        <div class="card">
-            <h3>17. Gerador de Cores RGB</h3>
-            <div id="corBox" style="height: 100px; border: 1px solid var(--color-border); background-color: #ffffff; margin-bottom: 15px; border-radius: 5px; display: flex; align-items: center; justify-content: center;">
-                <p id="codigoCor" style="font-weight: bold; color: #333333;">RGB(255, 255, 255)</p>
-            </div>
-            <button id="btnGerarCor">Gerar Nova Cor</button>
-        </div>
-        
-        <div class="card">
-            <h3>18. Conversor de Unidades</h3>
-            <label for="tipoConversao">Escolha a Conversão:</label>
-            <select id="tipoConversao" style="margin-bottom: 15px;">
-                <option value="km_mi">Quilômetros para Milhas</option>
-                <option value="l_gal">Litros para Galões</option>
-            </select>
+            <h3>10. Contador Regressivo</h3>
 
-            <label for="valorOriginal">Valor a Converter:</label>
-            <input type="number" id="valorOriginal" value="10" step="0.1">
-
-            <button id="btnConverterUnidade" style="margin-top: 15px;">Converter</button>
-
-            <div id="conversaoResultado" class="message-area" style="margin-top: 15px;">
-                Resultado aparecerá aqui.
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>19. Contador de Texto</h3>
-            <textarea id="textoInput" placeholder="Comece a digitar aqui..." rows="5" style="width: 100%; box-sizing: border-box;"></textarea>
-
- <div style="margin-top: 10px;">
-                <p>Caracteres: <strong id="contadorCaracteres">0</strong></p>
-                <p>Palavras: <strong id="contadorPalavras">0</strong></p>
-            </div>
-        </div>
-
-<div class="card">
-    <h3>20. Calculadora de Mercado</h3>
-    
-    <form id="mercadoForm" class="game-buttons">
-        <input type="text" id="produtoNome" placeholder="Nome do produto" style="flex-grow: 1;">
-        <input type="number" id="produtoQtd" placeholder="Qtd" min="1" value="1" style="width: 70px;">
-        <input type="number" id="produtoValor" placeholder="Valor R$" min="0" step="0.01" style="width: 100px;">
-        <button type="submit">Adicionar</button>
-    </form>
-
-    <ul id="listaMercado" style="list-style: none; padding: 0; margin-top: 15px;">
-        </ul>
-
-    <div style="margin-top: 15px;">
-        <label for="descontoMercado">Desconto (%):</label>
-        <input type="number" id="descontoMercado" value="0" min="0" max="100" step="1" oninput="calcularTotalMercado()">
-    </div>
-
-    <div id="totalMercado" class="message-area" style="margin-top: 15px;">
-        Subtotal: R$ 0,00<br>
-        Desconto: R$ 0,00<br>
-        <strong>Total: R$ 0,00</strong>
-    </div>
-</div>
-            
-<div class="card">
-    <h3>21. Rateio de Contas</h3>
-    
-    <form id="rateioForm" class="game-buttons">
-        <input type="text" id="nomePessoa" placeholder="Nome da pessoa" style="flex-grow: 1;">
-        <input type="number" id="porcentagemPessoa" placeholder="% Uso" min="0" max="100" step="1" value="25" style="width: 90px;">
-        <button type="submit">Adicionar</button>
-    </form>
-
-    <div style="margin-top: 10px;">
-        <label for="valorConta">Valor Total da Conta (R$):</label>
-        <input type="number" id="valorConta" step="0.01" value="200.00" min="0" oninput="calcularRateio()">
-    </div>
-
-    <ul id="listaPessoas" style="list-style: none; padding: 0; margin-top: 15px;">
-        </ul>
-
-    <div id="resultadoRateio" class="message-area" style="margin-top: 15px;">
-        Adicione pessoas para calcular o rateio.
-    </div>
-    <p id="avisoRateio" style="color: #ffc107; font-size: 0.9em; margin-top: 5px;"></p>
-</div>
-
-<div class="card game-card">
-    <h3>22. Jogo da Memória</h3>
-    <p>Encontre todos os pares! Cliques: <strong id="clicksMemoria">0</strong></p>
-    
-    <div id="tabuleiroMemoria" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px;">
-        </div>
-
-    <div class="game-buttons" style="margin-top: 15px;">
-        <button onclick="iniciarJogoMemoria()">Novo Jogo</button>
-    </div>
-    <div id="resultadoMemoria" class="message-area" style="margin-top: 10px;"></div>
-</div>
-
-<div class="card game-card">
-    <h3>23. Pedra Papel Tesoura</h3>
-    <p>Você: <strong id="placarVoce">0</strong> x <strong id="placarPc">0</strong> PC</p>
-    
-    <div class="game-buttons">
-        <button onclick="jogar('pedra')">✊ Pedra</button>
-        <button onclick="jogar('papel')">✋ Papel</button>
-        <button onclick="jogar('tesoura')">✌️ Tesoura</button>
-    </div>
-
-    <div id="resultadoPPT" class="message-area" style="margin-top: 15px;">
-        Escolha uma opção para jogar!
-    </div>
-    <button onclick="resetarPlacarPPT()" style="background-color: var(--color-erro); margin-top: 10px;">Zerar Placar</button>
-</div>
-
-<div class="card game-card">
-    <h3>24. Clique Rápido</h3>
-    <p>Tempo: <strong id="tempoClique">10</strong>s | Cliques: <strong id="totalCliques">0</strong></p>
-    
-    <div class="game-buttons">
-        <button id="btnIniciarClique">Iniciar</button>
-        <button id="btnClicar" disabled style="font-size: 1.5rem; padding: 20px;">CLICA AQUI!</button>
-    </div>
-
-    <div id="resultadoClique" class="message-area" style="margin-top: 15px;">
-        Clique em "Iniciar" e depois clica o mais rápido que puder!
-    </div>
-</div>
-
-<div class="card game-card">
-    <h3>25. Quiz Relâmpago</h3>
-    <p>Pontos: <strong id="pontosQuiz">0</strong> | Pergunta: <strong id="numPergunta">1</strong>/5</p>
-    
-    <div id="areaPergunta">
-        <h4 id="textoPergunta">Carregando...</h4>
-        <div id="opcoesQuiz" class="game-buttons" style="flex-direction: column;">
-            </div>
-    </div>
-
-    <div id="resultadoQuiz" class="message-area" style="margin-top: 15px; display: none;"></div>
-    <button onclick="iniciarQuiz()" id="btnNovoQuiz" style="margin-top: 10px;">Novo Quiz</button>
-</div>
-<div class="card game-card">
-    <h3>26. Jogo da Velha</h3>
-
-    <div class="config-velha">
-
-        <div>
-            <label for="modoJogo">
-                Modo de Jogo:
-            </label>
-
-            <select id="modoJogo">
-                <option value="pc">🤖 Contra PC</option>
-                <option value="pessoa">👥 Contra Pessoa</option>
-            </select>
-        </div>
-
-        <div id="areaDificuldade">
-            <label for="dificuldadeVelha">
-                Dificuldade:
-            </label>
-
-            <select id="dificuldadeVelha">
-                <option value="facil">🟢 Fácil</option>
-                <option value="medio">🟡 Médio</option>
-                <option value="dificil">🔴 Difícil</option>
-                <option value="impossivel">💀 Impossível</option>
-            </select>
-        </div>
-
-        <div id="areaSimbolo">
-            <label for="simboloJogador">
-                Você será:
-            </label>
-
-            <select id="simboloJogador">
-                <option value="X">❌ X</option>
-                <option value="O">⭕ O</option>
-            </select>
-        </div>
-
-        <div>
-            <label for="tamanhoTabuleiro">
-                Tamanho:
-            </label>
-
-            <select id="tamanhoTabuleiro">
-                <option value="3">3 × 3</option>
-                <option value="4">4 × 4</option>
-                <option value="5">5 × 5</option>
-                <option value="6">6 × 6</option>
-                <option value="7">7 × 7</option>
-                <option value="8">8 × 8</option>
-            </select>
-        </div>
-
-        <div>
-            <label for="qtdParaGanhar">
-                Para ganhar:
-            </label>
-
-            <select id="qtdParaGanhar">
-                <option value="3">3 em sequência</option>
-                <option value="4">4 em sequência</option>
-                <option value="5">5 em sequência</option>
-            </select>
-        </div>
-
-        <button
-            type="button"
-            onclick="iniciarJogoVelha()">
-            🎮 Novo Jogo
-        </button>
-
-    </div>
-
-    <div class="status-velha">
-
-        <p>
-            Vez de:
-            <strong id="vezJogador">
-                X - Você
-            </strong>
-        </p>
-
-        <p>
-            Você:
-            <strong id="simboloExibido">
-                X
-            </strong>
-            |
-            PC/Pessoa:
-            <strong id="simboloAdversario">
-                O
-            </strong>
-        </p>
-
-    </div>
-
-    <div id="tabuleiroVelha"></div>
-
-    <div
-        id="resultadoVelha"
-        class="message-area"
-        style="margin-top: 15px;">
-    </div>
-
-<div class="card qr-card">
-
-    <h3>27. Gerador de QR Code</h3>
-
-    <p>
-        Gere um QR Code para links, textos, WhatsApp,
-        Wi-Fi, imagens ou qualquer outro conteúdo.
-    </p>
-
-    <label for="tipoQr">
-        Tipo de conteúdo:
-    </label>
-
-    <select id="tipoQr">
-        <option value="texto">📝 Texto / Qualquer conteúdo</option>
-        <option value="link">🔗 Link / Site</option>
-        <option value="whatsapp">📱 WhatsApp</option>
-        <option value="email">📧 E-mail</option>
-        <option value="wifi">📶 Wi-Fi</option>
-        <option value="imagem">🖼️ URL da Imagem</option>
-    </select>
-
-    <div id="campoQrConteudo">
-
-        <label for="qrConteudo">
-            Conteúdo:
-        </label>
-
-        <textarea
-            id="qrConteudo"
-            rows="4"
-            placeholder="Digite qualquer texto ou cole um link..."
-        ></textarea>
-
-    </div>
-
-    <div class="qr-config">
-
-        <div>
-            <label for="qrCor">
-                Cor do QR:
+            <label for="minutos">
+                Minutos:
             </label>
 
             <input
-                type="color"
-                id="qrCor"
-                value="#000000"
+                type="number"
+                id="minutos"
+                value="1"
+                min="0"
+                max="60"
+                style="
+                    width: 50px;
+                    display: inline-block;
+                "
             >
-        </div>
 
-        <div>
-            <label for="qrFundo">
-                Cor do fundo:
+            <label
+                for="segundos"
+                style="margin-left: 10px;"
+            >
+                Segundos:
             </label>
 
             <input
-                type="color"
-                id="qrFundo"
-                value="#ffffff"
+                type="number"
+                id="segundos"
+                value="0"
+                min="0"
+                max="59"
+                style="
+                    width: 50px;
+                    display: inline-block;
+                "
             >
+
+            <div
+                class="game-buttons"
+                style="margin-top: 10px;"
+            >
+
+                <button
+                    type="button"
+                    id="btnIniciarTimer"
+                >
+                    Iniciar
+                </button>
+
+                <button
+                    type="button"
+                    id="btnPararTimer"
+                    disabled
+                >
+                    Parar
+                </button>
+
+                <button
+                    type="button"
+                    id="btnResetTimer"
+                    style="background-color: #dc3545;"
+                >
+                    Resetar
+                </button>
+
+            </div>
+
+            <h4
+                id="timerDisplay"
+                style="
+                    margin-top: 15px;
+                    font-size: 1.5rem;
+                    text-align: center;
+                "
+            >
+                01:00
+            </h4>
+
         </div>
 
-        <div>
-            <label for="qrTamanho">
-                Tamanho:
+
+        <!-- =================================================
+             11. GERADOR DE SENHAS
+             ================================================= -->
+
+        <div class="card">
+
+            <h3>11. Gerador de Senhas</h3>
+
+            <div style="margin-bottom: 10px;">
+
+                <label for="tamanhoSenha">
+                    Tamanho da Senha (4-20):
+                </label>
+
+                <input
+                    type="number"
+                    id="tamanhoSenha"
+                    value="12"
+                    min="4"
+                    max="20"
+                    style="width: 60px;"
+                >
+
+            </div>
+
+            <div style="margin-bottom: 15px;">
+
+                <input
+                    type="checkbox"
+                    id="incluirMaiusculas"
+                    checked
+                >
+
+                <label for="incluirMaiusculas">
+                    Maiúsculas (A-Z)
+                </label>
+
+                <br>
+
+                <input
+                    type="checkbox"
+                    id="incluirNumeros"
+                    checked
+                >
+
+                <label for="incluirNumeros">
+                    Números (0-9)
+                </label>
+
+                <br>
+
+                <input
+                    type="checkbox"
+                    id="incluirSimbolos"
+                >
+
+                <label for="incluirSimbolos">
+                    Símbolos (!@#$)
+                </label>
+
+            </div>
+
+            <button
+                type="button"
+                id="btnGerarSenha"
+            >
+                Gerar Senha
+            </button>
+
+            <input
+                type="text"
+                id="senhaGerada"
+                readonly
+                placeholder="Senha aparecerá aqui"
+                style="margin-top: 10px;"
+            >
+
+            <button
+                type="button"
+                id="btnCopiarSenha"
+                style="background-color: var(--color-text-secondary);"
+            >
+                Copiar
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             12. CALCULADORA DE GORJETA
+             ================================================= -->
+
+        <div class="card">
+
+            <h3>12. Calculadora de Gorjeta</h3>
+
+            <label for="contaValor">
+                Valor da Conta (R$):
+            </label>
+
+            <input
+                type="number"
+                id="contaValor"
+                step="0.01"
+                value="50.00"
+                min="0"
+            >
+
+            <label
+                for="gorjetaPorcentagem"
+                style="margin-top: 10px;"
+            >
+                Gorjeta (%):
             </label>
 
             <input
                 type="range"
-                id="qrTamanho"
-                min="200"
-                max="600"
-                value="350"
+                id="gorjetaPorcentagem"
+                min="0"
+                max="30"
+                value="10"
             >
 
-            <output id="qrTamanhoValor">
-                350px
+            <output
+                id="gorjetaValorOutput"
+                style="
+                    font-weight: bold;
+                    margin-bottom: 10px;
+                "
+            >
+                10%
             </output>
+
+            <label
+                for="numPessoas"
+                style="margin-top: 10px;"
+            >
+                Número de Pessoas:
+            </label>
+
+            <input
+                type="number"
+                id="numPessoas"
+                value="1"
+                min="1"
+            >
+
+            <button
+                type="button"
+                id="btnCalcularGorjeta"
+                style="margin-top: 15px;"
+            >
+                Calcular
+            </button>
+
+            <div
+                id="gorjetaResultado"
+                class="message-area"
+                style="margin-top: 15px;"
+            ></div>
+
         </div>
 
-    </div>
 
-    <label for="qrLogo">
-        Logo no centro (opcional):
-    </label>
+        <!-- =================================================
+             13. EDITOR DE ESTILOS
+             ================================================= -->
 
-    <input
-        type="file"
-        id="qrLogo"
-        accept="image/png,image/jpeg,image/webp"
-    >
+        <div class="card">
 
-    <div class="qr-actions">
+            <h3>13. Editor de Estilos</h3>
 
-        <button
-            type="button"
-            id="btnGerarQR">
-            🔳 Gerar QR Code
-        </button>
+            <label for="corTexto">
+                Cor do Texto:
+            </label>
 
-        <button
-            type="button"
-            id="btnBaixarQR">
-            💾 Baixar PNG
-        </button>
+            <input
+                type="color"
+                id="corTexto"
+                value="#333333"
+                style="width: 100%;"
+            >
 
-        <button
-            type="button"
-            id="btnLimparQR">
-            🗑️ Limpar
-        </button>
+            <label
+                for="tamanhoFonte"
+                style="margin-top: 10px;"
+            >
+                Tamanho da Fonte:
+            </label>
 
-    </div>
+            <input
+                type="range"
+                id="tamanhoFonte"
+                min="12"
+                max="48"
+                value="18"
+            >
 
-    <div
-        id="qrResultado"
-        class="qr-result">
-    </div>
+            <output
+                id="tamanhoFonteOutput"
+                style="
+                    font-weight: bold;
+                    margin-bottom: 15px;
+                "
+            >
+                18px
+            </output>
 
-</div>
+            <p
+                id="blocoExemplo"
+                style="
+                    margin-top: 15px;
+                    font-size: 18px;
+                    color: #333333;
+                    padding: 10px;
+                    border: 1px dashed var(--color-border);
+                "
+            >
+                Este é o texto de exemplo que você pode editar.
+            </p>
 
-</div>
+        </div>
+
+
+        <!-- =================================================
+             14. VALIDADOR DE LOGIN
+             ================================================= -->
+
+        <div class="card">
+
+            <h3>14. Validador de Login</h3>
+
+            <form id="loginForm">
+
+                <label for="loginEmail">
+                    Email:
+                </label>
+
+                <input
+                    type="email"
+                    id="loginEmail"
+                    placeholder="seuemail@exemplo.com"
+                >
+
+                <span
+                    id="emailError"
+                    class="error-message"
+                ></span>
+
+
+                <label for="loginSenha">
+                    Senha (min. 6 caracteres):
+                </label>
+
+                <input
+                    type="password"
+                    id="loginSenha"
+                    placeholder="********"
+                >
+
+                <span
+                    id="senhaError"
+                    class="error-message"
+                ></span>
+
+
+                <button
+                    type="submit"
+                    style="margin-top: 15px;"
+                >
+                    Entrar
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- =================================================
+             15. CATÁLOGO DE PRODUTOS
+             ================================================= -->
+
+        <div class="card">
+
+            <h3>15. Catálogo de Produtos Filtrável</h3>
+
+            <input
+                type="text"
+                id="filtroProduto"
+                placeholder="Pesquisar produto por nome..."
+                style="margin-bottom: 15px;"
+            >
+
+            <ul
+                id="listaProdutos"
+                style="
+                    list-style: disc;
+                    padding-left: 20px;
+                "
+            ></ul>
+
+        </div>
+
+
+        <!-- =================================================
+             16. CALCULADORA DE MÉDIA
+             ================================================= -->
+
+        <div class="card">
+
+            <h3>16. Calculadora de Média</h3>
+
+            <form
+                id="notaForm"
+                class="game-buttons"
+            >
+
+                <input
+                    type="number"
+                    id="notaInput"
+                    placeholder="Digite uma nota (0-10)"
+                    min="0"
+                    max="10"
+                    step="0.5"
+                    style="flex-grow: 1;"
+                >
+
+                <button type="submit">
+                    Adicionar Nota
+                </button>
+
+            </form>
+
+            <div style="margin-top: 15px;">
+
+                <p>
+                    Notas Inseridas:
+                </p>
+
+                <ul
+                    id="listaNotas"
+                    style="
+                        list-style: none;
+                        padding: 0;
+                    "
+                ></ul>
+
+                <h4 style="margin-top: 10px;">
+
+                    Média Atual:
+
+                    <strong id="mediaResultado">
+                        0.0
+                    </strong>
+
+                </h4>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             17. GERADOR DE CORES RGB
+             ================================================= -->
+
+        <div class="card">
+
+            <h3>17. Gerador de Cores RGB</h3>
+
+            <div
+                id="corBox"
+                style="
+                    height: 100px;
+                    border: 1px solid var(--color-border);
+                    background-color: #ffffff;
+                    margin-bottom: 15px;
+                    border-radius: 5px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                "
+            >
+
+                <p
+                    id="codigoCor"
+                    style="
+                        font-weight: bold;
+                        color: #333333;
+                    "
+                >
+                    RGB(255, 255, 255)
+                </p>
+
+            </div>
+
+            <button
+                type="button"
+                id="btnGerarCor"
+            >
+                Gerar Nova Cor
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             18. CONVERSOR DE UNIDADES
+             ================================================= -->
+
+        <div class="card">
+
+            <h3>18. Conversor de Unidades</h3>
+
+            <label for="tipoConversao">
+                Escolha a Conversão:
+            </label>
+
+            <select
+                id="tipoConversao"
+                style="margin-bottom: 15px;"
+            >
+
+                <option value="km_mi">
+                    Quilômetros para Milhas
+                </option>
+
+                <option value="l_gal">
+                    Litros para Galões
+                </option>
+
+            </select>
+
+
+            <label for="valorOriginal">
+                Valor a Converter:
+            </label>
+
+            <input
+                type="number"
+                id="valorOriginal"
+                value="10"
+                step="0.1"
+            >
+
+            <button
+                type="button"
+                id="btnConverterUnidade"
+                style="margin-top: 15px;"
+            >
+                Converter
+            </button>
+
+            <div
+                id="conversaoResultado"
+                class="message-area"
+                style="margin-top: 15px;"
+            >
+                Resultado aparecerá aqui.
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             19. CONTADOR DE TEXTO
+             ================================================= -->
+
+        <div class="card">
+
+            <h3>19. Contador de Texto</h3>
+
+            <textarea
+                id="textoInput"
+                placeholder="Comece a digitar aqui..."
+                rows="5"
+                style="
+                    width: 100%;
+                    box-sizing: border-box;
+                "
+            ></textarea>
+
+            <div style="margin-top: 10px;">
+
+                <p>
+                    Caracteres:
+                    <strong id="contadorCaracteres">
+                        0
+                    </strong>
+                </p>
+
+                <p>
+                    Palavras:
+                    <strong id="contadorPalavras">
+                        0
+                    </strong>
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             20. CALCULADORA DE MERCADO
+             ================================================= -->
+
+        <div class="card">
+
+            <h3>20. Calculadora de Mercado</h3>
+
+            <form
+                id="mercadoForm"
+                class="game-buttons"
+            >
+
+                <input
+                    type="text"
+                    id="produtoNome"
+                    placeholder="Nome do produto"
+                    style="flex-grow: 1;"
+                >
+
+                <input
+                    type="number"
+                    id="produtoQtd"
+                    placeholder="Qtd"
+                    min="1"
+                    value="1"
+                    style="width: 70px;"
+                >
+
+                <input
+                    type="number"
+                    id="produtoValor"
+                    placeholder="Valor R$"
+                    min="0"
+                    step="0.01"
+                    style="width: 100px;"
+                >
+
+                <button type="submit">
+                    Adicionar
+                </button>
+
+            </form>
+
+
+            <ul
+                id="listaMercado"
+                style="
+                    list-style: none;
+                    padding: 0;
+                    margin-top: 15px;
+                "
+            ></ul>
+
+
+            <div style="margin-top: 15px;">
+
+                <label for="descontoMercado">
+                    Desconto (%):
+                </label>
+
+                <input
+                    type="number"
+                    id="descontoMercado"
+                    value="0"
+                    min="0"
+                    max="100"
+                    step="1"
+                >
+
+            </div>
+
+
+            <div
+                id="totalMercado"
+                class="message-area"
+                style="margin-top: 15px;"
+            >
+                Subtotal: R$ 0,00<br>
+                Desconto: R$ 0,00<br>
+                <strong>Total: R$ 0,00</strong>
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             21. RATEIO DE CONTAS
+             ================================================= -->
+
+        <div class="card">
+
+            <h3>21. Rateio de Contas</h3>
+
+            <form
+                id="rateioForm"
+                class="game-buttons"
+            >
+
+                <input
+                    type="text"
+                    id="nomePessoa"
+                    placeholder="Nome da pessoa"
+                    style="flex-grow: 1;"
+                >
+
+                <input
+                    type="number"
+                    id="porcentagemPessoa"
+                    placeholder="% Uso"
+                    min="0"
+                    max="100"
+                    step="1"
+                    value="25"
+                    style="width: 90px;"
+                >
+
+                <button type="submit">
+                    Adicionar
+                </button>
+
+            </form>
+
+
+            <div style="margin-top: 10px;">
+
+                <label for="valorConta">
+                    Valor Total da Conta (R$):
+                </label>
+
+                <input
+                    type="number"
+                    id="valorConta"
+                    step="0.01"
+                    value="200.00"
+                    min="0"
+                >
+
+            </div>
+
+
+            <ul
+                id="listaPessoas"
+                style="
+                    list-style: none;
+                    padding: 0;
+                    margin-top: 15px;
+                "
+            ></ul>
+
+
+            <div
+                id="resultadoRateio"
+                class="message-area"
+                style="margin-top: 15px;"
+            >
+                Adicione pessoas para calcular o rateio.
+            </div>
+
+
+            <p
+                id="avisoRateio"
+                style="
+                    color: #ffc107;
+                    font-size: 0.9em;
+                    margin-top: 5px;
+                "
+            ></p>
+
+        </div>
+
+
+        <!-- =================================================
+             22. JOGO DA MEMÓRIA
+             ================================================= -->
+
+        <div class="card game-card">
+
+            <h3>22. Jogo da Memória</h3>
+
+            <p>
+                Encontre todos os pares!
+
+                Cliques:
+                <strong id="clicksMemoria">
+                    0
+                </strong>
+            </p>
+
+
+            <div
+                id="tabuleiroMemoria"
+                style="
+                    display: grid;
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 10px;
+                    margin-top: 15px;
+                "
+            ></div>
+
+
+            <div
+                class="game-buttons"
+                style="margin-top: 15px;"
+            >
+
+                <button
+                    type="button"
+                    id="btnNovoJogoMemoria"
+                >
+                    Novo Jogo
+                </button>
+
+            </div>
+
+
+            <div
+                id="resultadoMemoria"
+                class="message-area"
+                style="margin-top: 10px;"
+            ></div>
+
+        </div>
+
+
+        <!-- =================================================
+             23. PEDRA PAPEL TESOURA
+             ================================================= -->
+
+        <div class="card game-card">
+
+            <h3>23. Pedra Papel Tesoura</h3>
+
+            <p>
+
+                Você:
+                <strong id="placarVoce">
+                    0
+                </strong>
+
+                x
+
+                <strong id="placarPc">
+                    0
+                </strong>
+
+                PC
+
+            </p>
+
+
+            <div class="game-buttons">
+
+                <button
+                    type="button"
+                    data-jogada="pedra"
+                    class="btn-ppt"
+                >
+                    ✊ Pedra
+                </button>
+
+                <button
+                    type="button"
+                    data-jogada="papel"
+                    class="btn-ppt"
+                >
+                    ✋ Papel
+                </button>
+
+                <button
+                    type="button"
+                    data-jogada="tesoura"
+                    class="btn-ppt"
+                >
+                    ✌️ Tesoura
+                </button>
+
+            </div>
+
+
+            <div
+                id="resultadoPPT"
+                class="message-area"
+                style="margin-top: 15px;"
+            >
+                Escolha uma opção para jogar!
+            </div>
+
+
+            <button
+                type="button"
+                id="btnResetPPT"
+                style="
+                    background-color: var(--color-erro);
+                    margin-top: 10px;
+                "
+            >
+                Zerar Placar
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             24. CLIQUE RÁPIDO
+             ================================================= -->
+
+        <div class="card game-card">
+
+            <h3>24. Clique Rápido</h3>
+
+            <p>
+
+                Tempo:
+                <strong id="tempoClique">
+                    10
+                </strong>s
+
+                |
+
+                Cliques:
+                <strong id="totalCliques">
+                    0
+                </strong>
+
+            </p>
+
+
+            <div class="game-buttons">
+
+                <button
+                    type="button"
+                    id="btnIniciarClique"
+                >
+                    Iniciar
+                </button>
+
+                <button
+                    type="button"
+                    id="btnClicar"
+                    disabled
+                    style="
+                        font-size: 1.5rem;
+                        padding: 20px;
+                    "
+                >
+                    CLICA AQUI!
+                </button>
+
+            </div>
+
+
+            <div
+                id="resultadoClique"
+                class="message-area"
+                style="margin-top: 15px;"
+            >
+                Clique em "Iniciar" e depois clica o mais rápido que puder!
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             25. QUIZ RELÂMPAGO
+             ================================================= -->
+
+        <div class="card game-card">
+
+            <h3>25. Quiz Relâmpago</h3>
+
+            <p>
+
+                Pontos:
+                <strong id="pontosQuiz">
+                    0
+                </strong>
+
+                |
+
+                Pergunta:
+                <strong id="numPergunta">
+                    1
+                </strong>/5
+
+            </p>
+
+
+            <div id="areaPergunta">
+
+                <h4 id="textoPergunta">
+                    Carregando...
+                </h4>
+
+                <div
+                    id="opcoesQuiz"
+                    class="game-buttons"
+                    style="flex-direction: column;"
+                ></div>
+
+            </div>
+
+
+            <div
+                id="resultadoQuiz"
+                class="message-area"
+                style="
+                    margin-top: 15px;
+                    display: none;
+                "
+            ></div>
+
+
+            <button
+                type="button"
+                id="btnNovoQuiz"
+                style="margin-top: 10px;"
+            >
+                Novo Quiz
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             26. JOGO DA VELHA
+             ================================================= -->
+
+        <div class="card game-card">
+
+            <h3>26. Jogo da Velha</h3>
+
+
+            <div class="config-velha">
+
+
+                <div>
+
+                    <label for="modoJogo">
+                        Modo de Jogo:
+                    </label>
+
+                    <select id="modoJogo">
+
+                        <option value="pc">
+                            🤖 Contra PC
+                        </option>
+
+                        <option value="pessoa">
+                            👥 Contra Pessoa
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div id="areaDificuldade">
+
+                    <label for="dificuldadeVelha">
+                        Dificuldade:
+                    </label>
+
+                    <select id="dificuldadeVelha">
+
+                        <option value="facil">
+                            🟢 Fácil
+                        </option>
+
+                        <option value="medio">
+                            🟡 Médio
+                        </option>
+
+                        <option value="dificil">
+                            🔴 Difícil
+                        </option>
+
+                        <option value="impossivel">
+                            💀 Impossível
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div id="areaSimbolo">
+
+                    <label for="simboloJogador">
+                        Você será:
+                    </label>
+
+                    <select id="simboloJogador">
+
+                        <option value="X">
+                            ❌ X
+                        </option>
+
+                        <option value="O">
+                            ⭕ O
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label for="tamanhoTabuleiro">
+                        Tamanho:
+                    </label>
+
+                    <select id="tamanhoTabuleiro">
+
+                        <option value="3">
+                            3 × 3
+                        </option>
+
+                        <option value="4">
+                            4 × 4
+                        </option>
+
+                        <option value="5">
+                            5 × 5
+                        </option>
+
+                        <option value="6">
+                            6 × 6
+                        </option>
+
+                        <option value="7">
+                            7 × 7
+                        </option>
+
+                        <option value="8">
+                            8 × 8
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label for="qtdParaGanhar">
+                        Para ganhar:
+                    </label>
+
+                    <select id="qtdParaGanhar">
+
+                        <option value="3">
+                            3 em sequência
+                        </option>
+
+                        <option value="4">
+                            4 em sequência
+                        </option>
+
+                        <option value="5">
+                            5 em sequência
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="btnNovoJogoVelha"
+                >
+                    🎮 Novo Jogo
+                </button>
+
+            </div>
+
+
+            <div class="status-velha">
+
+                <p>
+
+                    Vez de:
+
+                    <strong id="vezJogador">
+                        X - Você
+                    </strong>
+
+                </p>
+
+
+                <p>
+
+                    Você:
+
+                    <strong id="simboloExibido">
+                        X
+                    </strong>
+
+                    |
+
+                    PC/Pessoa:
+
+                    <strong id="simboloAdversario">
+                        O
+                    </strong>
+
+                </p>
+
+            </div>
+
+
+            <div id="tabuleiroVelha"></div>
+
+
+            <div
+                id="resultadoVelha"
+                class="message-area"
+                style="margin-top: 15px;"
+            ></div>
+
+        </div>
+
+
+        <!-- =================================================
+             27. GERADOR DE QR CODE
+             ================================================= -->
+
+        <div class="card qr-card">
+
+            <h3>27. Gerador de QR Code</h3>
+
+            <p>
+                Gere um QR Code para links, textos, WhatsApp,
+                Wi-Fi, imagens ou qualquer outro conteúdo.
+            </p>
+
+
+            <label for="tipoQr">
+                Tipo de conteúdo:
+            </label>
+
+            <select id="tipoQr">
+
+                <option value="texto">
+                    📝 Texto / Qualquer conteúdo
+                </option>
+
+                <option value="link">
+                    🔗 Link / Site
+                </option>
+
+                <option value="whatsapp">
+                    📱 WhatsApp
+                </option>
+
+                <option value="email">
+                    📧 E-mail
+                </option>
+
+                <option value="wifi">
+                    📶 Wi-Fi
+                </option>
+
+                <option value="imagem">
+                    🖼️ URL da Imagem
+                </option>
+
+            </select>
+
+
+            <div id="campoQrConteudo">
+
+                <label for="qrConteudo">
+                    Conteúdo:
+                </label>
+
+                <textarea
+                    id="qrConteudo"
+                    rows="4"
+                    placeholder="Digite qualquer texto ou cole um link..."
+                ></textarea>
+
+            </div>
+
+
+            <div class="qr-config">
+
+
+                <div>
+
+                    <label for="qrCor">
+                        Cor do QR:
+                    </label>
+
+                    <input
+                        type="color"
+                        id="qrCor"
+                        value="#000000"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label for="qrFundo">
+                        Cor do fundo:
+                    </label>
+
+                    <input
+                        type="color"
+                        id="qrFundo"
+                        value="#ffffff"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label for="qrTamanho">
+                        Tamanho:
+                    </label>
+
+                    <input
+                        type="range"
+                        id="qrTamanho"
+                        min="200"
+                        max="600"
+                        value="350"
+                    >
+
+                    <output id="qrTamanhoValor">
+                        350px
+                    </output>
+
+                </div>
+
+            </div>
+
+
+            <label for="qrLogo">
+                Logo no centro (opcional):
+            </label>
+
+            <input
+                type="file"
+                id="qrLogo"
+                accept="image/png,image/jpeg,image/webp"
+            >
+
+
+            <div class="qr-actions">
+
+                <button
+                    type="button"
+                    id="btnGerarQR"
+                >
+                    🔳 Gerar QR Code
+                </button>
+
+                <button
+                    type="button"
+                    id="btnBaixarQR"
+                >
+                    💾 Baixar PNG
+                </button>
+
+                <button
+                    type="button"
+                    id="btnLimparQR"
+                >
+                    🗑️ Limpar
+                </button>
+
+            </div>
+
+
+            <div
+                id="qrResultado"
+                class="qr-result"
+            ></div>
+
+        </div>
+
+
     </main>
 
-   <script src="https://cdn.jsdelivr.net/npm/easyqrcodejs@4.6.2/dist/easy.qrcode.min.js"></script>
-<script src="script.js"></script>
+
+    <!-- =====================================================
+         EASY QR CODE
+         Deve carregar ANTES do script.js
+         ===================================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/easyqrcodejs@4.6.2/dist/easy.qrcode.min.js"></script>
+
+
+    <!-- =====================================================
+         JAVASCRIPT PRINCIPAL
+         ===================================================== -->
+
+    <script src="script.js"></script>
+
+
 </body>
+
 </html>
