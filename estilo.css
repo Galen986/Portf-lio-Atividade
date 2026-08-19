@@ -1,44 +1,83 @@
 /* =========================================================
-   DESAFIOS JS - ESTILO PRINCIPAL
+   DESAFIOS JS INTERATIVOS
+   ESTILO PROFISSIONAL
+   Guilherme - Mini-Aplicações JS
+   ========================================================= */
+
+/* =========================================================
+   VARIÁVEIS
    ========================================================= */
 
 :root {
-    --color-bg: #111827;
-    --color-bg-secondary: #1f2937;
-    --color-card: #1f2937;
-    --color-card-hover: #263449;
-    --color-text: #f3f4f6;
-    --color-text-secondary: #9ca3af;
+    --color-bg: #0b1120;
+    --color-bg-secondary: #111827;
+
+    --color-card: #151e2e;
+    --color-card-hover: #192438;
+
+    --color-input: #0d1524;
+
+    --color-text: #f8fafc;
+    --color-text-secondary: #94a3b8;
+    --color-text-muted: #64748b;
+
     --color-primary: #6366f1;
     --color-primary-hover: #4f46e5;
-    --color-border: #374151;
+    --color-primary-light: #818cf8;
+
     --color-success: #22c55e;
     --color-error: #ef4444;
     --color-warning: #f59e0b;
-    --color-input: #111827;
+    --color-info: #38bdf8;
+
+    --color-border: #263247;
+    --color-border-light: #334155;
+
     --color-shadow: rgba(0, 0, 0, 0.35);
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 18px;
+
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.25s ease;
+
+    --container-width: 1120px;
 }
+
 
 /* =========================================================
    TEMA CLARO
    ========================================================= */
 
 body.light-theme {
-    --color-bg: #f3f4f6;
+
+    --color-bg: #f1f5f9;
     --color-bg-secondary: #ffffff;
+
     --color-card: #ffffff;
-    --color-card-hover: #f9fafb;
-    --color-text: #1f2937;
-    --color-text-secondary: #6b7280;
+    --color-card-hover: #f8fafc;
+
+    --color-input: #ffffff;
+
+    --color-text: #0f172a;
+    --color-text-secondary: #475569;
+    --color-text-muted: #64748b;
+
     --color-primary: #4f46e5;
     --color-primary-hover: #4338ca;
-    --color-border: #d1d5db;
-    --color-input: #ffffff;
-    --color-shadow: rgba(0, 0, 0, 0.12);
+    --color-primary-light: #6366f1;
+
+    --color-border: #e2e8f0;
+    --color-border-light: #cbd5e1;
+
+    --color-shadow: rgba(15, 23, 42, 0.10);
 }
 
+
 /* =========================================================
-   RESET
+   RESET GLOBAL
    ========================================================= */
 
 * {
@@ -47,465 +86,1086 @@ body.light-theme {
 
 html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
 }
 
 body {
     margin: 0;
-    padding: 0;
     min-height: 100vh;
 
-    font-family: Arial, Helvetica, sans-serif;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 16px;
+    line-height: 1.5;
 
     background:
         radial-gradient(
-            circle at top,
+            circle at 50% 0%,
             rgba(99, 102, 241, 0.12),
-            transparent 35%
+            transparent 420px
         ),
         var(--color-bg);
 
     color: var(--color-text);
 
     transition:
-        background-color 0.3s ease,
-        color 0.3s ease;
+        background-color var(--transition-normal),
+        color var(--transition-normal);
 }
+
+
+/* =========================================================
+   SELEÇÃO DE TEXTO
+   ========================================================= */
+
+::selection {
+    background: var(--color-primary);
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-border-light);
+    border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary);
+}
+
 
 /* =========================================================
    HEADER
    ========================================================= */
 
 .header-container {
+
     position: relative;
 
     width: 100%;
-    min-height: 150px;
+    min-height: 170px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    padding: 30px 60px;
+    padding: 35px 80px;
+
+    overflow: hidden;
 
     background:
+        radial-gradient(
+            circle at 20% 20%,
+            rgba(129, 140, 248, 0.25),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 80% 80%,
+            rgba(99, 102, 241, 0.25),
+            transparent 30%
+        ),
         linear-gradient(
             135deg,
-            #111827,
+            #0f172a,
+            #1e1b4b,
             #312e81,
-            #4f46e5
+            #4338ca
         );
 
     border-bottom: 3px solid var(--color-primary);
 
     box-shadow:
-        0 8px 30px rgba(0, 0, 0, 0.35);
+        0 10px 35px rgba(0, 0, 0, 0.30);
 }
 
+
+/* =========================================================
+   EFEITO DECORATIVO HEADER
+   ========================================================= */
+
+.header-container::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 250px;
+    height: 250px;
+
+    top: -140px;
+    left: -100px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.05);
+
+    pointer-events: none;
+}
+
+.header-container::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 300px;
+    height: 300px;
+
+    right: -150px;
+    bottom: -180px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.04);
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   TÍTULO
+   ========================================================= */
+
 .imagem {
+
+    position: relative;
+    z-index: 1;
+
     margin: 0;
 
-    color: white;
+    color: #ffffff;
 
-    font-family: 'Lobster', cursive;
+    font-family: "Lobster", cursive;
 
-    font-size: clamp(2rem, 5vw, 4rem);
+    font-size: clamp(
+        2rem,
+        5vw,
+        4.2rem
+    );
+
+    line-height: 1.15;
 
     text-align: center;
 
+    letter-spacing: 1px;
+
     text-shadow:
-        3px 3px 0 rgba(0, 0, 0, 0.25),
-        0 0 20px rgba(255, 255, 255, 0.15);
+        3px 4px 0 rgba(0, 0, 0, 0.25),
+        0 0 25px rgba(255, 255, 255, 0.15);
 }
+
 
 /* =========================================================
    BOTÃO TEMA
    ========================================================= */
 
 .theme-toggle-btn {
+
     position: absolute;
+
+    z-index: 5;
+
     top: 20px;
     right: 20px;
 
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
 
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0;
+
+    padding: 0;
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+
     border-radius: 50%;
 
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.10);
 
-    color: white;
+    color: #ffffff;
 
-    font-size: 1.4rem;
+    font-size: 1.3rem;
 
     cursor: pointer;
 
+    backdrop-filter: blur(10px);
+
     transition:
-        transform 0.2s ease,
-        background 0.2s ease;
+        transform var(--transition-fast),
+        background var(--transition-fast),
+        border-color var(--transition-fast);
 }
 
 .theme-toggle-btn:hover {
-    transform: rotate(20deg) scale(1.08);
-    background: rgba(255, 255, 255, 0.22);
+
+    transform:
+        rotate(12deg)
+        scale(1.08);
+
+    background: rgba(255, 255, 255, 0.18);
+
+    border-color: rgba(255, 255, 255, 0.45);
+
+    box-shadow: none;
 }
 
+.theme-toggle-btn:active {
+    transform: scale(0.94);
+}
+
+
 /* =========================================================
-   CONTEÚDO
+   CONTEÚDO PRINCIPAL
    ========================================================= */
 
 .main-content {
-    width: min(1100px, 94%);
 
-    margin: 30px auto 60px;
+    width: min(
+        var(--container-width),
+        94%
+    );
+
+    margin: 32px auto 70px;
 }
 
+
 /* =========================================================
-   BUSCA
+   BUSCA PRINCIPAL
    ========================================================= */
 
 #busca-listas {
-    background: var(--color-input);
-    color: var(--color-text);
+
+    width: 100% !important;
+
+    margin: 0 0 25px !important;
+
+    padding: 14px 16px !important;
 
     border: 1px solid var(--color-border) !important;
+
+    border-radius: var(--radius-lg) !important;
+
+    background:
+        var(--color-card) !important;
+
+    color: var(--color-text) !important;
+
+    font-size: 1rem;
+
+    box-shadow:
+        0 5px 20px var(--color-shadow);
 
     outline: none;
 
     transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast),
+        transform var(--transition-fast);
+}
+
+#busca-listas:hover {
+
+    border-color:
+        var(--color-border-light) !important;
 }
 
 #busca-listas:focus {
-    border-color: var(--color-primary) !important;
+
+    border-color:
+        var(--color-primary) !important;
 
     box-shadow:
-        0 0 0 3px rgba(99, 102, 241, 0.2);
+        0 0 0 4px rgba(99, 102, 241, 0.14),
+        0 8px 25px var(--color-shadow);
 }
+
 
 /* =========================================================
    CARDS
    ========================================================= */
 
 .card {
+
     position: relative;
 
     margin: 20px 0;
-    padding: 24px;
 
-    background: var(--color-card);
+    padding: 25px;
 
-    border: 1px solid var(--color-border);
+    background:
+        var(--color-card);
 
-    border-radius: 14px;
+    border:
+        1px solid var(--color-border);
+
+    border-radius:
+        var(--radius-lg);
 
     box-shadow:
         0 8px 25px var(--color-shadow);
 
+    overflow: hidden;
+
     transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        background 0.2s ease;
+        transform var(--transition-normal),
+        box-shadow var(--transition-normal),
+        border-color var(--transition-normal),
+        background var(--transition-normal);
+}
+
+
+/* Linha decorativa */
+
+.card::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            var(--color-primary),
+            transparent
+        );
+
+    opacity: 0;
+
+    transition:
+        opacity var(--transition-normal);
 }
 
 .card:hover {
-    transform: translateY(-2px);
+
+    transform:
+        translateY(-3px);
+
+    border-color:
+        rgba(99, 102, 241, 0.35);
 
     box-shadow:
-        0 12px 30px var(--color-shadow);
+        0 14px 35px var(--color-shadow);
 
-    background: var(--color-card-hover);
+    background:
+        var(--color-card-hover);
 }
 
+.card:hover::before {
+    opacity: 1;
+}
+
+
+/* =========================================================
+   TÍTULOS DOS CARDS
+   ========================================================= */
+
 .card h3 {
-    margin-top: 0;
-    margin-bottom: 18px;
+
+    margin: 0 0 20px;
+
+    padding-bottom: 10px;
 
     color: var(--color-text);
 
-    font-family: 'Bebas Neue', sans-serif;
+    font-family:
+        "Bebas Neue",
+        sans-serif;
 
-    font-size: 1.7rem;
+    font-size: 1.75rem;
 
-    letter-spacing: 1px;
+    font-weight: 400;
 
-    border-bottom: 2px solid var(--color-primary);
+    letter-spacing: 1.2px;
 
-    padding-bottom: 8px;
+    line-height: 1.1;
+
+    border-bottom:
+        2px solid var(--color-primary);
 }
 
 .card p {
-    color: var(--color-text-secondary);
-    line-height: 1.5;
+
+    color:
+        var(--color-text-secondary);
+
+    line-height: 1.6;
 }
 
+
 /* =========================================================
-   FORMULÁRIOS
+   LABELS
    ========================================================= */
 
 label {
+
     display: block;
 
-    margin-top: 10px;
-    margin-bottom: 6px;
+    margin: 12px 0 6px;
 
-    color: var(--color-text);
+    color:
+        var(--color-text);
 
-    font-weight: bold;
+    font-size: 0.92rem;
+
+    font-weight: 700;
 }
+
+
+/* =========================================================
+   INPUTS / SELECT / TEXTAREA
+   ========================================================= */
 
 input,
 select,
 textarea {
+
     width: 100%;
+
+    min-height: 44px;
 
     padding: 11px 13px;
 
-    border-radius: 8px;
+    border:
+        1px solid var(--color-border);
 
-    border: 1px solid var(--color-border);
+    border-radius:
+        var(--radius-md);
 
-    background: var(--color-input);
+    background:
+        var(--color-input);
 
-    color: var(--color-text);
+    color:
+        var(--color-text);
 
-    font-family: inherit;
+    font-family:
+        inherit;
 
-    font-size: 1rem;
+    font-size:
+        1rem;
+
+    line-height: 1.3;
 
     outline: none;
 
     transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast),
+        background var(--transition-fast);
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+
+    border-color:
+        var(--color-border-light);
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-    border-color: var(--color-primary);
+
+    border-color:
+        var(--color-primary);
 
     box-shadow:
-        0 0 0 3px rgba(99, 102, 241, 0.18);
+        0 0 0 3px
+        rgba(99, 102, 241, 0.16);
 }
 
 input::placeholder,
 textarea::placeholder {
-    color: var(--color-text-secondary);
+
+    color:
+        var(--color-text-muted);
+
+    opacity: 1;
 }
 
-/* Inputs especiais */
+textarea {
+
+    resize: vertical;
+
+    min-height: 120px;
+}
+
+
+/* =========================================================
+   CHECKBOX
+   ========================================================= */
 
 input[type="checkbox"] {
-    width: auto;
 
-    accent-color: var(--color-primary);
+    width: 17px;
+    height: 17px;
 
-    margin-right: 5px;
+    min-height: auto;
+
+    padding: 0;
+
+    margin:
+        0 7px 0 0;
+
+    vertical-align:
+        middle;
+
+    accent-color:
+        var(--color-primary);
+
+    cursor: pointer;
 }
+
+
+/* =========================================================
+   COLOR PICKER
+   ========================================================= */
 
 input[type="color"] {
+
     height: 50px;
 
-    padding: 3px;
+    padding: 4px;
 
     cursor: pointer;
 }
+
+
+/* =========================================================
+   RANGE
+   ========================================================= */
 
 input[type="range"] {
-    accent-color: var(--color-primary);
+
+    min-height: auto;
+
+    padding: 0;
+
+    accent-color:
+        var(--color-primary);
 
     cursor: pointer;
 }
+
+
+/* =========================================================
+   OUTPUT
+   ========================================================= */
+
+output {
+
+    color:
+        var(--color-primary-light);
+}
+
 
 /* =========================================================
    BOTÕES
    ========================================================= */
 
 button {
-    border: none;
 
-    border-radius: 8px;
-
-    padding: 11px 17px;
+    min-height: 42px;
 
     margin-top: 10px;
 
-    background: var(--color-primary);
+    padding:
+        10px 17px;
 
-    color: white;
+    border: none;
 
-    font-size: 0.95rem;
+    border-radius:
+        var(--radius-md);
 
-    font-weight: bold;
+    background:
+        linear-gradient(
+            135deg,
+            var(--color-primary),
+            var(--color-primary-hover)
+        );
 
-    cursor: pointer;
+    color:
+        #ffffff;
+
+    font-family:
+        inherit;
+
+    font-size:
+        0.95rem;
+
+    font-weight:
+        700;
+
+    line-height:
+        1.2;
+
+    cursor:
+        pointer;
+
+    box-shadow:
+        0 4px 12px
+        rgba(79, 70, 229, 0.18);
 
     transition:
-        background 0.2s ease,
-        transform 0.15s ease,
-        box-shadow 0.2s ease;
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast),
+        filter var(--transition-fast);
 }
 
 button:hover {
-    background: var(--color-primary-hover);
 
-    transform: translateY(-1px);
+    transform:
+        translateY(-2px);
+
+    filter:
+        brightness(1.08);
 
     box-shadow:
-        0 5px 15px rgba(79, 70, 229, 0.3);
+        0 7px 18px
+        rgba(79, 70, 229, 0.28);
 }
 
 button:active {
-    transform: scale(0.97);
+
+    transform:
+        translateY(0)
+        scale(0.98);
 }
 
 button:disabled {
-    opacity: 0.45;
 
-    cursor: not-allowed;
+    opacity:
+        0.45;
 
-    transform: none;
+    cursor:
+        not-allowed;
 
-    box-shadow: none;
+    transform:
+        none;
+
+    filter:
+        none;
+
+    box-shadow:
+        none;
 }
+
 
 /* =========================================================
    GRUPO DE BOTÕES
    ========================================================= */
 
 .game-buttons {
-    display: flex;
 
-    gap: 10px;
+    display:
+        flex;
 
-    align-items: center;
+    align-items:
+        center;
 
-    flex-wrap: wrap;
+    gap:
+        10px;
+
+    flex-wrap:
+        wrap;
 }
+
 
 /* =========================================================
    ÁREAS DE RESULTADO
    ========================================================= */
 
 .message-area {
-    min-height: 25px;
 
-    padding: 10px;
+    min-height:
+        28px;
 
-    border-radius: 8px;
+    margin-top:
+        10px;
 
-    color: var(--color-text);
+    padding:
+        10px 12px;
 
-    line-height: 1.5;
+    border:
+        1px solid transparent;
+
+    border-radius:
+        var(--radius-md);
+
+    color:
+        var(--color-text);
+
+    line-height:
+        1.5;
 }
 
+
 /* =========================================================
-   TODO LIST
+   MENSAGENS
    ========================================================= */
 
+.sucesso {
+
+    color:
+        var(--color-success);
+
+    font-weight:
+        700;
+}
+
+.erro {
+
+    color:
+        var(--color-error);
+
+    font-weight:
+        700;
+}
+
+.aviso {
+
+    color:
+        var(--color-warning);
+
+    font-weight:
+        700;
+}
+
+
+/* =========================================================
+   MENSAGENS DE ERRO DE FORMULÁRIO
+   ========================================================= */
+
+.error-message {
+
+    display:
+        block;
+
+    min-height:
+        18px;
+
+    margin:
+        4px 0 5px;
+
+    color:
+        var(--color-error);
+
+    font-size:
+        0.85rem;
+
+    font-weight:
+        600;
+}
+
+
+/* =========================================================
+   LISTA DE TAREFAS
+   ========================================================= */
+
+#todoList {
+
+    margin:
+        20px 0 0;
+
+    padding:
+        0;
+
+    list-style:
+        none;
+}
+
 #todoList li {
-    display: flex;
 
-    align-items: center;
+    display:
+        flex;
 
-    justify-content: space-between;
+    align-items:
+        center;
 
-    gap: 10px;
+    justify-content:
+        space-between;
 
-    padding: 10px;
+    gap:
+        12px;
 
-    margin-bottom: 8px;
+    margin-bottom:
+        9px;
 
-    border-radius: 8px;
+    padding:
+        11px 13px;
 
-    background: var(--color-bg);
+    border:
+        1px solid var(--color-border);
 
-    border: 1px solid var(--color-border);
+    border-radius:
+        var(--radius-md);
+
+    background:
+        var(--color-bg);
+
+    transition:
+        border-color var(--transition-fast),
+        transform var(--transition-fast);
+}
+
+#todoList li:hover {
+
+    border-color:
+        var(--color-border-light);
+
+    transform:
+        translateX(2px);
 }
 
 #todoList li.concluida {
-    opacity: 0.6;
 
-    text-decoration: line-through;
+    opacity:
+        0.55;
+
+    text-decoration:
+        line-through;
 }
 
 #todoList button {
-    margin: 0;
 
-    padding: 6px 10px;
+    flex-shrink:
+        0;
 
-    background: var(--color-error);
+    min-height:
+        34px;
+
+    margin:
+        0;
+
+    padding:
+        6px 10px;
+
+    background:
+        var(--color-error);
+
+    box-shadow:
+        none;
 }
 
+
 /* =========================================================
-   PRODUTOS
+   LISTA DE PRODUTOS
    ========================================================= */
+
+#listaProdutos {
+
+    margin:
+        0;
+
+    padding-left:
+        0;
+
+    list-style:
+        none;
+}
 
 #listaProdutos li {
-    margin-bottom: 10px;
 
-    padding: 10px;
+    margin-bottom:
+        9px;
 
-    border-radius: 8px;
+    padding:
+        12px 14px;
 
-    background: var(--color-bg);
+    border:
+        1px solid var(--color-border);
 
-    border: 1px solid var(--color-border);
+    border-radius:
+        var(--radius-md);
+
+    background:
+        var(--color-bg);
+
+    transition:
+        border-color var(--transition-fast),
+        transform var(--transition-fast);
 }
 
+#listaProdutos li:hover {
+
+    border-color:
+        var(--color-primary);
+
+    transform:
+        translateX(3px);
+}
+
+
 /* =========================================================
-   NOTAS
+   LISTA DE NOTAS
    ========================================================= */
+
+#listaNotas {
+
+    display:
+        flex;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        6px;
+}
 
 #listaNotas li {
-    display: inline-block;
 
-    margin: 4px;
+    display:
+        inline-flex;
 
-    padding: 7px 12px;
+    align-items:
+        center;
 
-    border-radius: 20px;
+    justify-content:
+        center;
 
-    background: var(--color-primary);
+    margin:
+        0;
 
-    color: white;
+    padding:
+        7px 13px;
 
-    font-weight: bold;
+    border-radius:
+        999px;
+
+    background:
+        var(--color-primary);
+
+    color:
+        #ffffff;
+
+    font-size:
+        0.9rem;
+
+    font-weight:
+        700;
 }
 
+
 /* =========================================================
-   MERCADO
+   MERCADO / RATEIO
    ========================================================= */
+
+#listaMercado,
+#listaPessoas {
+
+    margin:
+        15px 0 0;
+
+    padding:
+        0;
+
+    list-style:
+        none;
+}
 
 #listaMercado li,
 #listaPessoas li {
-    margin-bottom: 8px;
 
-    padding: 12px;
+    display:
+        flex;
 
-    border-radius: 8px;
+    align-items:
+        center;
 
-    background: var(--color-bg);
+    justify-content:
+        space-between;
 
-    border: 1px solid var(--color-border);
+    gap:
+        10px;
+
+    margin-bottom:
+        8px;
+
+    padding:
+        12px 14px;
+
+    border:
+        1px solid var(--color-border);
+
+    border-radius:
+        var(--radius-md);
+
+    background:
+        var(--color-bg);
 }
+
 
 /* =========================================================
    JOGO DA MEMÓRIA
    ========================================================= */
 
+#tabuleiroMemoria {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap:
+        10px;
+
+    width:
+        min(520px, 100%);
+
+    margin:
+        18px auto 0;
+}
+
 .memoria-carta {
-    aspect-ratio: 1;
 
-    display: flex;
+    aspect-ratio:
+        1 / 1;
 
-    align-items: center;
+    display:
+        flex;
 
-    justify-content: center;
+    align-items:
+        center;
 
-    border-radius: 10px;
+    justify-content:
+        center;
+
+    padding:
+        0;
+
+    margin:
+        0;
+
+    border:
+        2px solid transparent;
+
+    border-radius:
+        var(--radius-md);
 
     background:
         linear-gradient(
@@ -514,54 +1174,87 @@ button:disabled {
             #6366f1
         );
 
-    color: transparent;
+    color:
+        transparent;
 
-    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    font-size:
+        clamp(1.4rem, 5vw, 2.5rem);
 
-    cursor: pointer;
+    cursor:
+        pointer;
 
-    user-select: none;
+    user-select:
+        none;
+
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.18);
 
     transition:
-        transform 0.2s ease,
-        background 0.2s ease;
+        transform var(--transition-fast),
+        border-color var(--transition-fast),
+        background var(--transition-fast);
 }
 
 .memoria-carta:hover {
-    transform: scale(1.04);
+
+    transform:
+        scale(1.04);
 }
 
 .memoria-carta.revelada,
 .memoria-carta.encontrada {
-    background: var(--color-bg);
 
-    color: var(--color-text);
+    background:
+        var(--color-bg);
 
-    border: 2px solid var(--color-primary);
+    color:
+        var(--color-text);
+
+    border-color:
+        var(--color-primary);
 }
 
 .memoria-carta.encontrada {
-    border-color: var(--color-success);
+
+    border-color:
+        var(--color-success);
+
+    background:
+        rgba(34, 197, 94, 0.10);
 }
+
 
 /* =========================================================
    PEDRA PAPEL TESOURA
    ========================================================= */
 
 #resultadoPPT {
-    text-align: center;
 
-    font-size: 1.1rem;
+    text-align:
+        center;
 
-    font-weight: bold;
+    font-size:
+        1.1rem;
+
+    font-weight:
+        700;
 }
+
 
 /* =========================================================
    CLIQUE RÁPIDO
    ========================================================= */
 
 #btnClicar {
-    min-width: 220px;
+
+    min-width:
+        220px;
+
+    min-height:
+        60px;
+
+    font-size:
+        1.3rem;
 
     background:
         linear-gradient(
@@ -572,6 +1265,7 @@ button:disabled {
 }
 
 #btnClicar:hover:not(:disabled) {
+
     background:
         linear-gradient(
             135deg,
@@ -579,363 +1273,371 @@ button:disabled {
             #ea580c
         );
 
-    transform: scale(1.04);
+    transform:
+        scale(1.03);
 }
+
 
 /* =========================================================
    QUIZ
    ========================================================= */
 
-#opcoesQuiz button {
-    width: 100%;
+#opcoesQuiz {
 
-    margin-top: 0;
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        9px;
+}
+
+#opcoesQuiz button {
+
+    width:
+        100%;
+
+    margin:
+        0;
+
+    text-align:
+        left;
 }
 
 .quiz-correta {
-    background: var(--color-success) !important;
+
+    background:
+        var(--color-success) !important;
 }
 
 .quiz-errada {
-    background: var(--color-error) !important;
+
+    background:
+        var(--color-error) !important;
 }
 
-/* =========================================================
-   JOGO DA VELHA
-   ========================================================= */
-
-#tabuleiroVelha {
-    display: grid;
-
-    width: min(500px, 100%);
-
-    margin: 20px auto;
-
-    gap: 5px;
-}
-
-.velha-celula {
-    aspect-ratio: 1;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    padding: 0;
-
-    margin: 0;
-
-    border-radius: 6px;
-
-    background: var(--color-bg);
-
-    border: 2px solid var(--color-border);
-
-    color: var(--color-text);
-
-    font-size: clamp(1.2rem, 6vw, 3rem);
-
-    font-weight: bold;
-}
-
-.velha-celula:hover:not(:disabled) {
-    background: var(--color-primary);
-
-    border-color: var(--color-primary);
-}
 
 /* =========================================================
    TIMER
    ========================================================= */
 
 #timerDisplay {
-    font-family: monospace;
 
-    font-size: 2rem !important;
+    margin:
+        18px 0 0;
 
-    color: var(--color-primary);
+    padding:
+        12px;
 
-    letter-spacing: 3px;
+    font-family:
+        "Courier New",
+        monospace;
+
+    font-size:
+        2.2rem !important;
+
+    font-weight:
+        700;
+
+    letter-spacing:
+        4px;
+
+    text-align:
+        center;
+
+    color:
+        var(--color-primary-light);
+
+    background:
+        var(--color-bg);
+
+    border:
+        1px solid var(--color-border);
+
+    border-radius:
+        var(--radius-md);
 }
+
 
 /* =========================================================
    SENHA
    ========================================================= */
 
 #senhaGerada {
-    font-family: monospace;
 
-    font-size: 1.1rem;
+    font-family:
+        "Courier New",
+        monospace;
 
-    letter-spacing: 1px;
+    font-size:
+        1.05rem;
+
+    letter-spacing:
+        1px;
+
+    font-weight:
+        600;
 }
+
+#btnCopiarSenha {
+
+    background:
+        var(--color-text-muted);
+
+    box-shadow:
+        none;
+}
+
 
 /* =========================================================
    RGB
    ========================================================= */
 
 #corBox {
+
+    min-height:
+        100px;
+
+    border:
+        1px solid var(--color-border) !important;
+
+    border-radius:
+        var(--radius-md) !important;
+
+    overflow:
+        hidden;
+
     transition:
-        background-color 0.3s ease;
+        background-color var(--transition-normal);
 }
+
+#codigoCor {
+
+    margin:
+        0;
+
+    padding:
+        8px 12px;
+
+    border-radius:
+        var(--radius-md);
+
+    background:
+        rgba(255, 255, 255, 0.78);
+
+    color:
+        #111827 !important;
+
+    font-family:
+        "Courier New",
+        monospace;
+
+    font-weight:
+        700;
+
+    backdrop-filter:
+        blur(5px);
+}
+
 
 /* =========================================================
-   ERROS
-   ========================================================= */
-
-.error-message {
-    color: var(--color-error);
-
-    font-size: 0.9em;
-
-    margin-top: -5px;
-
-    margin-bottom: 5px;
-
-    display: block;
-
-    min-height: 18px;
-}
-
-/* =========================================================
-   MENSAGENS DE SUCESSO
-   ========================================================= */
-
-.sucesso {
-    color: var(--color-success);
-
-    font-weight: bold;
-}
-
-.erro {
-    color: var(--color-error);
-
-    font-weight: bold;
-}
-
-.aviso {
-    color: var(--color-warning);
-
-    font-weight: bold;
-}
-
-/* =========================================================
-   RESPONSIVIDADE
-   ========================================================= */
-
-@media (max-width: 700px) {
-
-    .header-container {
-        min-height: 130px;
-
-        padding: 25px 60px 25px 20px;
-    }
-
-    .theme-toggle-btn {
-        width: 42px;
-        height: 42px;
-
-        top: 12px;
-        right: 12px;
-    }
-
-    .main-content {
-        width: 94%;
-
-        margin-top: 20px;
-    }
-
-    .card {
-        padding: 18px;
-
-        margin: 15px 0;
-    }
-
-    .card h3 {
-        font-size: 1.45rem;
-    }
-
-    .game-buttons {
-        flex-direction: column;
-
-        align-items: stretch;
-    }
-
-    .game-buttons button {
-        width: 100%;
-    }
-
-    #todoForm.game-buttons {
-        flex-direction: column;
-    }
-
-    #todoForm input {
-        width: 100%;
-    }
-
-    #tabuleiroMemoria {
-        grid-template-columns: repeat(4, 1fr) !important;
-
-        gap: 6px !important;
-    }
-
-    #btnClicar {
-        width: 100%;
-    }
-}
-
-@media (max-width: 420px) {
-
-    .imagem {
-        font-size: 2rem;
-    }
-
-    .card {
-        padding: 14px;
-    }
-
-    #tabuleiroMemoria {
-        gap: 4px !important;
-    }
-
-    .memoria-carta {
-        border-radius: 6px;
-    }
-}
-
-/* =========================================================
-   CONFIGURAÇÕES DO JOGO DA VELHA
+   JOGO DA VELHA - CONFIGURAÇÃO
    ========================================================= */
 
 .config-velha {
-    display: grid;
+
+    display:
+        grid;
 
     grid-template-columns:
-        repeat(auto-fit, minmax(160px, 1fr));
+        repeat(
+            auto-fit,
+            minmax(160px, 1fr)
+        );
 
-    gap: 15px;
+    gap:
+        14px;
 
-    align-items: end;
+    align-items:
+        end;
 
-    margin-bottom: 20px;
+    margin-bottom:
+        20px;
 }
 
 .config-velha > div {
-    min-width: 0;
+
+    min-width:
+        0;
 }
 
 .config-velha label {
-    margin-top: 0;
+
+    margin-top:
+        0;
 }
 
 .config-velha select {
-    width: 100%;
+
+    width:
+        100%;
 }
 
 .config-velha button {
-    width: 100%;
 
-    height: 44px;
+    width:
+        100%;
 
-    margin-top: 0;
+    min-height:
+        44px;
+
+    margin-top:
+        0;
 }
 
+
+/* =========================================================
+   STATUS JOGO DA VELHA
+   ========================================================= */
+
 .status-velha {
-    padding: 12px 15px;
 
-    margin-bottom: 15px;
+    margin-bottom:
+        15px;
 
-    border-radius: 10px;
+    padding:
+        13px 15px;
 
-    background: var(--color-bg);
+    border:
+        1px solid var(--color-border);
 
-    border: 1px solid var(--color-border);
+    border-radius:
+        var(--radius-md);
 
-    text-align: center;
+    background:
+        var(--color-bg);
+
+    text-align:
+        center;
 }
 
 .status-velha p {
-    margin: 5px 0;
+
+    margin:
+        5px 0;
+
+    color:
+        var(--color-text-secondary);
 }
 
 #vezJogador {
-    color: var(--color-primary);
 
-    font-size: 1.1rem;
+    color:
+        var(--color-primary-light);
+
+    font-size:
+        1.1rem;
 }
 
 
 /* =========================================================
-   TABULEIRO
+   TABULEIRO JOGO DA VELHA
    ========================================================= */
 
 #tabuleiroVelha {
-    width: min(550px, 100%);
 
-    margin: 20px auto;
+    display:
+        grid;
 
-    display: grid;
+    width:
+        min(550px, 100%);
 
-    gap: 6px;
+    margin:
+        20px auto;
+
+    gap:
+        6px;
 }
 
 .velha-celula {
-    width: 100%;
 
-    aspect-ratio: 1 / 1;
+    width:
+        100%;
 
-    margin: 0;
+    aspect-ratio:
+        1 / 1;
 
-    padding: 0;
+    display:
+        flex;
 
-    display: flex;
+    align-items:
+        center;
 
-    align-items: center;
+    justify-content:
+        center;
 
-    justify-content: center;
+    margin:
+        0;
 
-    background: var(--color-bg);
+    padding:
+        0;
 
-    border: 2px solid var(--color-border);
+    border:
+        2px solid var(--color-border);
 
-    border-radius: 8px;
+    border-radius:
+        8px;
 
-    color: var(--color-text);
+    background:
+        var(--color-bg);
 
-    font-size: 2.5rem;
+    color:
+        var(--color-text);
 
-    font-weight: bold;
+    font-size:
+        clamp(
+            1.3rem,
+            6vw,
+            2.8rem
+        );
 
-    cursor: pointer;
+    font-weight:
+        800;
+
+    cursor:
+        pointer;
 
     transition:
-        transform 0.15s ease,
-        background 0.15s ease,
-        border-color 0.15s ease;
+        transform var(--transition-fast),
+        background var(--transition-fast),
+        border-color var(--transition-fast);
 }
 
 .velha-celula:hover:not(:disabled) {
-    background: var(--color-primary);
 
-    border-color: var(--color-primary);
+    background:
+        var(--color-primary);
 
-    transform: scale(1.04);
+    border-color:
+        var(--color-primary);
+
+    transform:
+        scale(1.03);
 }
 
 .velha-celula:disabled {
-    cursor: default;
 
-    opacity: 1;
+    cursor:
+        default;
+
+    opacity:
+        1;
 }
 
-
-/* =========================================================
-   CELULAS X / O
-   ========================================================= */
-
 .velha-celula:not(:empty) {
+
     background:
         linear-gradient(
             135deg,
@@ -946,20 +1648,414 @@ button:disabled {
 
 
 /* =========================================================
-   RESPONSIVO
+   FORMULÁRIO DE LOGIN
+   ========================================================= */
+
+#loginForm input {
+
+    margin-bottom:
+        2px;
+}
+
+
+/* =========================================================
+   CALCULADORA / RESULTADOS
+   ========================================================= */
+
+#gorjetaResultado,
+#conversaoResultado,
+#totalMercado,
+#resultadoRateio,
+#imcResultado {
+
+    background:
+        var(--color-bg);
+
+    border:
+        1px solid var(--color-border);
+}
+
+
+/* =========================================================
+   FOCO ACESSÍVEL
+   ========================================================= */
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+
+    outline:
+        3px solid
+        rgba(99, 102, 241, 0.35);
+
+    outline-offset:
+        2px;
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE - TABLET
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+    .header-container {
+
+        min-height:
+            145px;
+
+        padding:
+            30px 70px 30px 25px;
+    }
+
+    .main-content {
+
+        width:
+            94%;
+
+        margin-top:
+            22px;
+    }
+
+    .card {
+
+        padding:
+            21px;
+    }
+
+    .card h3 {
+
+        font-size:
+            1.55rem;
+    }
+
+    .game-buttons {
+
+        gap:
+            8px;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE - MOBILE
    ========================================================= */
 
 @media (max-width: 600px) {
 
-    .config-velha {
-        grid-template-columns: 1fr;
+    body {
+
+        font-size:
+            15px;
+    }
+
+    .header-container {
+
+        min-height:
+            130px;
+
+        padding:
+            25px 60px 25px 18px;
+    }
+
+    .imagem {
+
+        font-size:
+            clamp(
+                1.8rem,
+                8vw,
+                2.6rem
+            );
+
+        line-height:
+            1.2;
+    }
+
+    .theme-toggle-btn {
+
+        top:
+            12px;
+
+        right:
+            12px;
+
+        width:
+            42px;
+
+        height:
+            42px;
+
+        font-size:
+            1.1rem;
+    }
+
+    .main-content {
+
+        width:
+            calc(100% - 24px);
+
+        margin:
+            16px auto 45px;
+    }
+
+    .card {
+
+        margin:
+            13px 0;
+
+        padding:
+            17px;
+
+        border-radius:
+            12px;
+    }
+
+    .card:hover {
+
+        transform:
+            none;
+    }
+
+    .card h3 {
+
+        margin-bottom:
+            16px;
+
+        font-size:
+            1.4rem;
+    }
+
+    .game-buttons {
+
+        flex-direction:
+            column;
+
+        align-items:
+            stretch;
+
+        width:
+            100%;
+    }
+
+    .game-buttons button {
+
+        width:
+            100%;
+    }
+
+    #todoForm.game-buttons {
+
+        flex-direction:
+            column;
+    }
+
+    #todoForm input {
+
+        width:
+            100%;
+    }
+
+    #todoList li {
+
+        align-items:
+            flex-start;
+    }
+
+    #listaMercado li,
+    #listaPessoas li {
+
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+    }
+
+    #tabuleiroMemoria {
+
+        grid-template-columns:
+            repeat(4, 1fr);
+
+        gap:
+            6px;
+    }
+
+    #btnClicar {
+
+        width:
+            100%;
+
+        min-width:
+            0;
+
+        min-height:
+            58px;
     }
 
     #tabuleiroVelha {
-        gap: 4px;
+
+        gap:
+            4px;
     }
 
     .velha-celula {
-        font-size: 1.8rem;
+
+        font-size:
+            1.8rem;
+
+        border-radius:
+            6px;
+    }
+
+    .config-velha {
+
+        grid-template-columns:
+            1fr;
+
+        gap:
+            10px;
+    }
+
+    #timerDisplay {
+
+        font-size:
+            1.8rem !important;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE - CELULARES PEQUENOS
+   ========================================================= */
+
+@media (max-width: 420px) {
+
+    .header-container {
+
+        padding:
+            24px 55px 24px 14px;
+    }
+
+    .imagem {
+
+        font-size:
+            1.8rem;
+    }
+
+    .main-content {
+
+        width:
+            calc(100% - 18px);
+    }
+
+    .card {
+
+        padding:
+            14px;
+
+        border-radius:
+            10px;
+    }
+
+    .card h3 {
+
+        font-size:
+            1.3rem;
+    }
+
+    input,
+    select,
+    textarea {
+
+        font-size:
+            16px;
+    }
+
+    #tabuleiroMemoria {
+
+        gap:
+            4px;
+    }
+
+    .memoria-carta {
+
+        border-radius:
+            6px;
+
+        font-size:
+            1.3rem;
+    }
+
+    .velha-celula {
+
+        font-size:
+            1.5rem;
+    }
+}
+
+
+/* =========================================================
+   ACESSIBILIDADE - REDUÇÃO DE MOVIMENTO
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+        scroll-behavior:
+            auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+
+        animation-duration:
+            0.01ms !important;
+
+        animation-iteration-count:
+            1 !important;
+
+        transition-duration:
+            0.01ms !important;
+    }
+}
+
+
+/* =========================================================
+   IMPRESSÃO
+   ========================================================= */
+
+@media print {
+
+    body {
+
+        background:
+            #ffffff;
+
+        color:
+            #000000;
+    }
+
+    .theme-toggle-btn,
+    button {
+
+        display:
+            none !important;
+    }
+
+    .card {
+
+        break-inside:
+            avoid;
+
+        box-shadow:
+            none;
+
+        border:
+            1px solid #cccccc;
+
+        background:
+            #ffffff;
     }
 }
