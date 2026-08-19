@@ -478,6 +478,127 @@
         style="margin-top: 15px;">
     </div>
 
+<div class="card qr-card">
+
+    <h3>27. Gerador de QR Code</h3>
+
+    <p>
+        Gere um QR Code para links, textos, WhatsApp,
+        Wi-Fi, imagens ou qualquer outro conteúdo.
+    </p>
+
+    <label for="tipoQr">
+        Tipo de conteúdo:
+    </label>
+
+    <select id="tipoQr">
+        <option value="texto">📝 Texto / Qualquer conteúdo</option>
+        <option value="link">🔗 Link / Site</option>
+        <option value="whatsapp">📱 WhatsApp</option>
+        <option value="email">📧 E-mail</option>
+        <option value="wifi">📶 Wi-Fi</option>
+        <option value="imagem">🖼️ URL da Imagem</option>
+    </select>
+
+    <div id="campoQrConteudo">
+
+        <label for="qrConteudo">
+            Conteúdo:
+        </label>
+
+        <textarea
+            id="qrConteudo"
+            rows="4"
+            placeholder="Digite qualquer texto ou cole um link..."
+        ></textarea>
+
+    </div>
+
+    <div class="qr-config">
+
+        <div>
+            <label for="qrCor">
+                Cor do QR:
+            </label>
+
+            <input
+                type="color"
+                id="qrCor"
+                value="#000000"
+            >
+        </div>
+
+        <div>
+            <label for="qrFundo">
+                Cor do fundo:
+            </label>
+
+            <input
+                type="color"
+                id="qrFundo"
+                value="#ffffff"
+            >
+        </div>
+
+        <div>
+            <label for="qrTamanho">
+                Tamanho:
+            </label>
+
+            <input
+                type="range"
+                id="qrTamanho"
+                min="200"
+                max="600"
+                value="350"
+            >
+
+            <output id="qrTamanhoValor">
+                350px
+            </output>
+        </div>
+
+    </div>
+
+    <label for="qrLogo">
+        Logo no centro (opcional):
+    </label>
+
+    <input
+        type="file"
+        id="qrLogo"
+        accept="image/png,image/jpeg,image/webp"
+    >
+
+    <div class="qr-actions">
+
+        <button
+            type="button"
+            id="btnGerarQR">
+            🔳 Gerar QR Code
+        </button>
+
+        <button
+            type="button"
+            id="btnBaixarQR">
+            💾 Baixar PNG
+        </button>
+
+        <button
+            type="button"
+            id="btnLimparQR">
+            🗑️ Limpar
+        </button>
+
+    </div>
+
+    <div
+        id="qrResultado"
+        class="qr-result">
+    </div>
+
+</div>
+
 </div>
     </main>
 
